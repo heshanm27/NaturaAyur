@@ -1,0 +1,2 @@
+# NaturaAyur
+ NaturaAyur is an Ayurvedic e-commerce platform dedicated to providing natural and holistic wellness products. Our mission is to make authentic Ayurvedic remedies accessible to everyone, and to promote a balanced and healthy lifestyle. With a curated selection of high-quality, handpicked products and a commitment to customer satisfaction, NaturaAyur is the ultimate destination for your Ayurvedic needs.
