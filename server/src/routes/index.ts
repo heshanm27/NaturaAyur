@@ -9,7 +9,7 @@ function routes(app: Express) {
       server: "Server Is running",
     });
   });
-
+  app.post("/test", (req: Request, res: Response) => {});
   app.use("api/product", ProdutRoute);
   app.use("api/user", UserRoute);
   app.use("api/order", OrderRoute);
