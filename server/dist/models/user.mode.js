@@ -45,4 +45,6 @@ const UserSchema = new Schema({
 }, {
     timestamps: true,
 });
+const User = mongoose_1.default.model("User", UserSchema);
+exports.default = User;
 //# sourceMappingURL=user.mode.js.map

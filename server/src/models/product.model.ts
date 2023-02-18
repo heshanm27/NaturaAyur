@@ -11,7 +11,7 @@ const ProductSchema = new Schema(
     stock: { type: Number, required: true },
     rating: { type: Number },
     numReviews: { type: Number },
-    reviews: { type: [String] },
+    reviews: { type: [mongoose.Schema.Types.ObjectId], ref: "Reviews" },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
