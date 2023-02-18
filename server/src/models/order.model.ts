@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const TransactionSchema = new Schema(
+const OrderSchema = new Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     status: { type: String, required: true },
@@ -37,3 +39,6 @@ const TransactionSchema = new Schema(
     timestamps: true,
   }
 );
+
+const Order = mongoose.model("Order", OrderSchema);
+export default Order;
