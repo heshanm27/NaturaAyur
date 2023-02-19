@@ -15,7 +15,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 const drawerWidth = 300;
-const drawerWidthClose = 80;
+const drawerWidthClose = 60;
 interface ICollection {
   id: string | number;
   collectionName: string;
@@ -105,7 +105,7 @@ export default function SideDrawer() {
 
           <List sx={{ mt: 5 }}>
             {[1, 2, 3, 4, 5].map((item, index) => {
-              return <CustomLink label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
+              return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
             })}
           </List>
         </Drawer>
