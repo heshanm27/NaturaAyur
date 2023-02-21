@@ -7,6 +7,9 @@ import connect from "./util/db-connect.util";
 import mongoose from "mongoose";
 import passport from "passport";
 import cors from "cors";
+import "express-async-errors";
+import ErrorHandlerMiddleware from "./middleware/errorhandler.middleware";
+import "./util/passport-config.util";
 const app: Express = express();
 
 //cors oprions
@@ -18,13 +21,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}`);
   connect();
-  app.use(passport.initialize());
 
   routes(app);
+  app.use(ErrorHandlerMiddleware);
 });
 
 //server grcefully shutdown handle

@@ -12,6 +12,9 @@ const db_connect_util_1 = __importDefault(require("./util/db-connect.util"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const passport_1 = __importDefault(require("passport"));
 const cors_1 = __importDefault(require("cors"));
+require("express-async-errors");
+const errorhandler_middleware_1 = __importDefault(require("./middleware/errorhandler.middleware"));
+require("./util/passport-config.util");
 const app = (0, express_1.default)();
 //cors oprions
 const corsOptions = {
@@ -22,11 +25,12 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use(passport_1.default.initialize());
 const server = app.listen(process.env.PORT, () => {
     util_1.logger.info(`Server is running on port ${process.env.PORT}`);
     (0, db_connect_util_1.default)();
-    app.use(passport_1.default.initialize());
     (0, routes_1.default)(app);
+    app.use(errorhandler_middleware_1.default);
 });
 //server grcefully shutdown handle
 process.on("SIGINT", () => {

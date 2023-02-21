@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
-interface IUserInterface {
+interface IUser {
   firstName: string;
   lastName: string;
   email: string;
@@ -41,7 +41,15 @@ interface IUserInterface {
   ];
 }
 
-const UserSchema = new Schema<IUserInterface>(
+interface IUSerMethod {
+  login: (email: string, password: string) => Promise<IUser>;
+}
+
+interface UserModel extends Model<IUser> {
+  login: (email: string, password: string) => Promise<IUser>;
+}
+
+const UserSchema = new Schema<IUser, UserModel, IUSerMethod>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -98,11 +106,12 @@ UserSchema.statics.login = async function (email, password) {
   if (user) {
     const auth = await bcrypt.compare(password, user.password);
     if (auth) {
-      return user;
+      const { password, ...userWithoutPassword } = user.toObject();
+      return userWithoutPassword;
     }
     throw Error("Incorrect password");
   }
-  throw Error("User does not exist");
+  throw Error("User does not exist with this email");
 };
 
-export default mongoose.model<IUserInterface>("User", UserSchema);
+export default mongoose.model<IUser, UserModel>("User", UserSchema);
