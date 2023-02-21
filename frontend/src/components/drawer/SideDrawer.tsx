@@ -14,7 +14,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-const drawerWidth = 300;
+const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
   id: string | number;
@@ -47,7 +47,7 @@ export default function SideDrawer() {
             }),
           }}
         >
-          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 2 }}>
+          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 1 }}>
             {!open ? (
               <Typography variant="h6" noWrap component="div">
                 NatureAyur
@@ -103,7 +103,7 @@ export default function SideDrawer() {
             </IconButton>
           </Box>
 
-          <List sx={{ mt: 5 }}>
+          <List sx={{ mt: 2, display: "flex", flexDirection: "column", alignItems: "center" }}>
             {[1, 2, 3, 4, 5].map((item, index) => {
               return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
             })}
@@ -114,9 +114,11 @@ export default function SideDrawer() {
           sx={{
             mt: 4,
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            backgroundColor: "#FAFCF7",
+            backgroundColor: "#F6FCED",
+            p: 2,
             height: "96vh",
             overflowY: "hidden",
+            borderRadius: 15,
           }}
         >
           <Toolbar />
