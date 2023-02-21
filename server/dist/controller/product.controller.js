@@ -9,10 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPaymentDetailsOfOneProduct = exports.payForProduct = exports.updateProduct = exports.addProduct = exports.getOneUserProductList = exports.getAllProductList = void 0;
 const getAllProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.getAllProductList = getAllProductList;
 const getOneUserProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.getOneUserProductList = getOneUserProductList;
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.addProduct = addProduct;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.updateProduct = updateProduct;
 const payForProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.payForProduct = payForProduct;
 const getPaymentDetailsOfOneProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.getPaymentDetailsOfOneProduct = getPaymentDetailsOfOneProduct;
 //# sourceMappingURL=product.controller.js.map

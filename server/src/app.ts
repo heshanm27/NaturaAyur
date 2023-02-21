@@ -4,13 +4,48 @@ import express, { Express } from "express";
 import { logger } from "./util";
 import routes from "./routes";
 import connect from "./util/db-connect.util";
+import mongoose from "mongoose";
+import passport from "passport";
+import cors from "cors";
 const app: Express = express();
 
+//cors oprions
+const corsOptions = {
+  origin: "http://localhost:3000",
+  method: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}`);
   connect();
+  app.use(passport.initialize());
+
   routes(app);
+});
+
+//server grcefully shutdown handle
+process.on("SIGINT", () => {
+  logger.info("SIGINT signal received: closing HTTP server");
+  server.close(() => {
+    logger.info("HTTP server closed");
+    mongoose.connection.close(false, () => {
+      logger.info("MongoDb connection closed");
+      process.exit(0);
+    });
+  });
+});
+
+process.on("SIGTERM", () => {
+  logger.info("SIGTERM signal received: closing HTTP server");
+  server.close(() => {
+    logger.info("HTTP server closed");
+    mongoose.connection.close(false, () => {
+      logger.info("MongoDb connection closed");
+      process.exit(0);
+    });
+  });
 });

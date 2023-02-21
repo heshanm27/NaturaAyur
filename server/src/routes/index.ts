@@ -2,6 +2,7 @@ import { Express, Request, Response } from "express";
 import ProdutRoute from "../routes/product.routes";
 import UserRoute from "../routes/order.routes";
 import OrderRoute from "../routes/order.routes";
+import AuthRoute from "../routes/auth.routes";
 import S3 from "../util/s3-client.util";
 import multer from "multer";
 import multerS3 from "multer-s3";
@@ -40,9 +41,10 @@ function routes(app: Express) {
       files,
     });
   });
-  app.use("api/v1/product", ProdutRoute);
-  app.use("api/v1/user", UserRoute);
-  app.use("api/v1/order", OrderRoute);
+  app.use("/api/v1/product", ProdutRoute);
+  app.use("/api/v1/user", UserRoute);
+  app.use("/api/v1/order", OrderRoute);
+  app.use("/api/v1/auth", AuthRoute);
 }
 
 export default routes;

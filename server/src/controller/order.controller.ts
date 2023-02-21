@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-const getAllOrderList = async (req: Request, res: Response) => {};
+export const getAllOrderList = async (req: Request, res: Response) => {};
 
-const getOneUserOrderList = async (req: Request, res: Response) => {};
+export const getOneUserOrderList = async (req: Request, res: Response) => {};
 
-const addOrder = async (req: Request, res: Response) => {};
+export const addOrder = async (req: Request, res: Response) => {};
 
-const updateOrder = async (req: Request, res: Response) => {};
+export const updateOrder = async (req: Request, res: Response) => {};
 
-const payForOrder = async (req: Request, res: Response) => {};
+export const payForOrder = async (req: Request, res: Response) => {};
 
-const getPaymentDetailsOfOneOrder = async (req: Request, res: Response) => {};
+export const getPaymentDetailsOfOneOrder = async (req: Request, res: Response) => {};

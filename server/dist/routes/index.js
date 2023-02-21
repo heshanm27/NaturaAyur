@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const product_routes_1 = __importDefault(require("../routes/product.routes"));
 const order_routes_1 = __importDefault(require("../routes/order.routes"));
 const order_routes_2 = __importDefault(require("../routes/order.routes"));
+const auth_routes_1 = __importDefault(require("../routes/auth.routes"));
 const s3_client_util_1 = __importDefault(require("../util/s3-client.util"));
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
@@ -44,9 +45,10 @@ function routes(app) {
             files,
         });
     });
-    app.use("api/v1/product", product_routes_1.default);
-    app.use("api/v1/user", order_routes_1.default);
-    app.use("api/v1/order", order_routes_2.default);
+    app.use("/api/v1/product", product_routes_1.default);
+    app.use("/api/v1/user", order_routes_1.default);
+    app.use("/api/v1/order", order_routes_2.default);
+    app.use("/api/v1/auth", auth_routes_1.default);
 }
 exports.default = routes;
 //# sourceMappingURL=index.js.map

@@ -9,12 +9,44 @@ const express_1 = __importDefault(require("express"));
 const util_1 = require("./util");
 const routes_1 = __importDefault(require("./routes"));
 const db_connect_util_1 = __importDefault(require("./util/db-connect.util"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const passport_1 = __importDefault(require("passport"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
+//cors oprions
+const corsOptions = {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
     util_1.logger.info(`Server is running on port ${process.env.PORT}`);
     (0, db_connect_util_1.default)();
+    app.use(passport_1.default.initialize());
     (0, routes_1.default)(app);
+});
+//server grcefully shutdown handle
+process.on("SIGINT", () => {
+    util_1.logger.info("SIGINT signal received: closing HTTP server");
+    server.close(() => {
+        util_1.logger.info("HTTP server closed");
+        mongoose_1.default.connection.close(false, () => {
+            util_1.logger.info("MongoDb connection closed");
+            process.exit(0);
+        });
+    });
+});
+process.on("SIGTERM", () => {
+    util_1.logger.info("SIGTERM signal received: closing HTTP server");
+    server.close(() => {
+        util_1.logger.info("HTTP server closed");
+        mongoose_1.default.connection.close(false, () => {
+            util_1.logger.info("MongoDb connection closed");
+            process.exit(0);
+        });
+    });
 });
 //# sourceMappingURL=app.js.map
