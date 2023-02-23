@@ -13,9 +13,9 @@ export default function CustomLink({ drawerStatus, label, icon, handleClick }: C
     <Tooltip title={label} placement="right" arrow>
       <ListItem
         sx={{
-          p: 2,
-          mt: 1,
-          width: "80%",
+          p: 0,
+          m: 1,
+          width: "auto",
         }}
       >
         <ListItemButton

@@ -104,12 +104,13 @@ export default function SideDrawer() {
               <SegmentIcon />
             </IconButton>
           </Box>
-
-          <List sx={{ mt: 2, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {[1, 2, 3, 4, 5].map((item, index) => {
-              return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
-            })}
-          </List>
+          <Box>
+            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {[1, 2, 3, 4, 5].map((item, index) => {
+                return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
+              })}
+            </List>
+          </Box>
         </Drawer>
         <Box
           component="main"

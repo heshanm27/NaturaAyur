@@ -7,8 +7,8 @@ export default function OrderView() {
   const onlyMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const onlyLargeScreen = useMediaQuery(theme.breakpoints.down("md"));
   return (
-    <Container sx={{ p: 1 }}>
-      <Stack sx={{ p: 3 }} direction={"row"} justifyContent={"space-between"} alignContent={"baseline"}>
+    <Container maxWidth="xl">
+      <Stack sx={{ mt: 3, mb: 3 }} direction={"row"} justifyContent={"space-between"} alignContent={"baseline"}>
         <Typography variant="h4">Order Number #2222222</Typography>
         <Stack spacing={2} direction={"row"}>
           <Button variant="contained" color="success">
