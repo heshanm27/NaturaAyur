@@ -116,14 +116,14 @@ export default function SideDrawer() {
           component="main"
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            minHeight: "100vh",
+            mt: "60px",
+            minHeight: "calc(100vh - 60px)",
             backgroundColor: green["50"],
             overflowY: "hidden",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 0,
           }}
         >
-          <Box sx={theme.mixins.toolbar}></Box>
           <Outlet />
         </Box>
       </Box>
