@@ -14,6 +14,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { lime, lightGreen, green } from "@mui/material/colors";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
@@ -41,6 +42,7 @@ export default function SideDrawer() {
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
+            mb: theme.mixins.toolbar,
             transition: theme.transitions.create("width", {
               easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
               duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
@@ -112,16 +114,15 @@ export default function SideDrawer() {
         <Box
           component="main"
           sx={{
-            mt: 4,
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            backgroundColor: "#F6FCED",
-            p: 2,
-            height: "96vh",
+            minHeight: "100vh",
+            backgroundColor: green["50"],
             overflowY: "hidden",
-            borderRadius: 15,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 0,
           }}
         >
-          <Toolbar />
+          <Box sx={theme.mixins.toolbar}></Box>
           <Outlet />
         </Box>
       </Box>
