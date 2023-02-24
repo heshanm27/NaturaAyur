@@ -29,7 +29,7 @@ export default function OrderView() {
           <SummaryCard width="500px" height="100px" title="CourierDetails" />
           <SummaryCard width="500px" height="280px" title="Order Summary" />
           <SummaryCard width="500px" height="60px" title="total" />
-          <SummaryCard width="500px" height="200px" title="total" />
+          <SummaryCard width="500px" height="240px" title="total" />
         </Stack>
       </Stack>
     </Container>

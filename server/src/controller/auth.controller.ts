@@ -1,20 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { SignIn, SignUp } from "../service/auth.service";
+import { SignUp } from "../service/auth.service";
 import { CreateUserSignInInput, CreateUserSignUpInput } from "../schema/auth.schema";
 export const userSignUp = async (req: Request<{}, {}, CreateUserSignUpInput["body"]>, res: Response) => {
   try {
     const { email, password, firstName, lastName, address, avatar } = req.body;
-    const user = await SignUp({ email, password, firstName, lastName, address, avatar });
-    if (!user) {
-      return res.status(400).json({
-        message: "User Already Exist",
-      });
-    }
+    const token = await SignUp({ email, password, firstName, lastName, address, avatar });
+
     return res.status(200).json({
+      token,
       message: "User Created Successfully",
-      user,
     });
   } catch (e: any) {
     return res.status(400).json({
@@ -37,7 +32,7 @@ export const userSignIn = async (req: Request<{}, {}, CreateUserSignInInput["bod
     }
     return res.status(200).json({
       message: "User Logged In Successfully",
-      user,
+      token: user,
     });
   })(req, res, next);
 };

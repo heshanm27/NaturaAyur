@@ -1,6 +1,6 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
-
+import JWT from "jsonwebtoken";
 interface IUser {
   firstName: string;
   lastName: string;
@@ -41,15 +41,15 @@ interface IUser {
   ];
 }
 
-interface IUSerMethod {
-  login: (email: string, password: string) => Promise<IUser>;
+interface IUserMethod {
+  generateJWTToken: () => string;
 }
 
-interface UserModel extends Model<IUser> {
-  login: (email: string, password: string) => Promise<IUser>;
+interface UserModel extends Model<IUser, {}, IUserMethod> {
+  login: (email: string, password: string) => Promise<string>;
 }
 
-const UserSchema = new Schema<IUser, UserModel, IUSerMethod>(
+const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -100,16 +100,18 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.statics.login = async function (email, password) {
-  const user = await this.findOne({ email });
+UserSchema.methods.generateJWTToken = function () {
+  return JWT.sign({ id: this._id, isAdmin: this.isAdmin, isSeller: this.isSeller }, process.env.JWT_SECRET!, { expiresIn: "10d" });
+};
 
+UserSchema.statics.login = async function (email, password): Promise<string> {
+  const user = await this.findOne({ email });
   if (user) {
     const auth = await bcrypt.compare(password, user.password);
     if (auth) {
-      const { password, ...userWithoutPassword } = user.toObject();
-      return userWithoutPassword;
+      return user.generateJWTToken();
     }
-    throw Error("Incorrect password");
+    throw Error("Incorrect Credentials");
   }
   throw Error("User does not exist with this email");
 };

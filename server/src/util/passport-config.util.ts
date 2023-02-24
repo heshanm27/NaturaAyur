@@ -1,8 +1,9 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { SignIn } from "../service/auth.service";
+import { Strategy as JWTStraegy, ExtractJwt as ExtractJWT } from "passport-jwt";
 
-export default passport.use(
+const local = passport.use(
   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
     try {
       const user = await SignIn({ email, password });
@@ -16,11 +17,3 @@ export default passport.use(
     }
   })
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user: any, done) => {
-  done(null, user);
-});
