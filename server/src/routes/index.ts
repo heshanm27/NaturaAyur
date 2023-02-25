@@ -26,7 +26,7 @@ function routes(app: Express) {
   const upload = multer({
     storage: multerS3({
       s3: S3,
-      bucket: process.env.S3BUCKETNAME ?? "",
+      bucket: process.env.S3_BUCKET_NAME ?? "",
       metadata: function (req, file, cb) {
         cb(null, { fieldName: file.fieldname });
       },

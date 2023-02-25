@@ -7,6 +7,7 @@ interface IUser {
   email: string;
   password: string;
   avatar: string;
+  isVerified: boolean;
   isAdmin: boolean;
   isSeller: boolean;
   seller: {
@@ -55,6 +56,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    isVerified: { type: Boolean, default: false },
     avatar: { type: String },
     isAdmin: { type: Boolean, default: false },
     isSeller: { type: Boolean, default: false },

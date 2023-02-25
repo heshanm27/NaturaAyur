@@ -30,7 +30,7 @@ function routes(app) {
     const upload = (0, multer_1.default)({
         storage: (0, multer_s3_1.default)({
             s3: s3_client_util_1.default,
-            bucket: (_a = process.env.S3BUCKETNAME) !== null && _a !== void 0 ? _a : "",
+            bucket: (_a = process.env.S3_BUCKET_NAME) !== null && _a !== void 0 ? _a : "",
             metadata: function (req, file, cb) {
                 cb(null, { fieldName: file.fieldname });
             },
