@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from "zod";
+import { object, string, TypeOf, nativeEnum } from "zod";
 
 export const createUserSignUpSchema = object({
   body: object({
@@ -53,3 +53,18 @@ export const createUserSignInSchema = object({
 });
 
 export type CreateUserSignInInput = TypeOf<typeof createUserSignInSchema>;
+
+export enum MagicLinkType {
+  VERIFY_EMAIL = "VERIFY_EMAIL",
+  RESET_PASSWORD = "RESET_PASSWORD",
+  FORGOT_PASSWORD = "FORGOT_PASSWORD",
+}
+
+export const generateMagicLinkSchema = object({
+  email: string({
+    required_error: "Email is required",
+  }).email({ message: "Email must be a valid email address" }),
+  type: nativeEnum(MagicLinkType),
+});
+
+export type GenerateMagicLinkInput = TypeOf<typeof generateMagicLinkSchema>;
