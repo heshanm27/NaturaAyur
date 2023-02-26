@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import logger from "./logger.util";
+import logger from "./logger.config";
 
 async function connect() {
   mongoose.set("strictQuery", false);

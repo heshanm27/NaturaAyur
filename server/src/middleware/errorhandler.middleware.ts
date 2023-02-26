@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomError } from "../errors/index";
 import status from "http-status-codes";
-import Logger from "../util/logger.util";
+import Logger from "../config/logger.config";
 
 const ErrorHandlerMiddleware = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof CustomError) {

@@ -1,10 +1,11 @@
 import UserSchema from "../models/user.model";
 import { BadRequestError, Unauthenticated } from "../errors/index";
+import JWT from "jsonwebtoken";
 
 export async function SignUp(input: any): Promise<string> {
   try {
     const user = await UserSchema.create(input);
-    return user.generateJWTToken();
+    return JWT.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: "10m" });
   } catch (e: any) {
     if (e.code === 11000) {
       throw new BadRequestError("User Already Exist");

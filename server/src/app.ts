@@ -3,7 +3,7 @@ dotenv.config();
 import express, { Express } from "express";
 import { logger } from "./util";
 import routes from "./routes";
-import connect from "./util/db-connect.util";
+import connect from "./config/db-connect.config";
 import mongoose from "mongoose";
 import passport from "passport";
 import cors from "cors";

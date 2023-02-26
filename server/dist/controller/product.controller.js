@@ -14,7 +14,13 @@ const getAllProductList = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getAllProductList = getAllProductList;
 const getOneUserProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.getOneUserProductList = getOneUserProductList;
-const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, description, price, quantity, category, subCategory, images } = req.body;
+    console.log(name, description, price, quantity, category, subCategory, images);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+    });
+});
 exports.addProduct = addProduct;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.updateProduct = updateProduct;

@@ -8,7 +8,7 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const util_1 = require("./util");
 const routes_1 = __importDefault(require("./routes"));
-const db_connect_util_1 = __importDefault(require("./util/db-connect.util"));
+const db_connect_config_1 = __importDefault(require("./config/db-connect.config"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const passport_1 = __importDefault(require("passport"));
 const cors_1 = __importDefault(require("cors"));
@@ -28,7 +28,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use(passport_1.default.initialize());
 const server = app.listen(process.env.PORT, () => {
     util_1.logger.info(`Server is running on port ${process.env.PORT}`);
-    (0, db_connect_util_1.default)();
+    (0, db_connect_config_1.default)();
     (0, routes_1.default)(app);
     app.use(errorhandler_middleware_1.default);
 });
