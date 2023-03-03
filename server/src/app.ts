@@ -1,15 +1,17 @@
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 dotenv.config();
 import express, { Express } from "express";
 import { logger } from "./util";
+import "express-async-errors";
 import routes from "./routes";
 import connect from "./config/db-connect.config";
 import mongoose from "mongoose";
 import passport from "passport";
 import cors from "cors";
-import "express-async-errors";
+
 import ErrorHandlerMiddleware from "./middleware/errorhandler.middleware";
 import "./util/passport-config.util";
+import NotFoundMiddleware from "./middleware/notfound.middleware";
 const app: Express = express();
 
 //cors oprions
@@ -24,20 +26,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 const server = app.listen(process.env.PORT, () => {
-  logger.info(`Server is running on port ${process.env.PORT}`);
+  logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();
-
   routes(app);
-  app.use(ErrorHandlerMiddleware);
 });
 
-//server grcefully shutdown handle
+// server grcefully shutdown handle
 process.on("SIGINT", () => {
   logger.info("SIGINT signal received: closing HTTP server");
   server.close(() => {
     logger.info("HTTP server closed");
     mongoose.connection.close(false, () => {
-      logger.info("MongoDb connection closed");
+      logger.info("MongoDb connection closed😢");
       process.exit(0);
     });
   });
@@ -46,9 +46,9 @@ process.on("SIGINT", () => {
 process.on("SIGTERM", () => {
   logger.info("SIGTERM signal received: closing HTTP server");
   server.close(() => {
-    logger.info("HTTP server closed");
+    logger.info("HTTP server closed😢");
     mongoose.connection.close(false, () => {
-      logger.info("MongoDb connection closed");
+      logger.info("MongoDb connection closed😢");
       process.exit(0);
     });
   });

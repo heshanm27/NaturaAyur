@@ -9,17 +9,22 @@ const OrderSchema = new Schema(
     },
     products: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        price: { type: Number, required: true },
+        quantity: { type: Number, required: true },
       },
     ],
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
-    status: { type: String, required: true },
-    address: { type: String, required: true },
-    city: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["pending", "failed", "paid", "delivered", "canceled"],
+      default: "pending",
+    },
+    shippingAddress: {
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: Number, required: true },
+      country: { type: String, required: true },
+    },
     paymentMethod: { type: String, required: true },
     paymentResult: {
       id: { type: String },

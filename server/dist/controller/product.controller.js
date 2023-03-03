@@ -9,23 +9,75 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPaymentDetailsOfOneProduct = exports.payForProduct = exports.updateProduct = exports.addProduct = exports.getOneUserProductList = exports.getAllProductList = void 0;
-const getAllProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.getAllProductList = getAllProductList;
-const getOneUserProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.getOneUserProductList = getOneUserProductList;
-const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description, price, quantity, category, subCategory, images } = req.body;
-    console.log(name, description, price, quantity, category, subCategory, images);
+exports.deleteProduct = exports.updateProduct = exports.getReviewsForProduct = exports.getProductByCategory = exports.getOneSellerProductList = exports.getOneProductDetails = exports.getAllProductList = exports.addNewProduct = void 0;
+const product_service_1 = require("../service/product.service");
+const addNewProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield (0, product_service_1.addProduct)(req.body);
     return res.status(200).json({
         message: "Product Added Successfully",
+        product,
     });
 });
-exports.addProduct = addProduct;
-const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.addNewProduct = addNewProduct;
+const getAllProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield (0, product_service_1.findAllProducts)(req.body);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+        products,
+    });
+});
+exports.getAllProductList = getAllProductList;
+const getOneProductDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield (0, product_service_1.findProductById)(req.body);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+        product,
+    });
+});
+exports.getOneProductDetails = getOneProductDetails;
+const getOneSellerProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield (0, product_service_1.findProductBySellerId)(req.body);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+        products,
+    });
+});
+exports.getOneSellerProductList = getOneSellerProductList;
+const getProductByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield (0, product_service_1.findProductByCategory)(req.body);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+        products,
+    });
+});
+exports.getProductByCategory = getProductByCategory;
+const getReviewsForProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const productReviews = yield (0, product_service_1.getAllReviewsForProduct)(req.body);
+    return res.status(200).json({
+        message: "Product Added Successfully",
+        productReviews,
+    });
+});
+exports.getReviewsForProduct = getReviewsForProduct;
+const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const updateProduct = yield (0, product_service_1.patchProduct)(req.body);
+        return res.status(200).json({
+            message: "Product Updated Successfully",
+            updateProduct,
+        });
+    }
+    catch (e) {
+        throw new Error(e.message);
+    }
+});
 exports.updateProduct = updateProduct;
-const payForProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.payForProduct = payForProduct;
-const getPaymentDetailsOfOneProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.getPaymentDetailsOfOneProduct = getPaymentDetailsOfOneProduct;
+const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const deletedProduct = yield (0, product_service_1.removeProduct)(req.body);
+    return res.status(200).json({
+        message: "Product Deleted Successfully",
+        deletedProduct,
+    });
+});
+exports.deleteProduct = deleteProduct;
 //# sourceMappingURL=product.controller.js.map

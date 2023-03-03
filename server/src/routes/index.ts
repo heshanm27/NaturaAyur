@@ -7,6 +7,8 @@ import S3 from "../util/s3-client.util";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { v4 as uuidv4 } from "uuid";
+import NotFoundMiddleware from "../middleware/notfound.middleware";
+import ErrorHandlerMiddleware from "../middleware/errorhandler.middleware";
 function routes(app: Express) {
   app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
@@ -45,6 +47,8 @@ function routes(app: Express) {
   app.use("/api/v1/user", UserRoute);
   app.use("/api/v1/order", OrderRoute);
   app.use("/api/v1/auth", AuthRoute);
+  app.use(NotFoundMiddleware);
+  app.use(ErrorHandlerMiddleware);
 }
 
 export default routes;

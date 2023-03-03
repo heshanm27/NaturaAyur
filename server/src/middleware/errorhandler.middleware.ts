@@ -4,6 +4,7 @@ import status from "http-status-codes";
 import Logger from "../config/logger.config";
 
 const ErrorHandlerMiddleware = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log("Error Handler Middleware");
   if (err instanceof CustomError) {
     return res.status(err.statusCode).json({ error: err.message });
   }
