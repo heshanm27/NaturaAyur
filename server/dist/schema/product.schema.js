@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProductSchema = exports.updateProductSchema = exports.addProdutSchema = void 0;
+exports.getAllProductListSchema = exports.deleteProductSchema = exports.updateProductSchema = exports.addProdutSchema = void 0;
 const mongoose_1 = require("mongoose");
 const zod_1 = require("zod");
 exports.addProdutSchema = (0, zod_1.object)({
@@ -46,5 +46,16 @@ exports.deleteProductSchema = (0, zod_1.object)({
     })
         .min(2, { message: "Id must be at least 2 characters" })
         .refine((data) => (0, mongoose_1.isValidObjectId)(data), { message: "Id must be a valid Id" }),
+});
+exports.getAllProductListSchema = (0, zod_1.object)({
+    query: (0, zod_1.object)({
+        search: (0, zod_1.string)({}).optional(),
+        sortBy: (0, zod_1.string)({}).optional(),
+        order: (0, zod_1.string)({}).optional(),
+        limit: (0, zod_1.string)({}).optional(),
+        page: (0, zod_1.string)({}).optional(),
+        cat: (0, zod_1.string)({}).optional(),
+        subCat: (0, zod_1.union)([(0, zod_1.string)({}), (0, zod_1.array)((0, zod_1.string)({}))]).optional(),
+    }),
 });
 //# sourceMappingURL=product.schema.js.map

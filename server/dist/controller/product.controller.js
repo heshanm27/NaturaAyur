@@ -20,9 +20,19 @@ const addNewProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.addNewProduct = addNewProduct;
 const getAllProductList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield (0, product_service_1.findAllProducts)(req.body);
+    let { search, sortBy, order, cat, subCat, limit, page } = req.query;
+    //if only pass one sub category then it will be string
+    //so convert it to array
+    if (typeof subCat === "string") {
+        subCat = [subCat];
+    }
+    //convert sub category to lowercase and trim
+    subCat = subCat === null || subCat === void 0 ? void 0 : subCat.map((item) => item.trim().toLowerCase());
+    //call service function
+    const { products, total } = yield (0, product_service_1.findAllProducts)({ search, sortBy, cat, subCat, order, limit, page });
     return res.status(200).json({
-        message: "Product Added Successfully",
+        message: "Products found Successfully",
+        total,
         products,
     });
 });

@@ -1,5 +1,5 @@
 import { isValidObjectId } from "mongoose";
-import { array, number, object, string, TypeOf } from "zod";
+import { any, array, number, object, string, TypeOf, union } from "zod";
 
 export const addProdutSchema = object({
   body: object({
@@ -53,3 +53,17 @@ export const deleteProductSchema = object({
 });
 
 export type DeleteProductInput = TypeOf<typeof deleteProductSchema>;
+
+export const getAllProductListSchema = object({
+  query: object({
+    search: string({}).optional(),
+    sortBy: string({}).optional(),
+    order: string({}).optional(),
+    limit: string({}).optional(),
+    page: string({}).optional(),
+    cat: string({}).optional(),
+    subCat: union([string({}), array(string({}))]).optional(),
+  }),
+});
+
+export type GetAllProductListInput = TypeOf<typeof getAllProductListSchema>;

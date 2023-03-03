@@ -2,6 +2,16 @@ import { AddProductInput, UpdateProductInput } from "../schema/product.schema";
 import ProductSchema from "../models/product.model";
 import { BadRequestError } from "../errors";
 
+interface IFilters {
+  search?: string;
+  sortBy?: any;
+  order?: any;
+  limit?: any;
+  page?: any;
+  cat?: string;
+  subCat?: string[];
+}
+
 export async function addProduct(input: AddProductInput) {
   const product = await ProductSchema.create(input);
   return product;
@@ -30,12 +40,41 @@ export async function removeProduct(input: any) {
   return deletedProduct;
 }
 
-export async function findAllProducts({ sortBy, limit = 10, page = 1 }: { sortBy: string; limit: number; page: number }) {
-  const products = await ProductSchema.find({})
-    .sort(sortBy)
+export async function findAllProducts({ search = "", sortBy = "createdAt", order = "-1", limit = "10", page = "1", cat, subCat = [] }: IFilters): Promise<{
+  products: any;
+  total: number;
+}> {
+  //default filters
+  const defaultFilters: any = {
+    name: { $regex: search, $options: "i" },
+  };
+
+  //if category is present then add it to the filter
+  if (cat) {
+    defaultFilters["category"] = cat.toLowerCase();
+  }
+
+  //if sub category is present then add it to the filter
+  if (subCat.length > 0) {
+    defaultFilters["subCategory"] = { $in: subCat };
+  }
+
+  //find all products
+  const products = await ProductSchema.find(defaultFilters)
+    .sort({
+      [sortBy]: order,
+    })
     .limit(limit)
     .skip(limit * (page - 1));
-  return products;
+
+  //find count for matching products
+  const total = await ProductSchema.countDocuments(defaultFilters)
+    .sort({
+      [sortBy]: order,
+    })
+    .count();
+
+  return { products, total };
 }
 
 export async function findProductById(input: any) {

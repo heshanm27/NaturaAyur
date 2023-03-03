@@ -10,11 +10,11 @@ import {
   deleteProduct,
 } from "../controller/product.controller";
 import validateSchema from "../middleware/schemavalidator.middleware";
-import { addProdutSchema } from "../schema/product.schema";
+import { addProdutSchema, getAllProductListSchema } from "../schema/product.schema";
 const Router = express.Router();
 
 //default routes
-Router.route("/").get(getAllProductList).post(validateSchema(addProdutSchema), addNewProduct);
+Router.route("/").get(validateSchema(getAllProductListSchema), getAllProductList).post(validateSchema(addProdutSchema), addNewProduct);
 
 //paramterized routes
 Router.route("/:id").get(getOneProductDetails).patch(updateProduct).delete(deleteProduct).post(getProductByCategory);

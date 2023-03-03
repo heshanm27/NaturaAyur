@@ -8,10 +8,8 @@ import connect from "./config/db-connect.config";
 import mongoose from "mongoose";
 import passport from "passport";
 import cors from "cors";
-
-import ErrorHandlerMiddleware from "./middleware/errorhandler.middleware";
 import "./util/passport-config.util";
-import NotFoundMiddleware from "./middleware/notfound.middleware";
+
 const app: Express = express();
 
 //cors oprions

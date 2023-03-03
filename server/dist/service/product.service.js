@@ -45,13 +45,34 @@ function removeProduct(input) {
     });
 }
 exports.removeProduct = removeProduct;
-function findAllProducts({ sortBy, limit = 10, page = 1 }) {
+function findAllProducts({ search = "", sortBy = "createdAt", order = "-1", limit = "10", page = "1", cat, subCat = [] }) {
     return __awaiter(this, void 0, void 0, function* () {
-        const products = yield product_model_1.default.find({})
-            .sort(sortBy)
+        //default filters
+        const defaultFilters = {
+            name: { $regex: search, $options: "i" },
+        };
+        //if category is present then add it to the filter
+        if (cat) {
+            defaultFilters["category"] = cat.toLowerCase();
+        }
+        //if sub category is present then add it to the filter
+        if (subCat.length > 0) {
+            defaultFilters["subCategory"] = { $in: subCat };
+        }
+        //find all products
+        const products = yield product_model_1.default.find(defaultFilters)
+            .sort({
+            [sortBy]: order,
+        })
             .limit(limit)
             .skip(limit * (page - 1));
-        return products;
+        //find count for matching products
+        const total = yield product_model_1.default.countDocuments(defaultFilters)
+            .sort({
+            [sortBy]: order,
+        })
+            .count();
+        return { products, total };
     });
 }
 exports.findAllProducts = findAllProducts;
