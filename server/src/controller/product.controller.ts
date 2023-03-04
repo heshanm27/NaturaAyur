@@ -5,13 +5,12 @@ import {
   findProductBySellerId,
   patchProduct,
   removeProduct,
-  findProductByCategory,
   getAllReviewsForProduct,
   findProductById,
 } from "../service/product.service";
-import { GetAllProductListInput } from "../schema/product.schema";
-import { BadRequestError } from "../errors";
-export const addNewProduct = async (req: Request, res: Response) => {
+import { GetAllProductListInput, AddProductInput, UpdateProductInput, DefaultParamsInput } from "../schema/product.schema";
+
+export const addNewProduct = async (req: Request<{}, {}, AddProductInput["body"]>, res: Response) => {
   const product = await addProduct(req.body);
 
   return res.status(200).json({
@@ -42,34 +41,27 @@ export const getAllProductList = async (req: Request<{}, {}, {}, GetAllProductLi
   });
 };
 
-export const getOneProductDetails = async (req: Request, res: Response) => {
-  const product = await findProductById(req.body);
+export const getOneProductDetails = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
+  const { id } = req.params;
+
+  const product = await findProductById(id);
 
   return res.status(200).json({
-    message: "Product Added Successfully",
+    message: "Product found Successfully",
     product,
   });
 };
 
-export const getOneSellerProductList = async (req: Request, res: Response) => {
+export const getOneSellerProductList = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
   const products = await findProductBySellerId(req.body);
 
   return res.status(200).json({
-    message: "Product Added Successfully",
+    message: "Sellet found Successfully",
     products,
   });
 };
 
-export const getProductByCategory = async (req: Request, res: Response) => {
-  const products = await findProductByCategory(req.body);
-
-  return res.status(200).json({
-    message: "Product Added Successfully",
-    products,
-  });
-};
-
-export const getReviewsForProduct = async (req: Request, res: Response) => {
+export const getReviewsForProduct = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
   const productReviews = await getAllReviewsForProduct(req.body);
 
   return res.status(200).json({
@@ -78,21 +70,19 @@ export const getReviewsForProduct = async (req: Request, res: Response) => {
   });
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
-  try {
-    const updateProduct = await patchProduct(req.body);
+export const updateProduct = async (req: Request<UpdateProductInput["params"], {}, UpdateProductInput["body"]>, res: Response) => {
+  const { id } = req.params;
+  const updateProduct = await patchProduct(id, req.body);
 
-    return res.status(200).json({
-      message: "Product Updated Successfully",
-      updateProduct,
-    });
-  } catch (e: any) {
-    throw new Error(e.message);
-  }
+  return res.status(200).json({
+    message: "Product Updated Successfully",
+    updateProduct,
+  });
 };
 
-export const deleteProduct = async (req: Request, res: Response) => {
-  const deletedProduct = await removeProduct(req.body);
+export const deleteProduct = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
+  const { id } = req.params;
+  const deletedProduct = await removeProduct(id);
 
   return res.status(200).json({
     message: "Product Deleted Successfully",

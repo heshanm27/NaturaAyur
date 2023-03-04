@@ -4,7 +4,6 @@ import {
   getAllProductList,
   getOneProductDetails,
   getReviewsForProduct,
-  getProductByCategory,
   getOneSellerProductList,
   updateProduct,
   deleteProduct,
@@ -17,7 +16,7 @@ const Router = express.Router();
 Router.route("/").get(validateSchema(getAllProductListSchema), getAllProductList).post(validateSchema(addProdutSchema), addNewProduct);
 
 //paramterized routes
-Router.route("/:id").get(getOneProductDetails).patch(updateProduct).delete(deleteProduct).post(getProductByCategory);
+Router.route("/:id").get(getOneProductDetails).patch(updateProduct).delete(deleteProduct);
 Router.route("/reviews/:id").get(getReviewsForProduct);
 Router.route("/seller/:id").get(getOneSellerProductList);
 export default Router;

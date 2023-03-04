@@ -12,16 +12,25 @@ interface IFilters {
   subCat?: string[];
 }
 
-export async function addProduct(input: AddProductInput) {
+export async function addProduct(input: AddProductInput["body"]) {
   const product = await ProductSchema.create(input);
   return product;
 }
 
-export async function patchProduct(input: UpdateProductInput) {
-  const updateProduct = await ProductSchema.findByIdAndUpdate(input.id, input, {
-    new: true,
-    runValidators: true,
-  });
+export async function patchProduct(id: string, { subCategory, reviews, ...input }: UpdateProductInput["body"]) {
+  const updateProduct = await ProductSchema.findByIdAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $addToSet: { subCategory, reviews },
+      $set: { ...input },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   if (!updateProduct) {
     throw new BadRequestError("Product not found");
@@ -30,8 +39,8 @@ export async function patchProduct(input: UpdateProductInput) {
   return updateProduct;
 }
 
-export async function removeProduct(input: any) {
-  const deletedProduct = await ProductSchema.findByIdAndDelete(input.id);
+export async function removeProduct(id: string) {
+  const deletedProduct = await ProductSchema.findByIdAndDelete(id);
 
   if (!deletedProduct) {
     throw new BadRequestError("Product not found");
@@ -77,35 +86,27 @@ export async function findAllProducts({ search = "", sortBy = "createdAt", order
   return { products, total };
 }
 
-export async function findProductById(input: any) {
-  const product = await ProductSchema.findById(input.id);
+export async function findProductById(id: string) {
+  const product = await ProductSchema.findById(id);
   if (!product) {
     throw new BadRequestError("Product not found");
   }
 
   return product;
 }
-export async function findProductBySellerId(input: any) {
-  const products = await ProductSchema.find({ sellerId: input.sellerId });
+export async function findProductBySellerId(id: string) {
+  const products = await ProductSchema.find({ sellerId: id });
   if (!products) {
-    throw new BadRequestError("Product not found");
+    throw new BadRequestError("Products not found");
   }
   return products;
 }
 
-export async function findProductByCategory(input: any) {
-  const products = await ProductSchema.find({ category: input.category });
-  if (!products) {
-    throw new BadRequestError("Product not found");
-  }
-  return products;
-}
-
-export async function getAllReviewsForProduct(input: any) {
-  const produtReviews = await ProductSchema.findById(input.id).populate("reviews");
+export async function getAllReviewsForProduct(id: string) {
+  const produtReviews = await ProductSchema.findById(id).populate("reviews");
 
   if (!produtReviews) {
-    throw new BadRequestError("Product not found");
+    throw new BadRequestError("Product reviews not found");
   }
 
   return produtReviews;

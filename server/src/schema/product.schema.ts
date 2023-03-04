@@ -1,7 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { any, array, number, object, string, TypeOf, union } from "zod";
 
-export const addProdutSchema = object({
+const BodyPayload = {
   body: object({
     name: string({
       required_error: "Product name is required",
@@ -28,33 +28,22 @@ export const addProdutSchema = object({
     }).min(5, { message: "Category must be at least 5 characters" }),
     subCategory: array(string({})).nonempty({ message: "Subcategory must be at least 1 item" }),
     images: array(string({})).nonempty({ message: "1 or more images need to add " }).optional(),
+    reviews: array(string({}).refine((data) => isValidObjectId(data), { message: "review ID must be a valid Id" })).optional(),
     seller: string({
       required_error: "Product seller is required",
     })
       .min(2, { message: "Seller must be at least 2 characters" })
       .refine((data) => isValidObjectId(data), { message: "Seller must be a valid Id" }),
   }),
-});
+};
 
-export type AddProductInput = TypeOf<typeof addProdutSchema>;
+const ParamsPayload = {
+  params: object({
+    id: string({ required_error: "Product id is required" }).refine((data) => isValidObjectId(data), { message: "Id must be a valid Id" }),
+  }),
+};
 
-export const updateProductSchema = addProdutSchema.partial().extend({
-  id: string({}).refine((data) => isValidObjectId(data), { message: "Id must be a valid Id" }),
-});
-
-export type UpdateProductInput = TypeOf<typeof updateProductSchema>;
-
-export const deleteProductSchema = object({
-  id: string({
-    required_error: "Product id is required",
-  })
-    .min(2, { message: "Id must be at least 2 characters" })
-    .refine((data) => isValidObjectId(data), { message: "Id must be a valid Id" }),
-});
-
-export type DeleteProductInput = TypeOf<typeof deleteProductSchema>;
-
-export const getAllProductListSchema = object({
+const QueryPayload = {
   query: object({
     search: string({}).optional(),
     sortBy: string({}).optional(),
@@ -64,6 +53,29 @@ export const getAllProductListSchema = object({
     cat: string({}).optional(),
     subCat: union([string({}), array(string({}))]).optional(),
   }),
+};
+
+export const addProdutSchema = object({
+  ...BodyPayload,
+});
+
+export type AddProductInput = TypeOf<typeof addProdutSchema>;
+
+export const updateProductSchema = object({
+  ...BodyPayload,
+  ...ParamsPayload,
+});
+
+export type UpdateProductInput = TypeOf<typeof updateProductSchema>;
+
+export const getAllProductListSchema = object({
+  ...QueryPayload,
 });
 
 export type GetAllProductListInput = TypeOf<typeof getAllProductListSchema>;
+
+export const defaultParamsProductSchema = object({
+  ...ParamsPayload,
+});
+
+export type DefaultParamsInput = TypeOf<typeof defaultParamsProductSchema>;
