@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 import cors from "cors";
 import "./util/passport-config.util";
-
+import cookieParser from "cookie-parser";
 const app: Express = express();
 
 //cors oprions
@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
-
+app.use(cookieParser());
 const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();

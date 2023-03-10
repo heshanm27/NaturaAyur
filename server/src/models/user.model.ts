@@ -2,6 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 export interface IUser {
+  _id?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -9,6 +10,7 @@ export interface IUser {
   avatar: string;
   isVerified: boolean;
   isAdmin: boolean;
+  refreshToken: string;
   isSeller: boolean;
   seller: {
     storeName: string;
@@ -57,6 +59,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
+    refreshToken: { type: String },
     avatar: { type: String },
     isAdmin: { type: Boolean, default: false },
     isSeller: { type: Boolean, default: false },
@@ -103,7 +106,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.generateJWTToken = function () {
-  return JWT.sign({ id: this._id, isAdmin: this.isAdmin, isSeller: this.isSeller }, process.env.JWT_SECRET!, { expiresIn: "10d" });
+  return JWT.sign({ id: this._id, isAdmin: this.isAdmin, isSeller: this.isSeller }, process.env.JWT_SECRET!, { expiresIn: "10s" });
 };
 
 UserSchema.statics.login = async function (email, password): Promise<string> {
@@ -111,6 +114,7 @@ UserSchema.statics.login = async function (email, password): Promise<string> {
   if (user) {
     const auth = await bcrypt.compare(password, user.password);
     if (auth) {
+      await this.updateOne({ email }, { refreshToken: JWT.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "10d" }) });
       return user.generateJWTToken();
     }
     throw Error("Incorrect Credentials");

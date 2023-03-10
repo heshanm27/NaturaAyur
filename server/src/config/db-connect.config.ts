@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import logger from "./logger.config";
 
+const mongooseOptions: mongoose.ConnectOptions = {};
+
 async function connect() {
   mongoose.set("strictQuery", false);
   await mongoose.connect(process.env.MONGOURL ?? "", {});

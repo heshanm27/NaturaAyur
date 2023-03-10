@@ -27,20 +27,20 @@ export const userSignUp = async (req: Request<{}, {}, CreateUserSignUpInput["bod
 };
 
 export const userSignIn = async (req: Request<{}, {}, CreateUserSignInInput["body"]>, res: Response, next: NextFunction) => {
-  passport.authenticate("local", (err: any, user: any) => {
+  passport.authenticate("local", (err: any, token: any) => {
     if (err)
       return res.status(400).json({
         message: err.message,
       });
 
-    if (!user) {
+    if (!token) {
       return res.status(400).json({
         message: "",
       });
     }
+    res.cookie("token", token, { httpOnly: true });
     return res.status(200).json({
       message: "User Logged In Successfully",
-      token: user,
     });
   })(req, res, next);
 };

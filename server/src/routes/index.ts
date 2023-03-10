@@ -9,6 +9,8 @@ import multerS3 from "multer-s3";
 import { v4 as uuidv4 } from "uuid";
 import NotFoundMiddleware from "../middleware/notfound.middleware";
 import ErrorHandlerMiddleware from "../middleware/errorhandler.middleware";
+import { validateUserRoleAndToken, UserRole } from "../middleware/auth.middleware";
+
 function routes(app: Express) {
   app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
@@ -43,7 +45,7 @@ function routes(app: Express) {
       files,
     });
   });
-  app.use("/api/v1/product", ProdutRoute);
+  app.use("/api/v1/product", validateUserRoleAndToken(UserRole.Admin), ProdutRoute);
   app.use("/api/v1/user", UserRoute);
   app.use("/api/v1/order", OrderRoute);
   app.use("/api/v1/auth", AuthRoute);
