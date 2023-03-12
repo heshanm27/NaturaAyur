@@ -1,6 +1,18 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
+import { genrateRefreshToken } from "../util/genrate-jwt-keys";
+import { UnAuthorized, BadRequestError } from "../errors";
+
+export enum ROLES {
+  ADMIN = 2000,
+  USER = 1500,
+  SELLER = 1900,
+}
+export interface IToken {
+  accessToken: string;
+  refreshToken: string;
+}
 export interface IUser {
   _id?: string;
   firstName: string;
@@ -9,9 +21,7 @@ export interface IUser {
   password: string;
   avatar: string;
   isVerified: boolean;
-  isAdmin: boolean;
-  refreshToken: string;
-  isSeller: boolean;
+  role: number;
   seller: {
     storeName: string;
     logo: string;
@@ -49,7 +59,7 @@ interface IUserMethod {
 }
 
 interface UserModel extends Model<IUser, {}, IUserMethod> {
-  login: (email: string, password: string) => Promise<string>;
+  login: (email: string, password: string) => Promise<IToken>;
 }
 
 const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
@@ -59,10 +69,8 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
-    refreshToken: { type: String },
     avatar: { type: String },
-    isAdmin: { type: Boolean, default: false },
-    isSeller: { type: Boolean, default: false },
+    role: { type: Number, enum: ROLES, default: ROLES.USER },
     seller: {
       name: { type: String },
       logo: { type: String },
@@ -106,20 +114,21 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.generateJWTToken = function () {
-  return JWT.sign({ id: this._id, isAdmin: this.isAdmin, isSeller: this.isSeller }, process.env.JWT_SECRET!, { expiresIn: "10s" });
+  return JWT.sign({ id: this._id, role: this.role, firstName: this.firstName, lastName: this.lastName, avatar: this.avatar }, process.env.JWT_SECRET!, {
+    expiresIn: "10s",
+  });
 };
 
-UserSchema.statics.login = async function (email, password): Promise<string> {
+UserSchema.statics.login = async function (email, password): Promise<IToken> {
   const user = await this.findOne({ email });
   if (user) {
-    const auth = await bcrypt.compare(password, user.password);
-    if (auth) {
-      await this.updateOne({ email }, { refreshToken: JWT.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "10d" }) });
-      return user.generateJWTToken();
+    const IsPasswordMatched = await bcrypt.compare(password, user.password);
+    if (IsPasswordMatched) {
+      return { refreshToken: genrateRefreshToken(user), accessToken: user.generateJWTToken() };
     }
-    throw Error("Incorrect Credentials");
+    throw new UnAuthorized("Incorrect Credentials");
   }
-  throw Error("User does not exist with this email");
+  throw new BadRequestError("User does not exist with this email");
 };
 
 export default mongoose.model<IUser, UserModel>("User", UserSchema);

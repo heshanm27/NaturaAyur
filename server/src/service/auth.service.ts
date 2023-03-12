@@ -1,5 +1,5 @@
-import UserSchema from "../models/user.model";
-import { BadRequestError, Unauthenticated } from "../errors/index";
+import UserSchema, { IToken } from "../models/user.model";
+import { BadRequestError, UnAuthorized } from "../errors/index";
 import JWT from "jsonwebtoken";
 
 export async function SignUp(input: any): Promise<string> {
@@ -14,10 +14,10 @@ export async function SignUp(input: any): Promise<string> {
   }
 }
 
-export async function SignIn(input: any): Promise<string> {
+export async function SignIn(input: any): Promise<IToken> {
   try {
     return await UserSchema.login(input.email, input.password);
   } catch (e: any) {
-    throw new Unauthenticated(e.message);
+    throw new UnAuthorized(e.message);
   }
 }

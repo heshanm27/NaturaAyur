@@ -4,8 +4,12 @@ import { SignUp } from "../service/auth.service";
 import { CreateUserSignInInput, CreateUserSignUpInput, ForgotPasswordInput } from "../schema/auth.schema";
 import { generateVerifiedEmailBody, generateResetPasswordEmailBody } from "../util/mail-html-body-gen";
 import { sendEmail } from "../util/send-mail";
-import { findUserByEmil } from "../service/user.service";
+import { findUserByEmil, findUserById } from "../service/user.service";
 import JWT from "jsonwebtoken";
+import { IToken } from "../models/user.model";
+import { BadRequestError } from "../errors";
+import { genrateAccessToken } from "../util/genrate-jwt-keys";
+
 export const userSignUp = async (req: Request<{}, {}, CreateUserSignUpInput["body"]>, res: Response) => {
   try {
     const { email, password, firstName, lastName, address, avatar } = req.body;
@@ -27,7 +31,7 @@ export const userSignUp = async (req: Request<{}, {}, CreateUserSignUpInput["bod
 };
 
 export const userSignIn = async (req: Request<{}, {}, CreateUserSignInInput["body"]>, res: Response, next: NextFunction) => {
-  passport.authenticate("local", (err: any, token: any) => {
+  passport.authenticate("local", (err: any, token: IToken) => {
     if (err)
       return res.status(400).json({
         message: err.message,
@@ -38,12 +42,41 @@ export const userSignIn = async (req: Request<{}, {}, CreateUserSignInInput["bod
         message: "",
       });
     }
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("refreshToken", token.refreshToken, { httpOnly: true });
+
     return res.status(200).json({
+      accessToken: token.accessToken,
       message: "User Logged In Successfully",
     });
   })(req, res, next);
 };
+
+export const issueNewAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+  const refreshToken = req.cookies.refreshToken;
+  console.log(refreshToken);
+  if (!refreshToken) throw new BadRequestError("Token not found");
+
+  try {
+    const { id }: any = JWT.verify(refreshToken, process.env.JWT_REFRESH_TOKEN!);
+
+    const user = await findUserById(id);
+
+    if (!user) throw new BadRequestError("User not found");
+
+    const accessToken = genrateAccessToken(user);
+
+    return res.status(200).json({
+      accessToken,
+      message: "New Access Token Issued",
+    });
+  } catch (e: any) {
+    if (e instanceof JWT.TokenExpiredError) {
+      throw new BadRequestError("Token Expired");
+    }
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {};
 
 export const forgotPassword = async (req: Request<{}, {}, ForgotPasswordInput>, res: Response) => {
   try {

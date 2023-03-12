@@ -6,9 +6,9 @@ import { Strategy as JWTStraegy, ExtractJwt as ExtractJWT } from "passport-jwt";
 const local = passport.use(
   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
     try {
-      const user = await SignIn({ email, password });
-      if (user) {
-        return done(null, user);
+      const token = await SignIn({ email, password });
+      if (token) {
+        return done(null, token);
       }
       return done(null, false);
     } catch (e: any) {
