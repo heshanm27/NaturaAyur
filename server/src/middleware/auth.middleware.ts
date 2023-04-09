@@ -35,7 +35,7 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
         next();
       }
       //check if the user has the required role
-      if (!requiredRole.includes(user.role)) {
+      if (!requiredRole.includes(user.role as ROLES)) {
         throw new UnAuthorized("You are not authorized to access this resource");
       }
       //attach the user to the request object

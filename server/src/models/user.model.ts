@@ -5,9 +5,9 @@ import { genrateRefreshToken } from "../util/genrate-jwt-keys";
 import { UnAuthorized, BadRequestError } from "../errors";
 
 export enum ROLES {
-  ADMIN = 2000,
-  USER = 1500,
-  SELLER = 1900,
+  ADMIN = "admin",
+  USER = "user",
+  SELLER = "seller",
 }
 export interface IToken {
   accessToken: string;
@@ -21,7 +21,7 @@ export interface IUser {
   password: string;
   avatar: string;
   isVerified: boolean;
-  role: number;
+  role: string;
   seller: {
     storeName: string;
     logo: string;
@@ -70,7 +70,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     avatar: { type: String },
-    role: { type: Number, enum: ROLES, default: ROLES.USER },
+    role: { type: String, enum: ROLES, default: ROLES.USER },
     seller: {
       name: { type: String },
       logo: { type: String },

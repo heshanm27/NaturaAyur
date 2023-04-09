@@ -65,7 +65,7 @@ export const getReviewsForProduct = async (req: Request<DefaultParamsInput["para
   const productReviews = await getAllReviewsForProduct(req.body);
 
   return res.status(200).json({
-    message: "Product Added Successfully",
+    message: "Reviews found Successfully",
     productReviews,
   });
 };
