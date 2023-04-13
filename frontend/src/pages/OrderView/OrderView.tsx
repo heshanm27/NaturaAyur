@@ -22,14 +22,14 @@ export default function OrderView() {
       </Stack>
       <Stack spacing={2} direction={onlyLargeScreen ? "column" : "row"} justifyContent="space-around" alignItems="start">
         <Stack direction="column" spacing={2}>
-          <SummaryCard width="1000px" height="450px" title="Order Detils" />
-          <SummaryCard width="1000px" height="290px" title="Customer And Order Details" />
+          <SummaryCard width="1000px" height="450px" />
+          <SummaryCard width="1000px" height="290px" />
         </Stack>
         <Stack direction="column" spacing={3}>
-          <SummaryCard width="500px" height="100px" title="CourierDetails" />
-          <SummaryCard width="500px" height="280px" title="Order Summary" />
-          <SummaryCard width="500px" height="60px" title="total" />
-          <SummaryCard width="500px" height="240px" title="total" />
+          <SummaryCard width="500px" height="100px" />
+          <SummaryCard width="500px" height="280px" />
+          <SummaryCard width="500px" height="60px" />
+          <SummaryCard width="500px" height="240px" />
         </Stack>
       </Stack>
     </Container>

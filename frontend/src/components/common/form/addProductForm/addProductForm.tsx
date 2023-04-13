@@ -1,5 +1,5 @@
-import { Box, Grid, IconButton, ImageList, ImageListItem, Paper, Stack, TextField, Typography, useTheme } from "@mui/material";
-import React, { useRef, useState } from "react";
+import { Box, Button, Grid, IconButton, ImageList, ImageListItem, Paper, Stack, TextField, Typography, useTheme } from "@mui/material";
+import React, { useRef, useState, useEffect } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { Editor } from "@tinymce/tinymce-react";
 import AsyncSelect from "react-select/async";
@@ -8,15 +8,40 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast, ToastContainer } from "react-toastify";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
 const options = [
   { value: "chocolate", label: "Chocolate" },
   { value: "strawberry", label: "Strawberry" },
   { value: "vanilla", label: "Vanilla" },
 ];
+
 export default function AddProductForm() {
   const theme = useTheme();
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
+
+  // Formik validation schema
+  const validationSchema = Yup.object().shape({
+    productName: Yup.string().required("Product Name is required"),
+    productPrice: Yup.number().required("Product Price is required").min(1, "Minimum value is 1").max(100000, "Maximum value is 100000"),
+    productQuantity: Yup.number().required("Product Quantity is required").min(1, "Minimum value is 0").max(10000, "Maximum value is 10000"),
+  });
+
+  // Formik form state and submission logic
+  const { handleSubmit, errors, handleBlur, handleChange } = useFormik({
+    initialValues: {
+      productName: "",
+      productPrice: 1,
+      productQuantity: 1,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      // Submit logic here
+      console.log(values);
+    },
+  });
 
   const { getRootProps, getInputProps, fileRejections } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
@@ -59,28 +84,64 @@ export default function AddProductForm() {
     updatedFiles.splice(index, 1);
     setSelectedFiles(updatedFiles);
   };
+
+  const handleEditorChange = (content: any, editor: any) => {
+    console.log("Content was updated:", content);
+  };
+
   return (
     <Paper sx={{ p: 2 }}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Stack direction={"column"} spacing={2}>
-              <TextField label="Product Name" />
-              <TextField label="Product Price" />
+              <TextField
+                label="Product Name"
+                name="productName"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                autoFocus={errors.productName ? true : false}
+                helperText={errors.productName ? errors.productName : null}
+                error={errors.productName ? true : false}
+              />
+              <TextField
+                label="Product Price"
+                name="productPrice"
+                type="number"
+                onChange={handleChange}
+                defaultValue={1}
+                onBlur={handleBlur}
+                autoFocus={errors.productPrice ? true : false}
+                helperText={errors.productPrice ? errors.productPrice : null}
+                error={errors.productPrice ? true : false}
+                inputProps={{ min: "1", max: "100000" }}
+              />
+              <TextField
+                type="number"
+                label="Product Quantity"
+                name="productQuantity"
+                defaultValue={1}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                autoFocus={errors.productQuantity ? true : false}
+                helperText={errors.productQuantity ? errors.productQuantity : null}
+                error={errors.productQuantity ? true : false}
+                inputProps={{ min: "0", max: "10000" }}
+              />
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Stack direction={"column"} spacing={2}>
               <Box>
                 <Typography>Select Main Categorey</Typography>
-                <Select options={options} />
+                <Select name="mainCategory" options={options} onChange={(value) => handleChange("mainCategory")} onBlur={handleBlur} />
               </Box>
               <Box>
                 <Typography>Select Sub Categorey</Typography>
                 <Select
                   defaultValue={[options[2], options[3]]}
                   isMulti
-                  name="colors"
+                  name="mainCategory"
                   options={options}
                   className="basic-multi-select"
                   classNamePrefix="select"
@@ -132,7 +193,12 @@ export default function AddProductForm() {
           </Grid>
           <Grid item xs={12} spacing={2}>
             <Typography>Product Description</Typography>
-            <Editor onInit={(evt, editor) => (editorRef!.current = editor)} />
+            <Editor onInit={(evt, editor) => (editorRef!.current = editor)} onChange={handleEditorChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
           </Grid>
         </Grid>
       </form>

@@ -2,6 +2,8 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import authSlice from "./authslice";
+import cartslice from "./cartslice";
 
 const persistConfig = {
   key: "dynamic",
@@ -9,7 +11,10 @@ const persistConfig = {
   storage,
 };
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  auth: authSlice,
+  cart: cartslice,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

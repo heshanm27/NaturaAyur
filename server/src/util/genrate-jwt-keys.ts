@@ -12,7 +12,7 @@ const genrateAccessToken = (user: IUser) => {
       isVerified: user.isVerified,
     },
     process.env.JWT_SECRET!,
-    { expiresIn: "10m" }
+    { expiresIn: "7d" }
   );
 };
 

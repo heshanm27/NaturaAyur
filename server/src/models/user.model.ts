@@ -11,7 +11,11 @@ export enum ROLES {
 }
 export interface IToken {
   accessToken: string;
-  refreshToken: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+  isVerified: boolean;
 }
 export interface IUser {
   _id?: string;
@@ -124,7 +128,14 @@ UserSchema.statics.login = async function (email, password): Promise<IToken> {
   if (user) {
     const IsPasswordMatched = await bcrypt.compare(password, user.password);
     if (IsPasswordMatched) {
-      return { refreshToken: genrateRefreshToken(user), accessToken: user.generateJWTToken() };
+      return {
+        accessToken: user.generateJWTToken(),
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        isVerified: user.isVerified,
+      };
     }
     throw new UnAuthorized("Incorrect Credentials");
   }

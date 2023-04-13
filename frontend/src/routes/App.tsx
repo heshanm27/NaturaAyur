@@ -14,17 +14,28 @@ function App() {
   return (
     <Routes>
       <Route element={<SideDrawer />}>
-        {/* <Route element={<ProtectedRoute />}> */}
-        {/* <Route element={<RoleRoute allowedRoles={"admin"} />}> */}
-        <Route path="/home" element={<AddProduct />} />
-        {/* </Route> */}
-        {/* <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
-            <Route path="/home" element={<Home />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<RoleRoute allowedRoles={"admin"} />}>
+            <Route path="/admin/add" element={<AddProduct />} />
+            <Route path="/admin/orders/live" element={<Home />} />
+            <Route path="/admin/orders/history" element={<Home />} />
+          </Route>
+          <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
+            <Route path="/seller/add" element={<AddProduct />} />
+            <Route path="/products" element={<Home />} />
+            <Route path="/products:id" element={<Home />} />
+            <Route path="/products:id/edit" element={<Home />} />
+            <Route path="/seller/dashboard" element={<Home />} />
+            <Route path="/seller/orders" element={<Home />} />
+            <Route path="/seller/orders:id" element={<Home />} />
           </Route>
           <Route element={<RoleRoute allowedRoles={"admin" || "seller" || "user"} />}>
-            <Route path="/home" element={<Home />} />
-          </Route> */}
-        {/* </Route> */}
+            <Route path="/user/cart" element={<Home />} />
+            <Route path="/user/orders" element={<Home />} />
+            <Route path="/user/orders:id" element={<Home />} />
+            <Route path="/user/profile" element={<Home />} />
+          </Route>
+        </Route>
         <Route path="/liveorder" element={<LiveOrder />} />
         <Route path="/orderview" element={<OrderView />} />
         <Route path="/add" element={<AddProduct />} />

@@ -1,17 +1,15 @@
 import { Box, Paper, Typography } from "@mui/material";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface Iprop {
-  title: string;
   width: string;
   height: string;
+  children?: ReactNode;
 }
-export default function SummaryCard({ title, height, width }: Iprop) {
+export default function SummaryCard({ height, width, children }: Iprop) {
   return (
     <Paper>
-      <Box sx={{ width: width, height: height }}>
-        <Typography>{title}</Typography>
-      </Box>
+      <Box sx={{ width: width, height: height }}>{children}</Box>
     </Paper>
   );
 }

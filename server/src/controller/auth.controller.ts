@@ -42,10 +42,8 @@ export const userSignIn = async (req: Request<{}, {}, CreateUserSignInInput["bod
         message: "",
       });
     }
-    res.cookie("refreshToken", token.refreshToken, { httpOnly: true });
-
     return res.status(200).json({
-      accessToken: token.accessToken,
+      ...token,
       message: "User Logged In Successfully",
     });
   })(req, res, next);

@@ -127,9 +127,9 @@ export default function LiveOrder() {
     <Container maxWidth="xl" sx={{ p: 2 }}>
       <Typography sx={{ mt: 5 }}>Live Order</Typography>
       <Stack sx={{ mt: 5 }} direction={"row"} justifyContent={"space-between"} spacing={5}>
-        <SummaryCard title="Totla ORder" height="180px" width="400px" />
-        <SummaryCard title="TPending ORder" height="180px" width="400px" />
-        <SummaryCard title="New ORder" height="180px" width="400px" />
+        <SummaryCard height="180px" width="400px" />
+        <SummaryCard height="180px" width="400px" />
+        <SummaryCard height="180px" width="400px" />
       </Stack>
       <Typography sx={{ mt: 5, mb: 5 }}>Order</Typography>
       <MaterialReactTable columns={columns} data={data} />
