@@ -7,11 +7,24 @@ interface CartState {
 }
 
 const initialState: CartState = {
-  items: [],
+  items: [
+    {
+      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
+    },
+    {
+      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
+    },
+    {
+      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
+    },
+    {
+      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
+    },
+  ],
   total: 0,
 };
 
-const cartSlice = createSlice({
+export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
@@ -52,6 +65,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
-
 export default cartSlice.reducer;
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;

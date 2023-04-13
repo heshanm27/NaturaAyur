@@ -12,6 +12,9 @@ import AddProduct from "../pages/AddProduct/AddProduct";
 import { ThemeProvider, createTheme } from "@mui/material";
 import ProductView from "../pages/UserArea/ProductView/ProductView";
 import ProductListView from "../pages/UserArea/ProductListView/ProductListView";
+import SignIn from "../pages/SignIn/Signin";
+import SellerSignUp from "../pages/SignUp/SellerSignUp";
+import SignUp from "../pages/SignUp/SignUp";
 
 function App() {
   const theme = createTheme({
@@ -55,12 +58,14 @@ function App() {
           <Route path="/orderview" element={<OrderView />} />
           <Route path="/add" element={<AddProduct />} />
         </Route>
-        <Route path="/home" element={<Home />} />
-        <Route path="/ss" element={<HomeView />} />
-        <Route path="/" element={<CartView />} />
+        <Route path="/" element={<HomeView />} />
+        <Route path="/cart" element={<CartView />} />
         <Route path="/pro" element={<ProductView />} />
         <Route path="/list" element={<ProductListView />} />
         <Route path="/s" element={<OrderView />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/register/seller" element={<SellerSignUp />} />
       </Routes>
     </ThemeProvider>
   );

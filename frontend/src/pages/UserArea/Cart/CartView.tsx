@@ -220,7 +220,7 @@ export default function CartView() {
               </Box>
             </Paper>
           </Stack>
-          <Stack direction="column" spacing={3}>
+          <Stack direction="column" justifyContent={"center"} alignItems={"center"} alignContent={"center"} spacing={3}>
             <SummaryCard width="400px" height="100px">
               <Box sx={{ p: 2 }}>
                 <Typography variant="h6" color={theme.palette.primary.main}>
