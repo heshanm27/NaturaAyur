@@ -104,7 +104,7 @@ interface DeliveryProps {
 const DeliveryDetails: React.FC<DeliveryProps> = ({ deliveryAddress }) => {
   return (
     <Box p={2} border={1} borderColor="grey.300" borderRadius={4}>
-      <Typography variant="subtitle1">Delivery Address</Typography>
+      <Typography variant="h6">Delivery Address</Typography>
       <Divider />
       <Box mt={2}>
         <Typography variant="body1">
@@ -148,9 +148,9 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ maxHeight: "800px", overflowY: "auto" }}>
       <Table>
-        <TableHead>
+        <TableHead style={{ position: "sticky", top: 0, background: "white", zIndex: 1 }}>
           <TableRow>
             <TableCell>Item</TableCell>
             <TableCell align="right">Price</TableCell>
@@ -206,9 +206,10 @@ export default function CartView() {
     <>
       <Navbar />
       <Container maxWidth="lg">
-        <Typography sx={{ p: 5 }} variant="h5" align="left">
+        <Typography sx={{ pl: 5, pr: 5 }} variant="h5" align="left" color={theme.palette.primary.main}>
           Your Cart
         </Typography>
+        <Divider sx={{ mb: 2, mt: 2 }} />
         <Stack spacing={2} direction={onlyLargeScreen ? "column" : "row"} justifyContent="space-around" alignItems="start">
           <Stack direction="column">
             <Paper>
@@ -222,7 +223,9 @@ export default function CartView() {
           <Stack direction="column" spacing={3}>
             <SummaryCard width="400px" height="100px">
               <Box sx={{ p: 2 }}>
-                <Typography>Select Courier</Typography>
+                <Typography variant="h6" color={theme.palette.primary.main}>
+                  Select Courier
+                </Typography>
                 <Divider />
                 <Stack direction="row" justifyContent="left" alignItems="center" spacing={2}>
                   <img

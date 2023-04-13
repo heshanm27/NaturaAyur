@@ -9,42 +9,60 @@ import HomeView from "../pages/UserArea/HomeView/HomeView";
 import Navbar from "../components/common/navbar/navbar";
 import CartView from "../pages/UserArea/Cart/CartView";
 import AddProduct from "../pages/AddProduct/AddProduct";
+import { ThemeProvider, createTheme } from "@mui/material";
+import ProductView from "../pages/UserArea/ProductView/ProductView";
+import ProductListView from "../pages/UserArea/ProductListView/ProductListView";
 
 function App() {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: "#3ccb5c",
+      },
+      secondary: {
+        main: "#3ccb5c",
+      },
+    },
+  });
+
   return (
-    <Routes>
-      <Route element={<SideDrawer />}>
-        <Route element={<ProtectedRoute />}>
-          <Route element={<RoleRoute allowedRoles={"admin"} />}>
-            <Route path="/admin/add" element={<AddProduct />} />
-            <Route path="/admin/orders/live" element={<Home />} />
-            <Route path="/admin/orders/history" element={<Home />} />
+    <ThemeProvider theme={theme}>
+      <Routes>
+        <Route element={<SideDrawer />}>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<RoleRoute allowedRoles={"admin"} />}>
+              <Route path="/admin/add" element={<AddProduct />} />
+              <Route path="/admin/orders/live" element={<Home />} />
+              <Route path="/admin/orders/history" element={<Home />} />
+            </Route>
+            <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
+              <Route path="/seller/add" element={<AddProduct />} />
+              <Route path="/products" element={<Home />} />
+              <Route path="/products:id" element={<Home />} />
+              <Route path="/products:id/edit" element={<Home />} />
+              <Route path="/seller/dashboard" element={<Home />} />
+              <Route path="/seller/orders" element={<Home />} />
+              <Route path="/seller/orders:id" element={<Home />} />
+            </Route>
+            <Route element={<RoleRoute allowedRoles={"admin" || "seller" || "user"} />}>
+              <Route path="/user/cart" element={<Home />} />
+              <Route path="/user/orders" element={<Home />} />
+              <Route path="/user/orders:id" element={<Home />} />
+              <Route path="/user/profile" element={<Home />} />
+            </Route>
           </Route>
-          <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
-            <Route path="/seller/add" element={<AddProduct />} />
-            <Route path="/products" element={<Home />} />
-            <Route path="/products:id" element={<Home />} />
-            <Route path="/products:id/edit" element={<Home />} />
-            <Route path="/seller/dashboard" element={<Home />} />
-            <Route path="/seller/orders" element={<Home />} />
-            <Route path="/seller/orders:id" element={<Home />} />
-          </Route>
-          <Route element={<RoleRoute allowedRoles={"admin" || "seller" || "user"} />}>
-            <Route path="/user/cart" element={<Home />} />
-            <Route path="/user/orders" element={<Home />} />
-            <Route path="/user/orders:id" element={<Home />} />
-            <Route path="/user/profile" element={<Home />} />
-          </Route>
+          <Route path="/liveorder" element={<LiveOrder />} />
+          <Route path="/orderview" element={<OrderView />} />
+          <Route path="/add" element={<AddProduct />} />
         </Route>
-        <Route path="/liveorder" element={<LiveOrder />} />
-        <Route path="/orderview" element={<OrderView />} />
-        <Route path="/add" element={<AddProduct />} />
-      </Route>
-      <Route path="/home" element={<Home />} />
-      <Route path="/ss" element={<HomeView />} />
-      <Route path="/" element={<CartView />} />
-      <Route path="/s" element={<OrderView />} />
-    </Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/ss" element={<HomeView />} />
+        <Route path="/" element={<CartView />} />
+        <Route path="/pro" element={<ProductView />} />
+        <Route path="/list" element={<ProductListView />} />
+        <Route path="/s" element={<OrderView />} />
+      </Routes>
+    </ThemeProvider>
   );
 }
 

@@ -17,7 +17,7 @@ export default function Navbar() {
     <>
       <AppBar color="inherit" position="fixed" elevation={0}>
         <Toolbar>
-          <Container maxWidth="lg" sx={{ height: "40px", display: "flex", justifyContent: "space-between", alignContent: "baseline" }}>
+          <Container maxWidth="xl" sx={{ height: "40px", display: "flex", justifyContent: "space-between", alignContent: "baseline" }}>
             <img src={Logo} alt="logo" style={{ width: "100px", height: "60px" }} />
             <Box>
               <TextField
