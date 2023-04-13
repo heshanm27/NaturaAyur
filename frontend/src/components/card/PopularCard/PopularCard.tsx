@@ -12,7 +12,7 @@ export default function PopularCard() {
             width: 150,
             height: 150,
             "&:hover": {
-              border: "1px solid grey",
+              boxShadow: " 20px 20px 40px rgba(0, 0, 0, 0.2)",
             },
           }}
         />

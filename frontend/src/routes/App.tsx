@@ -7,27 +7,32 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import HomeView from "../pages/UserArea/HomeView/HomeView";
 import Navbar from "../components/common/navbar/navbar";
+import CartView from "../pages/UserArea/Cart/CartView";
+import AddProduct from "../pages/AddProduct/AddProduct";
 
 function App() {
   return (
     <Routes>
       <Route element={<SideDrawer />}>
-        <Route element={<ProtectedRoute />}>
-          <Route element={<RoleRoute allowedRoles={"admin"} />}>
-            <Route path="/home" element={<Home />} />
-          </Route>
-          <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
+        {/* <Route element={<ProtectedRoute />}> */}
+        {/* <Route element={<RoleRoute allowedRoles={"admin"} />}> */}
+        <Route path="/home" element={<AddProduct />} />
+        {/* </Route> */}
+        {/* <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
             <Route path="/home" element={<Home />} />
           </Route>
           <Route element={<RoleRoute allowedRoles={"admin" || "seller" || "user"} />}>
             <Route path="/home" element={<Home />} />
-          </Route>
-        </Route>
+          </Route> */}
+        {/* </Route> */}
+        <Route path="/liveorder" element={<LiveOrder />} />
+        <Route path="/orderview" element={<OrderView />} />
+        <Route path="/add" element={<AddProduct />} />
       </Route>
       <Route path="/home" element={<Home />} />
-      <Route path="/" element={<HomeView />} />
+      <Route path="/ss" element={<HomeView />} />
+      <Route path="/" element={<CartView />} />
       <Route path="/s" element={<OrderView />} />
-      <Route path="/liveorder" element={<LiveOrder />} />
     </Routes>
   );
 }
