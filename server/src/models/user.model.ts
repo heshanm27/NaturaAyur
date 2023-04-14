@@ -127,6 +127,7 @@ UserSchema.statics.login = async function (email, password): Promise<IToken> {
   const user = await this.findOne({ email });
   if (user) {
     const IsPasswordMatched = await bcrypt.compare(password, user.password);
+    console.log("IsPasswordMatched", IsPasswordMatched);
     if (IsPasswordMatched) {
       return {
         accessToken: user.generateJWTToken(),

@@ -10,11 +10,11 @@ const apiClient = axios.create({
   },
 });
 
-const excludedEndpoints: string[] = ["/auth/login", "/auth/signup"]; // List of excluded endpoints
+const excludedEndpoints: string[] = ["/auth/signIn", "/auth/signup"]; // List of excluded endpoints
 apiClient.interceptors.request.use((config) => {
   // Check if the request URL matches any of the excluded endpoints
   if (!excludedEndpoints.some((endpoint) => config.url?.includes(endpoint))) {
-    config.headers.Authorization = `Bearer ${store.getState().authSlice.access_token}`;
+    config.headers.Authorization = `Bearer ${store.getState().authSlice.accessToken}`;
   }
   return config;
 });
@@ -24,7 +24,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log("Error: interceptor Token Expired", store.getState().authSlice.access_token);
+    console.log("Error: interceptor Token Expired", store.getState().authSlice.accessToken);
     console.log("Error: interceptor");
     if (error.response.status === 401) {
       // Remove the current token from the Redux store by dispatching a Redux action

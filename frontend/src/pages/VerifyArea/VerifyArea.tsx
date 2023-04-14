@@ -51,7 +51,7 @@ export default function VerifyArea() {
         <Paper sx={{ width: "500px", height: "200px", p: 4 }}>
           <Typography align="center">Verify Your Account</Typography>
           <Stack direction={"row"} spacing={2} sx={{ mt: 5 }}>
-            <Button variant="outlined" fullWidth onClick={() => navigate("/")}>
+            <Button variant="outlined" fullWidth onClick={() => navigate("/", { replace: true })}>
               Cancle
             </Button>
             <Button variant="contained" fullWidth onClick={hadnleClick}>

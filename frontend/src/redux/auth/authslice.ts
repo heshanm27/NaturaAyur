@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface AuthState {
   isLoggedIn: boolean;
-  access_token: string;
+  accessToken: string;
   firstName: string;
   role: string;
   message: string;
@@ -10,14 +10,14 @@ export interface AuthState {
 }
 
 export interface LoginResponse {
-  access_token: string;
+  accessToken: string;
   firstName: string;
   role: string;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
-  access_token: "",
+  accessToken: "",
   firstName: "",
   role: "",
   message: "",
@@ -27,8 +27,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    setLoginResponse: (state, action) => {
-      state.access_token = action.payload.access_token;
+    login: (state, action) => {
+      state.accessToken = action.payload.accessToken;
       state.firstName = action.payload.firstName;
       state.role = action.payload.role;
       state.logOutMessage = "";
@@ -42,7 +42,7 @@ export const authSlice = createSlice({
       state.logOutMessage = "";
     },
     logOut: (state, action) => {
-      state.access_token = "";
+      state.accessToken = "";
       state.firstName = "";
       state.role = "";
       state.logOutMessage = action.payload;
@@ -52,4 +52,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { setLoginResponse, logOut, setMessage, clearMessage } = authSlice.actions;
+export const { login, logOut, setMessage, clearMessage } = authSlice.actions;
