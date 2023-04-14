@@ -1,51 +1,61 @@
 import { ListItemButton, ListItemText, Tooltip, Typography, ListItem, ListItemIcon, useTheme, Stack } from "@mui/material";
 import { pascalCase } from "change-case";
 import { ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 type CustomLinkProps = {
   label: string;
-  handleClick: () => void;
   icon: ReactNode;
+  activeIcon: ReactNode;
   drawerStatus: boolean;
+  path: string;
 };
-export default function CustomLink({ drawerStatus, label, icon, handleClick }: CustomLinkProps) {
+export default function CustomLink({ drawerStatus, label, icon, path, activeIcon }: CustomLinkProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const theme = useTheme();
+  const isActive = location.pathname === path;
+
+  const handleClick = () => {
+    navigate(path, { replace: true });
+  };
   return (
     <Tooltip title={label} placement="right" arrow>
       <ListItem
         sx={{
           p: 0,
           m: 1,
-          width: "auto",
+          mt: 2,
+          mb: 2,
+          width: "calc(100% - 16px)",
         }}
       >
         <ListItemButton
           sx={{
-            // backgroundColor: "#E9FBCD",
+            backgroundColor: isActive ? "#E9FBCD" : "",
             borderRadius: theme.spacing(1),
             display: "flex",
             justifyContent: "space-between",
           }}
-          onClick={handleClick}
+          onClick={() => handleClick()}
         >
           <Stack direction="row" justifyContent="center" alignItems="center" spacing={4}>
             <ListItemIcon
               sx={{
-                // color: "#66A700",
-                color: "#878787",
+                color: isActive ? "#66A700" : "#878787",
                 minWidth: "auto",
               }}
             >
-              {icon}
+              {isActive ? activeIcon : icon}
             </ListItemIcon>
             {drawerStatus ? (
               <ListItemText>
                 <Typography
                   sx={{
-                    // color: "#66A700"
-                    color: "#878787",
+                    color: isActive ? "#66A700" : "#878787",
                   }}
                 >
-                  {pascalCase(label)}
+                  {label}
                 </Typography>
               </ListItemText>
             ) : null}

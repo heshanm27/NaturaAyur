@@ -23,7 +23,9 @@ export default function Navbar() {
       <AppBar color="inherit" position="fixed" elevation={0}>
         <Toolbar>
           <Container maxWidth="xl" sx={{ height: "40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <img src={Logo} alt="logo" style={{ width: "100px", height: "60px" }} />
+            <Link href="/">
+              <img src={Logo} alt="logo" style={{ width: "60px", height: "50px" }} />
+            </Link>
             <Box sx={{ width: "50%" }}>
               <TextField
                 id="outlined-basic"
