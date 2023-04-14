@@ -47,7 +47,7 @@ export interface IUser {
     street: string;
     city: string;
     postalCode: string;
-    country: string;
+    provience: string;
   };
   paymentMethod: string;
   orders: [
@@ -97,7 +97,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
       street: { type: String },
       city: { type: String },
       postalCode: { type: String },
-      country: { type: String },
+      provience: { type: String },
     },
     paymentMethod: { type: String },
     orders: [

@@ -11,17 +11,16 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { Paper, useTheme } from "@mui/material";
-import { useFormik } from "formik";
+import { useFormik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import { ProvincesInSriLanka } from "../../assets/cosntant/constatn";
 import { useNavigate } from "react-router-dom";
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
-
+import FormLabel from "@mui/material/FormLabel";
+import CircularProgress from "@mui/material/CircularProgress";
+import { SignUpApiCall } from "../../api/authApi";
+import { ToastContainer, toast } from "react-toastify";
+import CustomSnackBar from "../../components/common/snackbar/Snackbar";
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -49,7 +48,14 @@ interface FormValues {
 export default function SignUp() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { errors, values, touched, handleChange, handleBlur, handleSubmit, setFieldValue } = useFormik<FormValues>({
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+
+  const { errors, values, touched, handleChange, handleBlur, handleSubmit, setFieldValue, resetForm } = useFormik<FormValues>({
     initialValues: {
       firstName: "",
       lastName: "",
@@ -78,6 +84,26 @@ export default function SignUp() {
     }),
     onSubmit: hadnleFormSubmit,
   });
+  const { mutate, isLoading, error } = useMutation({
+    mutationFn: SignUpApiCall,
+    onSuccess: (data) => {
+      setNotify({
+        isOpen: true,
+        message: data.message,
+        type: "success",
+        title: "Success",
+      });
+      resetForm();
+    },
+    onError: (error: any) => {
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: "error",
+        title: "Error",
+      });
+    },
+  });
   const [avatar, setAvatar] = useState<File | null>(null);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,9 +112,25 @@ export default function SignUp() {
     }
   };
 
-  function hadnleFormSubmit(values: FormValues) {
+  async function hadnleFormSubmit(values: FormValues, {}: FormikHelpers<FormValues>) {
     console.log(values);
+    await mutate({
+      phoneno: values.phoneno,
+      password: values.password,
+      email: values.email,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      address: {
+        street: values.street,
+        city: values.city,
+        provience: values.provience,
+        postalCode: values.postalCode,
+      },
+      avatar,
+      confirmPassword: values.confirmpassword,
+    });
   }
+
   console.log(errors);
   return (
     <Container component="main" maxWidth="sm">
@@ -226,19 +268,6 @@ export default function SignUp() {
                       {errors.provience}
                     </Typography>
                   )}
-
-                  {/* <TextField
-                    required
-                    fullWidth
-                    id="provience"
-                    label="Provience"
-                    name="provience"
-                    value={values.provience}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={Boolean(errors.provience)}
-                    helperText={errors.provience}
-                  /> */}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -302,11 +331,25 @@ export default function SignUp() {
                     helperText={errors.confirmpassword}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <FormLabel error={Boolean(error)}>
+                    {error && (
+                      <Typography variant="caption" align="center" color={theme.palette.error.main}>
+                        {error.message}
+                      </Typography>
+                    )}
+                  </FormLabel>
+                </Grid>
               </Grid>
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Sign Up
+                {!isLoading ? "Sign Up" : <CircularProgress color="inherit" />}
               </Button>
-              <Grid container justifyContent="flex-end">
+              <Grid container justifyContent="space-between">
+                <Grid item>
+                  <Link href="/register/seller" variant="body2">
+                    Register as Seller
+                  </Link>
+                </Grid>
                 <Grid item>
                   <Link href="/signin" variant="body2">
                     Already have an account? Sign in
@@ -318,6 +361,7 @@ export default function SignUp() {
           <Copyright sx={{ mt: 5 }} />
         </Paper>
       </Box>
+      <CustomSnackBar notify={notify} setNotify={setNotify} />
     </Container>
   );
 }

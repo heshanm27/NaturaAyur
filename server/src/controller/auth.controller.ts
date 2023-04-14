@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { SignUp } from "../service/auth.service";
-import { CreateUserSignInInput, CreateUserSignUpInput, ForgotPasswordInput } from "../schema/auth.schema";
+import { SignUp, VerifyUser } from "../service/auth.service";
+import { CreateUserSignInInput, ForgotPasswordInput } from "../schema/auth.schema";
 import { generateVerifiedEmailBody, generateResetPasswordEmailBody } from "../util/mail-html-body-gen";
 import { sendEmail } from "../util/send-mail";
 import { findUserByEmil, findUserById } from "../service/user.service";
@@ -10,9 +10,15 @@ import { IToken } from "../models/user.model";
 import { BadRequestError } from "../errors";
 import { genrateAccessToken } from "../util/genrate-jwt-keys";
 
-export const userSignUp = async (req: Request<{}, {}, CreateUserSignUpInput["body"]>, res: Response) => {
+export const userSignUp = async (req: any, res: Response) => {
   try {
-    const { email, password, firstName, lastName, address, avatar } = req.body;
+    console.log(req.body);
+    const { email, password, firstName, lastName, address } = req.body;
+    let avatar = "https://ds-nature-ayur.s3.ap-southeast-1.amazonaws.com/Default_pfp.svg.png";
+    if (req.files && req.files.length > 0) {
+      avatar = req.files[0].location;
+    }
+
     const token = await SignUp({ email, password, firstName, lastName, address, avatar });
     const emailBody = generateVerifiedEmailBody(firstName + " " + lastName, token);
     await sendEmail({
@@ -74,7 +80,24 @@ export const issueNewAccessToken = async (req: Request, res: Response, next: Nex
   }
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {};
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    console.log(token);
+    if (!token) throw new BadRequestError("Token not found");
+    await VerifyUser(token);
+    // res.redirect(`${process.env.FRONTEND}/signin`);
+    res.json({
+      message: "Email Verified",
+      redirectUrl: `/signin`,
+    });
+  } catch (e: any) {
+    console.log(e.message);
+    return res.status(400).json({
+      message: e.message,
+    });
+  }
+};
 
 export const forgotPassword = async (req: Request<{}, {}, ForgotPasswordInput>, res: Response) => {
   try {

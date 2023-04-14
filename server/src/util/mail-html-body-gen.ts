@@ -8,7 +8,7 @@ const mailGenerator = new Mailgen({
   },
 });
 
-const baseUrl = "http://localhost:3000";
+const baseUrl = process.env.FRONTEND || "http://localhost:3000";
 
 export function generateVerifiedEmailBody(userName: string, token: string) {
   return mailGenerator.generate({
@@ -20,7 +20,7 @@ export function generateVerifiedEmailBody(userName: string, token: string) {
         button: {
           color: "#22BC66", // Optional action button color
           text: "Confirm your account",
-          link: `${baseUrl}/api/v1/auth/verify-email?token=${token}`,
+          link: `${baseUrl}/verify/${token}`,
         },
       },
       outro: "Need help, contact us our support team ",

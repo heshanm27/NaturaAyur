@@ -21,3 +21,21 @@ export async function SignIn(input: any): Promise<IToken> {
     throw new UnAuthorized(e.message);
   }
 }
+
+export async function VerifyUser(token: string): Promise<void> {
+  try {
+    const value: any = JWT.verify(token, process.env.JWT_SECRET!);
+    console.log(value.id);
+    const user = await UserSchema.findById(value.id);
+
+    if (!user) throw new BadRequestError("User does not exist");
+    user.isVerified = true;
+    await user.save();
+  } catch (e: any) {
+    console.log(e);
+    if (e.name === "TokenExpiredError") {
+      throw new BadRequestError("Token Expired");
+    }
+    throw new BadRequestError("Invalid Token");
+  }
+}

@@ -15,6 +15,7 @@ import ProductListView from "../pages/UserArea/ProductListView/ProductListView";
 import SignIn from "../pages/SignIn/Signin";
 import SellerSignUp from "../pages/SignUp/SellerSignUp";
 import SignUp from "../pages/SignUp/SignUp";
+import VerifyArea from "../pages/VerifyArea/VerifyArea";
 
 function App() {
   const theme = createTheme({
@@ -66,6 +67,8 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/register/seller" element={<SellerSignUp />} />
+        <Route path="/verify/:token" element={<VerifyArea />} />
+        <Route path="/unauthorized" element={<Home />} />
       </Routes>
     </ThemeProvider>
   );
