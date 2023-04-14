@@ -5,14 +5,27 @@ import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useAppDispatch, useAppSelector } from "../../../redux/redux-hooks";
+import { pascalCase } from "change-case";
+import { logOut } from "../../../redux/auth/authslice";
+import { useNavigate } from "react-router-dom";
 
 export default function AvatarBtn() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { firstName, avatar } = useAppSelector((state) => state.authSlice);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const hadnleLogout = () => {
+    dispatch(logOut("logout"));
+    navigate("/signin", { replace: true });
     setAnchorEl(null);
   };
 
@@ -25,10 +38,10 @@ export default function AvatarBtn() {
         variant="text"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        startIcon={<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />}
+        startIcon={<Avatar alt="Remy Sharp" src={avatar} />}
         endIcon={<ArrowDropDownIcon />}
       >
-        Example User
+        {pascalCase(firstName) || "User"}
       </Button>
 
       <Menu
@@ -46,7 +59,7 @@ export default function AvatarBtn() {
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={hadnleLogout}>Logout</MenuItem>
       </Menu>
     </>
   );
