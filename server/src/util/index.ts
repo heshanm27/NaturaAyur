@@ -1,3 +1,3 @@
-import logger from "./logger.util";
+import logger from "../config/logger.config";
 
 export { logger };

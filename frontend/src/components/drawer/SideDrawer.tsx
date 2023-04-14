@@ -14,7 +14,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-const drawerWidth = 300;
+import { lime, lightGreen, green } from "@mui/material/colors";
+const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
   id: string | number;
@@ -41,13 +42,14 @@ export default function SideDrawer() {
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
+            mb: theme.mixins.toolbar,
             transition: theme.transitions.create("width", {
               easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
               duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
             }),
           }}
         >
-          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 2 }}>
+          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 1 }}>
             {!open ? (
               <Typography variant="h6" noWrap component="div">
                 NatureAyur
@@ -102,24 +104,26 @@ export default function SideDrawer() {
               <SegmentIcon />
             </IconButton>
           </Box>
-
-          <List sx={{ mt: 5 }}>
-            {[1, 2, 3, 4, 5].map((item, index) => {
-              return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
-            })}
-          </List>
+          <Box>
+            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {[1, 2, 3, 4, 5].map((item, index) => {
+                return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
+              })}
+            </List>
+          </Box>
         </Drawer>
         <Box
           component="main"
           sx={{
-            mt: 4,
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            backgroundColor: "#FAFCF7",
-            height: "96vh",
+            mt: "60px",
+            minHeight: "calc(100vh - 60px)",
+            backgroundColor: green["50"],
             overflowY: "hidden",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 0,
           }}
         >
-          <Toolbar />
           <Outlet />
         </Box>
       </Box>
