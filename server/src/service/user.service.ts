@@ -12,3 +12,8 @@ export async function findUserByEmil(email: string): Promise<IUser> {
   if (!user) throw new BadRequestError("No user found with this email");
   return user;
 }
+
+export async function getAllUsers(): Promise<IUser[]> {
+  const users = await UserSchema.find();
+  return users;
+}

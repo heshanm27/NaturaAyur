@@ -1,6 +1,6 @@
 import { Express, Request, Response } from "express";
 import ProdutRoute from "../routes/product.routes";
-import UserRoute from "../routes/order.routes";
+import UserRoute from "../routes/user.routes";
 import OrderRoute from "../routes/order.routes";
 import AuthRoute from "../routes/auth.routes";
 import CategoryRoute from "../routes/category.routes";

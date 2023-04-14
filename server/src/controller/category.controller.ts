@@ -9,12 +9,15 @@ import {
   UpdateCategoryInput,
   UpdateSubCategoryInput,
 } from "../schema/category.schema";
-
+import * as CategoryServices from "../service/category.service";
 const addNewCategory = async (req: Request<{}, {}, AddNewCategoryInput["body"]>, res: Response) => {};
 
 const addNewSubCategory = async (req: Request<AddNewSubCategoryInput["params"], {}, AddNewSubCategoryInput["body"]>, res: Response) => {};
 
-const getAllCategories = async (req: Request, res: Response) => {};
+const getAllCategories = async (req: Request, res: Response) => {
+  const categories = await CategoryServices.getAllCategories();
+  res.status(200).json({ categories });
+};
 
 const getOneCategory = async (req: Request<GetOneCategoryInput["params"], {}, {}>, res: Response) => {};
 

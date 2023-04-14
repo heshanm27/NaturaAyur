@@ -6,7 +6,6 @@ import LiveOrder from "../pages/LiveOrder/LiveOrder";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import HomeView from "../pages/UserArea/HomeView/HomeView";
-import Navbar from "../components/common/navbar/navbar";
 import CartView from "../pages/UserArea/Cart/CartView";
 import AddProduct from "../pages/AddProduct/AddProduct";
 import { ThemeProvider, createTheme } from "@mui/material";
@@ -16,6 +15,8 @@ import SignIn from "../pages/SignIn/Signin";
 import SellerSignUp from "../pages/SignUp/SellerSignUp";
 import SignUp from "../pages/SignUp/SignUp";
 import VerifyArea from "../pages/VerifyArea/VerifyArea";
+import CategoryPage from "../pages/AdminArea/Category/CategoryPage";
+import UserManagmentPage from "../pages/AdminArea/UserManagment/UserManagmentPage";
 
 function App() {
   const theme = createTheme({
@@ -38,8 +39,8 @@ function App() {
               <Route path="/admin/add" element={<AddProduct />} />
               <Route path="/admin/orders/live" element={<LiveOrder />} />
               <Route path="/admin/orders/history" element={<OrderView />} />
-              <Route path="/admin/categories" element={<OrderView />} />
-              <Route path="/admin/usermangment" element={<OrderView />} />
+              <Route path="/admin/categories" element={<CategoryPage />} />
+              <Route path="/admin/usermangment" element={<UserManagmentPage />} />
             </Route>
             <Route element={<RoleRoute allowedRoles={"admin" || "seller"} />}>
               <Route path="/seller/orders/live" element={<LiveOrder />} />

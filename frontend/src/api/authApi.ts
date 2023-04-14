@@ -1,6 +1,6 @@
 import apiClient from "./axios";
 
-interface SignUpValues {
+export interface SignUpValues {
   firstName: string;
   lastName: string;
   email: string;
@@ -11,7 +11,7 @@ interface SignUpValues {
     postalCode: string;
   };
   avatar?: File | null;
-  phoneno: string;
+  contactNo: string;
   password: string;
   confirmPassword: string;
 }

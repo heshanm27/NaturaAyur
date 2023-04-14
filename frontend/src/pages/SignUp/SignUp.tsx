@@ -117,7 +117,7 @@ export default function SignUp() {
   async function hadnleFormSubmit(values: FormValues, {}: FormikHelpers<FormValues>) {
     console.log(values);
     await mutate({
-      phoneno: values.phoneno,
+      contactNo: values.phoneno,
       password: values.password,
       email: values.email,
       firstName: values.firstName,
