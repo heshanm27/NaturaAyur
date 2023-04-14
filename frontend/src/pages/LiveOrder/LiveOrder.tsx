@@ -1,4 +1,7 @@
-import { Container, Stack, Typography } from "@mui/material";
+import { Container, Grid, Stack, Typography } from "@mui/material";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
 import React, { useMemo } from "react";
 import SummaryCard from "../../components/card/summarycard/summarycard";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
@@ -126,10 +129,45 @@ export default function LiveOrder() {
   return (
     <Container maxWidth="xl" sx={{ p: 2 }}>
       <Typography sx={{ mt: 5 }}>Live Order</Typography>
-      <Stack sx={{ mt: 5 }} direction={"row"} justifyContent={"space-between"} spacing={5}>
-        <SummaryCard height="180px" width="400px" />
-        <SummaryCard height="180px" width="400px" />
-        <SummaryCard height="180px" width="400px" />
+      <Stack
+        sx={{ mt: 5 }}
+        direction={"row"}
+        justifyContent={"space-between"}
+        spacing={5}
+      >
+        <SummaryCard height="180px" width="400px">
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <ListAltIcon fontSize="large" />
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant="h1">50</Typography>
+              <Typography variant="h5">Total Orders</Typography>
+            </Grid>
+          </Grid>
+        </SummaryCard>
+        <SummaryCard height="180px" width="400px">
+        <Grid container spacing={2}>
+            <Grid item xs={4}>
+            <PendingActionsIcon fontSize="large" />
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant="h1">20</Typography>
+              <Typography variant="h5">Pending Orders</Typography>
+            </Grid>
+          </Grid>
+        </SummaryCard>
+        <SummaryCard height="180px" width="400px">
+        <Grid container spacing={2}>
+            <Grid item xs={4}>
+            <FiberNewIcon fontSize="large" />
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant="h1">30</Typography>
+              <Typography variant="h5">New Orders</Typography>
+            </Grid>
+          </Grid>
+        </SummaryCard>
       </Stack>
       <Typography sx={{ mt: 5, mb: 5 }}>Order</Typography>
       <MaterialReactTable columns={columns} data={data} />
