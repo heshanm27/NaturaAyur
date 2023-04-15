@@ -3,16 +3,16 @@ import { useSelector } from "react-redux";
 import { useAppSelector } from "../redux/redux-hooks";
 
 interface RoleRouteProps {
-  allowedRoles: string;
+  allowedRoles: string[];
 }
 
 const ROLES = ["user", "seller", "admin"];
 
 export default function RoleRoute({ allowedRoles }: RoleRouteProps) {
   const { accessToken, role } = useAppSelector((state) => state.authSlice);
-
+  console.log("role", allowedRoles);
+  console.log("roles", ROLES.includes(role) && allowedRoles.includes(role));
   const location = useLocation();
-  console.log("RoleRoute -> location", location, role, allowedRoles);
   return ROLES.includes(role) && allowedRoles.includes(role) ? (
     <Outlet />
   ) : !accessToken ? (

@@ -1,8 +1,9 @@
 import { BadRequestError } from "../errors";
 import CategorySchema from "../models/category.model";
 
-const addNewCategory = async (input: string) => {
-  const category = await CategorySchema.create({ name: input });
+const addNewCategory = async (input: string, subCategory: string[]) => {
+  console.log(input, subCategory);
+  const category = await CategorySchema.create({ name: input, subCategory });
   return category;
 };
 const getAllCategories = async () => {
@@ -42,7 +43,7 @@ const updateSubCategory = async (id: string, input: string, subCategory: string)
 };
 
 const deleteSubCategory = async (id: string, subCategory: string) => {
-  const deletedCategory = await CategorySchema.findByIdAndUpdate(id, { $pull: { subCategory: subCategory } }, { new: true });
+  const deletedCategory = await CategorySchema.findByIdAndUpdate(id, { $pull: { subCategory } }, { new: true });
   return deletedCategory;
 };
 

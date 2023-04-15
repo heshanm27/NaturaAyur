@@ -2,6 +2,8 @@ import { ListItemButton, ListItemText, Tooltip, Typography, ListItem, ListItemIc
 import { pascalCase } from "change-case";
 import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../redux/redux-hooks";
+import { logOut } from "../../../redux/auth/authslice";
 type CustomLinkProps = {
   label: string;
   icon: ReactNode;
@@ -12,11 +14,15 @@ type CustomLinkProps = {
 export default function CustomLink({ drawerStatus, label, icon, path, activeIcon }: CustomLinkProps) {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const isActive = location.pathname === path;
 
   const handleClick = () => {
+    if (path === "/logout") {
+      dispatch(logOut("logged out"));
+      return;
+    }
     navigate(path, { replace: true });
   };
   return (

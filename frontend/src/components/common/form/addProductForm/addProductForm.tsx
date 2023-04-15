@@ -10,7 +10,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { toast, ToastContainer } from "react-toastify";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
+import { useQuery } from "@tanstack/react-query";
+import { fetchAllCategories, fetchSubCategory } from "../../../../api/categoryApi";
 const options = [
   { value: "chocolate", label: "Chocolate" },
   { value: "strawberry", label: "Strawberry" },
@@ -21,6 +22,10 @@ export default function AddProductForm() {
   const theme = useTheme();
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
+  const [mainCategoryOption, setMainCategoryOption] = useState<any>([]);
+  const [subCategoryOption, setSubCategoryOption] = useState<any>([]);
+  const [richText, setRichText] = useState<string>("");
+  const { data: categorey, error: categoreyError, isLoading: categoreyIsLoading } = useQuery({ queryKey: ["mainCategory"], queryFn: fetchAllCategories });
 
   // Formik validation schema
   const validationSchema = Yup.object().shape({
@@ -30,19 +35,21 @@ export default function AddProductForm() {
   });
 
   // Formik form state and submission logic
-  const { handleSubmit, errors, handleBlur, handleChange } = useFormik({
+  const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
       productName: "",
       productPrice: 1,
       productQuantity: 1,
+      mainCategory: "",
+      subCategory: [],
     },
     validationSchema,
     onSubmit: (values) => {
       // Submit logic here
-      console.log(values);
+      console.log("values ss", values);
     },
   });
-
+  console.log(subCategoryOption);
   const { getRootProps, getInputProps, fileRejections } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
     maxFiles: 6,
@@ -86,8 +93,20 @@ export default function AddProductForm() {
   };
 
   const handleEditorChange = (content: any, editor: any) => {
-    console.log("Content was updated:", content);
+    console.log("Content was updated:", editor.getContent());
+    setRichText(editor.getContent());
   };
+
+  useEffect(() => {
+    if (categorey) {
+      setMainCategoryOption(categorey?.categories.map((item: any) => ({ value: item._id, label: item.name })));
+    }
+    if (values.mainCategory) {
+      const foundCategory = categorey?.categories?.find((item: any) => item._id === values.mainCategory);
+
+      setSubCategoryOption(foundCategory?.subCategory?.map((item: any) => ({ value: item, label: item })));
+    }
+  }, [categorey, values]);
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -134,17 +153,29 @@ export default function AddProductForm() {
             <Stack direction={"column"} spacing={2}>
               <Box>
                 <Typography>Select Main Categorey</Typography>
-                <Select name="mainCategory" options={options} onChange={(value) => handleChange("mainCategory")} onBlur={handleBlur} />
+                <Select
+                  name="mainCategory"
+                  options={mainCategoryOption}
+                  // value={values.mainCategory}
+                  onChange={(option: any) => {
+                    console.log(values.mainCategory);
+                    setFieldValue("mainCategory", option.value);
+                  }}
+                  onBlur={handleBlur}
+                />
               </Box>
               <Box>
                 <Typography>Select Sub Categorey</Typography>
                 <Select
-                  defaultValue={[options[2], options[3]]}
                   isMulti
                   name="mainCategory"
-                  options={options}
+                  isDisabled={subCategoryOption?.length < 0 || !values?.mainCategory ? true : false}
+                  // value={values.subCategory}
+                  options={subCategoryOption}
+                  onChange={(item: any) => setFieldValue("subCategory", item)}
                   className="basic-multi-select"
                   classNamePrefix="select"
+                  onBlur={handleBlur}
                 />
               </Box>
             </Stack>

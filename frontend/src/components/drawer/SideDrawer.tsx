@@ -11,7 +11,8 @@ import { Outlet } from "react-router-dom";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { green } from "@mui/material/colors";
-
+import LogoutIcon from "@mui/icons-material/Logout";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { ADMIN_ROUTES, SELLER_ROUTES } from "./link-routes/link-Routes";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useAppSelector } from "../../redux/redux-hooks";
@@ -108,7 +109,7 @@ export default function SideDrawer() {
             </IconButton>
           </Box>
           <Box sx={{ mt: 5 }}>
-            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1 }}>
               {role === "admin"
                 ? ADMIN_ROUTES.map((item, index) => {
                     return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
@@ -116,6 +117,8 @@ export default function SideDrawer() {
                 : SELLER_ROUTES.map((item, index) => {
                     return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
                   })}
+              <Box sx={{ flexGrow: 1 }}></Box>
+              <CustomLink drawerStatus={open} label={"Logout"} path={"/logout"} activeIcon={<LogoutIcon />} key={"logout"} icon={<LogoutOutlinedIcon />} />
             </List>
           </Box>
         </Drawer>

@@ -1,6 +1,6 @@
-import { Box, Button, Container, IconButton, Tooltip, Typography, Chip } from "@mui/material";
-import React, { useMemo, useState } from "react";
-import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, Button, Container, IconButton, Tooltip, Typography, Chip, Select, FormControl, InputLabel, MenuItem } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import MaterialReactTable, { MRT_ColumnDef, MaterialReactTableProps } from "material-react-table";
 import { Edit } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 import CustomeDialog from "../../../components/common/CustomDialog/CustomDialog";
@@ -8,25 +8,34 @@ import AddCategoryForm from "../../../components/common/form/addCategoryForm/Add
 import { fetchAllUsers } from "../../../api/userApi";
 export default function UserManagmentPage() {
   const [open, setOpen] = useState(false);
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["categories"], queryFn: fetchAllUsers });
+  const { data, error, isLoading, isError, isSuccess } = useQuery({ queryKey: ["categories"], queryFn: fetchAllUsers });
+  const [tableData, setTableData] = useState<any>();
   console.log(data);
 
-  const columns = useMemo<MRT_ColumnDef[]>(
+  useEffect(() => {
+    if (isSuccess) {
+      setTableData(data);
+    }
+  }, [data]);
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
         accessorFn: (row: any) => row.firstName + " " + row.lastName, //access nested data with dot notation
         header: "First Name",
         enableGlobalFilter: true,
+        enableEditing: false,
       },
       {
         accessorKey: "email", //access nested data with dot notation
         header: "Email",
         enableGlobalFilter: true,
+        enableEditing: false,
       },
       {
         accessorKey: "isVerified", //access nested data with dot notation
         header: "Verified",
         enableGlobalFilter: true,
+        enableEditing: false,
         Cell: ({ renderedCellValue, row }: any) => {
           return row.original.isVerified ? <Chip label="Verified" color="primary" /> : <Chip label="Unverified" color="warning" />;
         },
@@ -35,12 +44,34 @@ export default function UserManagmentPage() {
         accessorKey: "role", //access nested data with dot notation
         header: "User Role",
         enableGlobalFilter: true,
+
+        Edit: ({ row, cell, column, table }) => {
+          console.log(cell);
+          return (
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={row.original?.role}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                }}
+                label="Role"
+              >
+                <MenuItem value={"user"}>User</MenuItem>
+                <MenuItem value={"seller"}>Seller</MenuItem>
+                <MenuItem value={"admin"}>Admin</MenuItem>
+              </Select>
+            </FormControl>
+          );
+        },
         Cell: ({ renderedCellValue, row }: any) => {
           switch (row.original.role) {
             case "admin":
               return <Chip label="Admin" color="error" />;
             case "seller":
-              return <Chip label="User" color="warning" />;
+              return <Chip label="Seller" color="warning" />;
             default:
               return <Chip label="User" color="primary" />;
           }
@@ -49,7 +80,15 @@ export default function UserManagmentPage() {
     ],
     []
   );
-  console.log("isLoading", isLoading);
+  const handleSaveRowEdits: MaterialReactTableProps<any>["onEditingRowSave"] = async ({ exitEditingMode, row, values }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    tableData[row.index] = values;
+    //send/receive api updates here
+    setTableData([...tableData]);
+
+    exitEditingMode();
+  };
+  console.log("tableData", tableData);
   return (
     <Container maxWidth="xl" sx={{ p: 2 }}>
       <Typography variant="h3" sx={{ mt: 5, mb: 5 }}>
@@ -68,15 +107,14 @@ export default function UserManagmentPage() {
           noRecordsToDisplay: "No records to display",
         }}
         enableEditing
-        onEditingRowSave={() => {}}
-        onEditingRowCancel={() => {}}
+        onEditingRowSave={handleSaveRowEdits}
         state={{
           isLoading,
           showAlertBanner: isError,
         }}
-        rowCount={data?.users?.length ?? 0}
+        rowCount={tableData?.users?.length ?? 0}
         columns={columns}
-        data={data?.users ?? []}
+        data={tableData?.users ?? []}
         muiToolbarAlertBannerProps={
           isError
             ? {
@@ -96,7 +134,7 @@ export default function UserManagmentPage() {
         )}
       />
       <CustomeDialog open={open} setOpen={setOpen} title={"Create new note"}>
-        <AddCategoryForm />
+        {/* <AddCategoryForm /> */}
       </CustomeDialog>
     </Container>
   );
