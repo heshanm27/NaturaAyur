@@ -17,7 +17,6 @@ export interface SignUpValues {
 }
 
 export const SignUpApiCall = async (data: SignUpValues) => {
-  console.log("apicall", data);
   try {
     const response = await apiClient.post("/auth/signUp", data, {
       headers: {

@@ -10,12 +10,16 @@ import {
 } from "../service/product.service";
 import { GetAllProductListInput, AddProductInput, UpdateProductInput, DefaultParamsInput } from "../schema/product.schema";
 
-export const addNewProduct = async (req: Request<{}, {}, AddProductInput["body"]>, res: Response) => {
-  const product = await addProduct(req.body);
-
+export const addNewProduct = async (req: Request, res: Response) => {
+  console.log("product body", req.body);
+  console.log("product file", req.files);
+  // const product = await addProduct(req.body);
+  // return res.status(200).json({
+  //   message: "Product Added Successfully",
+  //   product,
+  // });
   return res.status(200).json({
     message: "Product Added Successfully",
-    product,
   });
 };
 
