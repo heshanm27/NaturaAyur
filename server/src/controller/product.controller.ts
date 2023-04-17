@@ -8,18 +8,38 @@ import {
   getAllReviewsForProduct,
   findProductById,
 } from "../service/product.service";
-import { GetAllProductListInput, AddProductInput, UpdateProductInput, DefaultParamsInput } from "../schema/product.schema";
+import { GetAllProductListInput, UpdateProductInput, DefaultParamsInput } from "../schema/product.schema";
+import { gernateRandomUniqueCode } from "../util/genrate-product-code";
 
 export const addNewProduct = async (req: Request, res: Response) => {
-  console.log("product body", req.body);
-  console.log("product file", req.files);
-  // const product = await addProduct(req.body);
-  // return res.status(200).json({
-  //   message: "Product Added Successfully",
-  //   product,
-  // });
+  let imgArr: string[] = [];
+  const imageFiles: any = req.files;
+  const user: any = req.user;
+
+  // Check if image files exist
+  if (imageFiles?.length > 0) {
+    imageFiles?.map((item: any) => {
+      imgArr.push(item.location);
+    });
+  } else {
+    imgArr.push("https://ds-nature-ayur.s3.ap-southeast-1.amazonaws.com/defaultImages/No-Image-Placeholder.svg.png");
+  }
+  console.log(req.body.subCategory);
+  const productBody = {
+    name: req.body.name,
+    price: Number(req.body.price),
+    description: req.body.description,
+    category: req.body.category,
+    subCategory: req.body.subCategory,
+    images: imgArr,
+    stock: req.body.stock,
+    productCode: gernateRandomUniqueCode("PD"),
+    seller: user._id,
+  };
+  const product = await addProduct(productBody);
   return res.status(200).json({
     message: "Product Added Successfully",
+    product,
   });
 };
 

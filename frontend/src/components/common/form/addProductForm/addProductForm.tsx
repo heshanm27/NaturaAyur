@@ -49,11 +49,11 @@ export default function AddProductForm() {
     title: "",
   });
 
-  const { data: categorey, error: categoreyError, isLoading: categoreyIsLoading } = useQuery({ queryKey: ["mainCategory"], queryFn: fetchAllCategories });
+  const { data: categorey, error, isLoading: categoreyIsLoading, isError } = useQuery({ queryKey: ["mainCategory"], queryFn: fetchAllCategories });
   const productMutatuion = useMutation({
     mutationFn: addProduct,
     onSuccess: (data) => {
-      // navigate("/seller/products");
+      navigate("/seller/products");
     },
     onError: (error: any) => {
       console.log("error", error);
@@ -186,7 +186,7 @@ export default function AddProductForm() {
                 autoFocus={errors.productPrice ? true : false}
                 helperText={errors.productPrice ? errors.productPrice : null}
                 error={errors.productPrice ? true : false}
-                inputProps={{ min: "1", max: "100000" }}
+                inputProps={{ min: "1", max: "100000", step: ".01" }}
               />
               <TextField
                 type="number"
@@ -275,7 +275,7 @@ export default function AddProductForm() {
               )}
             </Box>
           </Grid>
-          <Grid item xs={12} spacing={2}>
+          <Grid item xs={12}>
             <Typography>Product Description</Typography>
             <Editor
               onInit={(evt, editor) => (editorRef!.current = editor)}

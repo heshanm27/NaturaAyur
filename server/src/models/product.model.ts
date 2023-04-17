@@ -1,8 +1,28 @@
-import mongoose from "mongoose";
+import mongoose, { Model, ObjectId } from "mongoose";
 const { Schema } = mongoose;
 
-const ProductSchema = new Schema(
+export interface IProduct {
+  _id?: string;
+  name: string;
+  productCode: string;
+  description: string;
+  price: number;
+  category: string;
+  subCategory?: string[];
+  images: string[];
+  stock: number;
+  rating?: number;
+  numReviews?: number;
+  reviews?: ObjectId[];
+  seller: ObjectId;
+}
+
+interface IProductMethod {}
+interface IProductModel extends Model<IProduct, {}, IProductMethod> {}
+
+const ProductSchema = new Schema<IProduct, IProductModel, IProductMethod>(
   {
+    productCode: { type: String, required: true, trim: true, unique: true },
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     price: { type: Number, required: true, default: 0 },
@@ -32,5 +52,5 @@ const ProductSchema = new Schema(
   }
 );
 
-const Product = mongoose.model("Product", ProductSchema);
+const Product = mongoose.model<IProduct, IProductModel>("Product", ProductSchema);
 export default Product;

@@ -1,5 +1,5 @@
 import { AddProductInput, UpdateProductInput } from "../schema/product.schema";
-import ProductSchema from "../models/product.model";
+import ProductSchema, { IProduct } from "../models/product.model";
 import { BadRequestError } from "../errors";
 
 interface IFilters {
@@ -12,7 +12,7 @@ interface IFilters {
   subCat?: string[];
 }
 
-export async function addProduct(input: AddProductInput["body"]) {
+export async function addProduct(input: IProduct) {
   const product = await ProductSchema.create(input);
   return product;
 }
@@ -67,7 +67,7 @@ export async function findAllProducts({ search = "", sortBy = "createdAt", order
   if (subCat.length > 0) {
     defaultFilters["subCategory"] = { $in: subCat };
   }
-
+  console.log(defaultFilters);
   //find all products
   const products = await ProductSchema.find(defaultFilters)
     .sort({
@@ -82,7 +82,7 @@ export async function findAllProducts({ search = "", sortBy = "createdAt", order
       [sortBy]: order,
     })
     .count();
-
+  console.log(products);
   return { products, total };
 }
 

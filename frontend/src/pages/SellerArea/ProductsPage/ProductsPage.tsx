@@ -3,9 +3,9 @@ import React, { useMemo, useState } from "react";
 import SummaryCard from "../../../components/card/summarycard/summarycard";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllLiverOrders } from "../../../api/liverOrderApi";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { fetchAllProducts } from "../../../api/productApi";
 type Person = {
   name: {
     firstName: string;
@@ -18,30 +18,27 @@ type Person = {
 
 export default function ProductsPage() {
   const navigate = useNavigate();
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["liveorders"], queryFn: fetchAllLiverOrders });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["products"], queryFn: fetchAllProducts });
+
   const [open, setOpen] = useState(false);
-  const columns = useMemo<MRT_ColumnDef<Person>[]>(
+  const columns = useMemo<MRT_ColumnDef[]>(
     () => [
       {
-        accessorKey: "name.firstName", //access nested data with dot notation
-        header: "First Name",
+        accessorKey: "productCode", //access nested data with dot notation
+        header: "Product Code",
         enableGlobalFilter: false,
       },
       {
-        accessorKey: "name.lastName",
-        header: "Last Name",
+        accessorKey: "name",
+        header: "Product Name",
       },
       {
-        accessorKey: "address", //normal accessorKey
-        header: "Address",
+        accessorKey: "price",
+        header: "Product Price",
       },
       {
-        accessorKey: "city",
-        header: "City",
-      },
-      {
-        accessorKey: "state",
-        header: "State",
+        accessorKey: "stock",
+        header: "Product Stock",
       },
     ],
     []
@@ -50,7 +47,7 @@ export default function ProductsPage() {
   return (
     <Container maxWidth="xl" sx={{ p: 2 }}>
       <Typography variant="h3" sx={{ mt: 5, mb: 5 }}>
-        Order History
+        Your Products
       </Typography>
 
       <MaterialReactTable
@@ -71,9 +68,9 @@ export default function ProductsPage() {
           isLoading,
           showAlertBanner: isError,
         }}
-        rowCount={data?.categories.length ?? 0}
+        rowCount={data?.products.length ?? 0}
         columns={columns}
-        data={data?.categories ?? []}
+        data={data?.products ?? []}
         muiToolbarAlertBannerProps={
           isError
             ? {
