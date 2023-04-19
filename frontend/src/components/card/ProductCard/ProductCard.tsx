@@ -16,7 +16,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button, Stack } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
+import { useAppDispatch } from "../../../redux/redux-hooks";
+import { addToCart } from "../../../redux/cartslice";
 interface ProductProps {
   productName: string;
   productPrice: string;
@@ -26,6 +27,11 @@ interface ProductProps {
 }
 
 export default function ProductCard({ productCode, productID, productImg, productName, productPrice }: ProductProps) {
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ productID, productName, productPrice, productImg }));
+  };
   return (
     <Card sx={{ width: 280, height: "auto", maxHeight: 380, minHeight: 380 }}>
       <CardMedia component="img" height="200" image={productImg} alt="Paella dish" />
@@ -38,7 +44,7 @@ export default function ProductCard({ productCode, productID, productImg, produc
       <CardActions>
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
           <Button variant="outlined">Buy Now</Button>
-          <Button variant="contained" startIcon={<ShoppingCartIcon />}>
+          <Button variant="contained" startIcon={<ShoppingCartIcon />} onClick={handleAddToCart}>
             Add Cart
           </Button>
         </Stack>

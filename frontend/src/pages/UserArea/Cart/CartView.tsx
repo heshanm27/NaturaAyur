@@ -14,71 +14,19 @@ import {
   TableHead,
   TableRow,
   Divider,
+  IconButton,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SummaryCard from "../../../components/card/summarycard/summarycard";
 import Navbar from "../../../components/common/navbar/navbar";
 import Footer from "../../../components/common/footer/Footer";
-
-const cartItems: CartItem[] = [
-  {
-    id: 1,
-    product: "Product 1",
-    price: 10.99,
-    quantity: 2,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 2,
-    product: "Product 2",
-    price: 19.99,
-    quantity: 1,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 3,
-    product: "Product 3",
-    price: 7.49,
-    quantity: 3,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 3,
-    product: "Product 3",
-    price: 7.49,
-    quantity: 3,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 3,
-    product: "Product 3",
-    price: 7.49,
-    quantity: 3,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 3,
-    product: "Product 3",
-    price: 7.49,
-    quantity: 3,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-  {
-    id: 3,
-    product: "Product 3",
-    price: 7.49,
-    quantity: 3,
-    image:
-      "https://plus.unsplash.com/premium_photo-1675431443185-9d40521c8d5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=751&q=80",
-  },
-];
-
+import { useAppDispatch, useAppSelector } from "../../../redux/redux-hooks";
+import { IItem } from "../../../redux/cartslice";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { decreaseQuantity, increaceQuantity, removeFromCart, clearCart } from "../../../redux/cartslice";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import { useNavigate } from "react-router-dom";
+import EmptyCartSVG from "../../../assets/images/emptycart.svg";
 const deliveryAddress = {
   houseNumber: "100",
   streetName: "Raja Veedia",
@@ -119,36 +67,30 @@ const DeliveryDetails: React.FC<DeliveryProps> = ({ deliveryAddress }) => {
   );
 };
 
-interface CartItem {
-  id: number;
-  product: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
 interface Props {
-  cartItems: CartItem[];
+  cartItems: IItem[];
   onRemove: (itemId: number) => void;
   onIncrease: (itemId: number) => void;
   onDecrease: (itemId: number) => void;
 }
 
 const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecrease }) => {
-  const handleRemove = (itemId: number) => {
-    onRemove(itemId);
+  const dispatch = useAppDispatch();
+  const handleRemove = (itemId: string) => {
+    dispatch(removeFromCart(itemId));
   };
 
-  const handleIncrease = (itemId: number) => {
-    onIncrease(itemId);
+  const handleIncrease = (itemId: string) => {
+    dispatch(increaceQuantity(itemId));
   };
 
-  const handleDecrease = (itemId: number) => {
-    onDecrease(itemId);
+  const handleDecrease = (itemId: string) => {
+    dispatch(decreaseQuantity(itemId));
   };
 
+  console.log(cartItems);
   return (
-    <TableContainer component={Paper} style={{ maxHeight: "800px", overflowY: "auto" }}>
+    <TableContainer component={Paper} style={{ maxHeight: "auto", overflowY: "auto" }}>
       <Table>
         <TableHead style={{ position: "sticky", top: 0, background: "white", zIndex: 1 }}>
           <TableRow>
@@ -160,37 +102,44 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
           </TableRow>
         </TableHead>
         <TableBody>
-          {cartItems.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-                <img src={item.image} alt={item.product} style={{ width: "60px", height: "60px", borderRadius: "10px", margin: "5px" }} />
-                <Typography variant="caption" align="center">
-                  {item.product}
+          {cartItems.map((item: any) => (
+            <TableRow key={item._id}>
+              <TableCell sx={{ display: "flex", justifyContent: "left", alignItems: "start", flexDirection: "column" }}>
+                <img src={item.image} alt={item.name} style={{ width: "60px", height: "60px", borderRadius: "10px", margin: "5px" }} />
+                <Typography
+                  variant="caption"
+                  align="left"
+                  sx={{ width: "120px", height: "40px", overflow: "hidden", textOverflow: "ellipsis", lineHeight: "1.5em" }}
+                >
+                  {item.name}
                 </Typography>
               </TableCell>
-              <TableCell align="right">{item.price}</TableCell>
+              <TableCell align="right">${item.price.toFixed(2)}</TableCell>
               <TableCell align="right">
-                <Button size="small" onClick={() => handleDecrease(item.id)} disabled={item.quantity === 1}>
+                <Button size="small" onClick={() => handleDecrease(item._id)} disabled={item.quantity === 1}>
                   -
                 </Button>
                 {item.quantity}
-                <Button size="small" onClick={() => handleIncrease(item.id)}>
+                <Button size="small" onClick={() => handleIncrease(item._id)}>
                   +
                 </Button>
               </TableCell>
               <TableCell align="right">{item.price * item.quantity}</TableCell>
               <TableCell>
-                <Button size="small" color="secondary" onClick={() => handleRemove(item.id)}>
-                  Remove
-                </Button>
+                <IconButton size="small" color="error" onClick={() => handleRemove(item._id)}>
+                  <DeleteForeverIcon />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {cartItems.length === 0 && (
-        <Box p={2}>
-          <Typography variant="body1">No items in the cart.</Typography>
+        <Box p={2} sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+          <img src={EmptyCartSVG} alt="Empty Cart" style={{ width: "60px", height: "auto" }} />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            No items in the cart.
+          </Typography>
         </Box>
       )}
     </TableContainer>
@@ -199,6 +148,9 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
 
 export default function CartView() {
   const theme = useTheme();
+  const { items, total } = useAppSelector((state) => state.cartSlice);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const onlySmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const onlyMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const onlyLargeScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -206,16 +158,29 @@ export default function CartView() {
     <>
       <Navbar />
       <Container maxWidth="lg">
-        <Typography sx={{ pl: 5, pr: 5 }} variant="h5" align="left" color={theme.palette.primary.main}>
-          Your Cart
-        </Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+          <Typography sx={{ pl: 5, pr: 5 }} variant="h5" align="left" color={theme.palette.primary.main}>
+            Your Cart
+          </Typography>
+          <Button
+            startIcon={<ClearAllIcon />}
+            color="error"
+            onClick={() => {
+              dispatch(clearCart());
+              navigate("/list");
+            }}
+          >
+            Clear Cart
+          </Button>
+        </Stack>
+
         <Divider sx={{ mb: 2, mt: 2 }} />
         <Stack spacing={2} direction={onlyLargeScreen ? "column" : "row"} justifyContent="space-around" alignItems="start">
           <Stack direction="column">
             <Paper>
               <Box width="600px" height="auto">
                 <Stack direction="row" justifyContent={"space-between"}>
-                  <CartTable cartItems={cartItems} onDecrease={() => {}} onIncrease={() => {}} onRemove={() => {}} />
+                  <CartTable cartItems={items} onDecrease={() => {}} onIncrease={() => {}} onRemove={() => {}} />
                 </Stack>
               </Box>
             </Paper>
@@ -243,7 +208,7 @@ export default function CartView() {
               <DeliveryDetails deliveryAddress={deliveryAddress} />
             </SummaryCard>
             <SummaryCard width="400px" height="auto">
-              <TotalBox total={100.0} tax={10.0} />
+              <TotalBox total={total} tax={10.0} />
             </SummaryCard>
             <Button variant="contained" color="primary" size="large" fullWidth>
               Check Out

@@ -12,9 +12,11 @@ import AvatarBtn from "../avatarbtn/AvatarBtn";
 import { Container, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../redux/redux-hooks";
 import { Typography, Link, Badge } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { isLoggedIn } = useAppSelector((state) => state.authSlice);
   const { items } = useAppSelector((state) => state.cartSlice);
   console.log("items in cart", items);
@@ -47,7 +49,7 @@ export default function Navbar() {
               <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                 {isLoggedIn ? <AvatarBtn /> : <Login />}
 
-                <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+                <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={() => navigate("/cart")}>
                   <Badge badgeContent={items.length} color="error">
                     <ShoppingCartIcon />
                   </Badge>
