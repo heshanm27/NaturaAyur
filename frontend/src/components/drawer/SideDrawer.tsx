@@ -3,18 +3,19 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import SegmentIcon from "@mui/icons-material/Segment";
 import { Avatar, IconButton, Stack, useTheme } from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import AddIcon from "@mui/icons-material/Add";
+import { Outlet } from "react-router-dom";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { lime, lightGreen, green } from "@mui/material/colors";
+import { green } from "@mui/material/colors";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { ADMIN_ROUTES, SELLER_ROUTES } from "./link-routes/link-Routes";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { useAppSelector } from "../../redux/redux-hooks";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
@@ -24,7 +25,7 @@ interface ICollection {
 export default function SideDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const navigate = useNavigate();
+  const { role } = useAppSelector((state) => state.authSlice);
 
   const handleDrawerClose = () => {
     setOpen(!open);
@@ -32,6 +33,9 @@ export default function SideDrawer() {
 
   return (
     <>
+      <IconButton>
+        <PhotoCamera />
+      </IconButton>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar
@@ -104,11 +108,17 @@ export default function SideDrawer() {
               <SegmentIcon />
             </IconButton>
           </Box>
-          <Box>
-            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              {[1, 2, 3, 4, 5].map((item, index) => {
-                return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
-              })}
+          <Box sx={{ mt: 5 }}>
+            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1 }}>
+              {role === "admin"
+                ? ADMIN_ROUTES.map((item, index) => {
+                    return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
+                  })
+                : SELLER_ROUTES.map((item, index) => {
+                    return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
+                  })}
+              <Box sx={{ flexGrow: 1 }}></Box>
+              <CustomLink drawerStatus={open} label={"Logout"} path={"/logout"} activeIcon={<LogoutIcon />} key={"logout"} icon={<LogoutOutlinedIcon />} />
             </List>
           </Box>
         </Drawer>

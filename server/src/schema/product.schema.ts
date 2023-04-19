@@ -78,4 +78,4 @@ export const defaultParamsProductSchema = object({
   ...ParamsPayload,
 });
 
-export type DefaultParamsInput = TypeOf<typeof defaultParamsProductSchema>;
+// export type DefaultParamsInput = TypeOf<typeof defaultParamsProductSchema>;

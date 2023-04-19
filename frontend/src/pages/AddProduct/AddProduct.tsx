@@ -5,10 +5,9 @@ import AddProductForm from "../../components/common/form/addProductForm/addProdu
 export default function AddProduct() {
   return (
     <Container maxWidth="lg">
-      <Box>
-        <Typography>Add New Product</Typography>
+      <Box sx={{ pt: 5, pb: 5 }}>
+        <Typography variant="h4">Add New Product</Typography>
       </Box>
-
       <Stack>
         <AddProductForm />
       </Stack>

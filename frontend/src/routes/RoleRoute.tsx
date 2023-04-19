@@ -1,20 +1,21 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useAppSelector } from "../redux/redux-hooks";
 
 interface RoleRouteProps {
-  allowedRoles: string;
+  allowedRoles: string[];
 }
 
 const ROLES = ["user", "seller", "admin"];
 
 export default function RoleRoute({ allowedRoles }: RoleRouteProps) {
-  const { access_token, role } = useSelector((state: any) => state.auth);
-
+  const { accessToken, role } = useAppSelector((state) => state.authSlice);
+  console.log("role", allowedRoles);
+  console.log("roles", ROLES.includes(role) && allowedRoles.includes(role));
   const location = useLocation();
-  console.log("RoleRoute -> location", location, role, allowedRoles);
   return ROLES.includes(role) && allowedRoles.includes(role) ? (
     <Outlet />
-  ) : !access_token ? (
+  ) : !accessToken ? (
     <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (
     <Navigate to="/" state={{ from: location }} replace />

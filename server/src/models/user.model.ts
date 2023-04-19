@@ -26,6 +26,7 @@ export interface IUser {
   avatar: string;
   isVerified: boolean;
   role: string;
+  contactNo: string;
   seller: {
     storeName: string;
     logo: string;
@@ -75,6 +76,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethod>(
     isVerified: { type: Boolean, default: false },
     avatar: { type: String },
     role: { type: String, enum: ROLES, default: ROLES.USER },
+    contactNo: { type: String, required: true, unique: true, minlength: 10, maxlength: 10 },
     seller: {
       name: { type: String },
       logo: { type: String },
@@ -119,7 +121,7 @@ UserSchema.pre("save", async function (next) {
 
 UserSchema.methods.generateJWTToken = function () {
   return JWT.sign({ id: this._id, role: this.role, firstName: this.firstName, lastName: this.lastName, avatar: this.avatar }, process.env.JWT_SECRET!, {
-    expiresIn: "10s",
+    expiresIn: "7d",
   });
 };
 

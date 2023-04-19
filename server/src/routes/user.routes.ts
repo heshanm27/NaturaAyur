@@ -1,10 +1,10 @@
 import express from "express";
+import { getAllUsertList } from "../controller/user.controller";
 
 const Router = express.Router();
 
 //default routes
-Router.route("/").get().post();
-
+Router.route("/").get(getAllUsertList).post();
 //paramterized routes
 Router.route("/:id").get().patch().delete();
 

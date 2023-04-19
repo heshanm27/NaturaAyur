@@ -1,9 +1,9 @@
 import { Express, Request, Response } from "express";
 import ProdutRoute from "../routes/product.routes";
-import UserRoute from "../routes/order.routes";
+import UserRoute from "../routes/user.routes";
 import OrderRoute from "../routes/order.routes";
 import AuthRoute from "../routes/auth.routes";
-
+import CategoryRoute from "../routes/category.routes";
 import NotFoundMiddleware from "../middleware/notfound.middleware";
 import ErrorHandlerMiddleware from "../middleware/errorhandler.middleware";
 import { validateUserRoleAndToken } from "../middleware/auth.middleware";
@@ -33,9 +33,10 @@ function routes(app: Express) {
       files,
     });
   });
-  app.use("/api/v1/product", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), ProdutRoute);
-  app.use("/api/v1/user", UserRoute);
-  app.use("/api/v1/order", OrderRoute);
+  app.use("/api/v1/category", CategoryRoute);
+  app.use("/api/v1/product", ProdutRoute);
+  app.use("/api/v1/user", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), UserRoute);
+  app.use("/api/v1/order", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), OrderRoute);
   app.use("/api/v1/auth", AuthRoute);
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);

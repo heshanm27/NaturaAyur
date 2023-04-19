@@ -1,5 +1,5 @@
 import { AddProductInput, UpdateProductInput } from "../schema/product.schema";
-import ProductSchema from "../models/product.model";
+import ProductSchema, { IProduct } from "../models/product.model";
 import { BadRequestError } from "../errors";
 
 interface IFilters {
@@ -12,7 +12,7 @@ interface IFilters {
   subCat?: string[];
 }
 
-export async function addProduct(input: AddProductInput["body"]) {
+export async function addProduct(input: IProduct) {
   const product = await ProductSchema.create(input);
   return product;
 }
@@ -49,9 +49,11 @@ export async function removeProduct(id: string) {
   return deletedProduct;
 }
 
-export async function findAllProducts({ search = "", sortBy = "createdAt", order = "-1", limit = "10", page = "1", cat, subCat = [] }: IFilters): Promise<{
+export async function findAllProducts({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1", cat, subCat = [] }: IFilters): Promise<{
   products: any;
   total: number;
+  maxProductsPrice: number;
+  minProductsPrice: number;
 }> {
   //default filters
   const defaultFilters: any = {
@@ -77,13 +79,25 @@ export async function findAllProducts({ search = "", sortBy = "createdAt", order
     .skip(limit * (page - 1));
 
   //find count for matching products
-  const total = await ProductSchema.countDocuments(defaultFilters)
+  const totalDocCount = await ProductSchema.countDocuments(defaultFilters)
     .sort({
       [sortBy]: order,
     })
     .count();
+  const total = Math.ceil(totalDocCount / limit);
+  const maxProduct = await ProductSchema.findOne()
+    .sort({ price: -1 }) // Sort by "price" field in descending order to get maximum value
+    .select("price") // Select only the "price" field
+    .exec();
 
-  return { products, total };
+  const minProduct = await ProductSchema.findOne()
+    .sort({ price: 1 }) // Sort by "price" field in ascending order to get minimum value
+    .select("price") // Select only the "price" field
+    .exec();
+  const maxProductsPrice = maxProduct ? maxProduct.price : 0;
+  const minProductsPrice = minProduct ? minProduct.price : 0;
+
+  return { products, total, maxProductsPrice, minProductsPrice };
 }
 
 export async function findProductById(id: string) {
@@ -95,7 +109,10 @@ export async function findProductById(id: string) {
   return product;
 }
 export async function findProductBySellerId(id: string) {
-  const products = await ProductSchema.find({ sellerId: id });
+  const products = await ProductSchema.find({
+    seller: id,
+  });
+  console.log(id);
   if (!products) {
     throw new BadRequestError("Products not found");
   }

@@ -13,14 +13,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomSnackBar from "../../components/common/snackbar/Snackbar";
 import Navbar from "../../components/common/navbar/navbar";
 import Footer from "../../components/common/footer/Footer";
 import { useFormik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import apiClient from "../../api/axios";
-import { useAppDispatch } from "../../redux/redux-hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/redux-hooks";
 import { login } from "../../redux/auth/authslice";
 function Copyright(props: any) {
   return (
@@ -61,18 +61,30 @@ export default function SignIn() {
   });
 
   async function hadnleFormSubmit(values: FormValues, {}: FormikHelpers<FormValues>) {
-    const resposne = await apiClient.post("/auth/signIn", values);
-    console.log(values);
-    dispatch(login(resposne.data));
-    resetForm();
+    try {
+      const resposne = await apiClient.post("/auth/signIn", values);
+      console.log(values);
+      dispatch(login(resposne.data));
+      resetForm();
+    } catch (e: any) {
+      setNotify({
+        isOpen: true,
+        message: e.message,
+        type: "error",
+        title: "Error            ",
+      });
+    }
+
     // await mutate({
     //   password: values.password,
     //   email: values.email,
 
     // });
   }
-  const location = useLocation();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isLoggedIn, role } = useAppSelector((state) => state.authSlice);
   useEffect(() => {
     if (location.state) {
       setNotify({
@@ -84,6 +96,19 @@ export default function SignIn() {
     }
   }, [location]);
 
+  useEffect(() => {
+    switch (role) {
+      case "admin":
+        navigate("/admin/orders/live", { replace: true, preventScrollReset: true });
+        return;
+      case "seller":
+        navigate("/seller/orders/live", { replace: true, preventScrollReset: true });
+        return;
+      case "user":
+        navigate("/", { replace: true });
+        return;
+    }
+  }, [isLoggedIn]);
   return (
     <>
       <Navbar />

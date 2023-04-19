@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAppSelector } from "../redux/redux-hooks";
 
 export default function ProtectedRoute() {
-  const { access_token } = useSelector((state: any) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.authSlice);
 
-  if (!access_token) {
+  if (!accessToken) {
     return <Navigate to="/" replace={true} />;
   }
   return <Outlet />;

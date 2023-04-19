@@ -1,6 +1,6 @@
 import apiClient from "./axios";
 
-interface SignUpValues {
+export interface SignUpValues {
   firstName: string;
   lastName: string;
   email: string;
@@ -11,13 +11,12 @@ interface SignUpValues {
     postalCode: string;
   };
   avatar?: File | null;
-  phoneno: string;
+  contactNo: string;
   password: string;
   confirmPassword: string;
 }
 
 export const SignUpApiCall = async (data: SignUpValues) => {
-  console.log("apicall", data);
   try {
     const response = await apiClient.post("/auth/signUp", data, {
       headers: {
