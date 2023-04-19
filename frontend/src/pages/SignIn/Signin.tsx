@@ -61,10 +61,20 @@ export default function SignIn() {
   });
 
   async function hadnleFormSubmit(values: FormValues, {}: FormikHelpers<FormValues>) {
-    const resposne = await apiClient.post("/auth/signIn", values);
-    console.log(values);
-    dispatch(login(resposne.data));
-    resetForm();
+    try {
+      const resposne = await apiClient.post("/auth/signIn", values);
+      console.log(values);
+      dispatch(login(resposne.data));
+      resetForm();
+    } catch (e: any) {
+      setNotify({
+        isOpen: true,
+        message: e.message,
+        type: "error",
+        title: "Error            ",
+      });
+    }
+
     // await mutate({
     //   password: values.password,
     //   email: values.email,

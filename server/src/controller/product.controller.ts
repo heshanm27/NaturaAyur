@@ -46,6 +46,8 @@ export const addNewProduct = async (req: Request, res: Response) => {
 export const getAllProductList = async (req: Request<{}, {}, {}, GetAllProductListInput["query"]>, res: Response) => {
   let { search, sortBy, order, cat, subCat, limit, page } = req.query;
 
+  console.log(search, sortBy, order, cat, subCat, limit, page);
+
   //if only pass one sub category then it will be string
   //so convert it to array
   if (typeof subCat === "string") {
@@ -56,12 +58,14 @@ export const getAllProductList = async (req: Request<{}, {}, {}, GetAllProductLi
   subCat = subCat?.map((item: string) => item.trim().toLowerCase());
 
   //call service function
-  const { products, total } = await findAllProducts({ search, sortBy, cat, subCat, order, limit, page });
+  const { products, total, maxProductsPrice, minProductsPrice } = await findAllProducts({ search, sortBy, cat, subCat, order, limit, page });
 
   return res.status(200).json({
     message: "Products found Successfully",
     total,
     products,
+    maxProductsPrice,
+    minProductsPrice,
   });
 };
 

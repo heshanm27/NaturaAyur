@@ -10,9 +10,23 @@ export interface Product {
   stock: number;
 }
 
-export const fetchAllProducts = async () => {
+export interface IFilter {
+  search?: string;
+  sortBy?: string;
+  order?: number;
+  limit?: number;
+  page?: number;
+  cat?: string;
+  subCat?: string[];
+}
+
+export const fetchAllProducts = async (filters: any): Promise<any> => {
+  console.log(filters);
+
   try {
-    const response = await apiClient.get("/product");
+    const response = await apiClient.get("/product", {
+      params: filters,
+    });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

@@ -33,8 +33,8 @@ function routes(app: Express) {
       files,
     });
   });
-  app.use("/api/v1/category", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), CategoryRoute);
-  app.use("/api/v1/product", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), ProdutRoute);
+  app.use("/api/v1/category", CategoryRoute);
+  app.use("/api/v1/product", ProdutRoute);
   app.use("/api/v1/user", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), UserRoute);
   app.use("/api/v1/order", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), OrderRoute);
   app.use("/api/v1/auth", AuthRoute);
