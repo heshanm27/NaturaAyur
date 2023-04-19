@@ -3,7 +3,7 @@ import React from "react";
 
 export default function CustomCirculerProgress() {
   return (
-    <Box sx={{ height: "100vh", justifyContent: "center", display: "flex", alignItems: "center" }}>
+    <Box sx={{ height: "50vh", justifyContent: "center", display: "flex", alignItems: "center" }}>
       <CircularProgress />
     </Box>
   );

@@ -199,7 +199,7 @@ export default function ProductListView() {
               </Menu>
             </Stack>
             {!data?.products ? (
-              <CircularProgress />
+              <CustomCirculerProgress />
             ) : (
               <Grid container spacing={4} justifyContent={data?.products.length > 0 ? "start" : "center"}>
                 {data?.products.length > 0 ? (
