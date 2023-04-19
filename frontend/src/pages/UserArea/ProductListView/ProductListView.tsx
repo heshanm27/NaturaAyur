@@ -28,11 +28,12 @@ import { fetchAllCategories } from "../../../api/categoryApi";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import SortIcon from "@mui/icons-material/Sort";
+import NoProductsIMG from "../../../assets/images/noproducts.svg";
 export default function ProductListView() {
   const queryClient = new QueryClient();
   const [filter, setFilter] = useState<IFilter>({
     cat: "",
-    limit: 4,
+    limit: 10,
     order: -1,
     page: 1,
     search: "",
@@ -93,7 +94,7 @@ export default function ProductListView() {
   // function valueLabelFormat(value: number) {
   //   return marks.findIndex((mark) => mark.value === value) + 1;
   // }
-  const { data, error, isLoading, isError } = useQuery({
+  const { data, error, isLoading, isError, isFetched } = useQuery({
     queryKey: ["productlist", filter],
     queryFn: () => fetchAllProducts(filter),
   });
@@ -105,6 +106,19 @@ export default function ProductListView() {
   // const [minPrice, setMinPrice] = React.useState(1);
   // const [maxPrice, setMaxPrice] = React.useState(10000);
   console.log("productlist", data?.products);
+  const mainCategoreySelect = (value: string) => {
+    setFilter((prev: any) => ({
+      ...prev,
+      cat: value,
+    }));
+  };
+
+  const subCategoreySelect = (value: string) => {
+    setFilter((prev: any) => ({
+      ...prev,
+      cat: value,
+    }));
+  };
 
   return (
     <>
@@ -119,7 +133,17 @@ export default function ProductListView() {
                 {categoryLoading ? (
                   <CircularProgress />
                 ) : (
-                  categories?.categories.map((category: any) => <CategoryButton mainCategory={category.name} subCategories={category?.subCategory} />)
+                  categories?.categories.map((category: any) => (
+                    <CategoryButton
+                      mainCategory={{
+                        id: category._id,
+                        name: category.name,
+                      }}
+                      subCategories={category?.subCategory}
+                      mainOnClick={mainCategoreySelect}
+                      subOnClick={subCategoreySelect}
+                    />
+                  ))
                 )}
               </List>
 
@@ -177,18 +201,22 @@ export default function ProductListView() {
             {!data?.products ? (
               <CircularProgress />
             ) : (
-              <Grid container spacing={4} justifyContent={"start"}>
-                {data?.products.map((item: any) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
-                    <ProductCard
-                      productCode={item?.productCode}
-                      productID={item._id}
-                      productImg={item.images[0]}
-                      productName={item.name}
-                      productPrice={item.price}
-                    />
-                  </Grid>
-                ))}
+              <Grid container spacing={4} justifyContent={data?.products.length > 0 ? "start" : "center"}>
+                {data?.products.length > 0 ? (
+                  data?.products.map((item: any) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
+                      <ProductCard
+                        productCode={item?.productCode}
+                        productID={item._id}
+                        productImg={item.images[0]}
+                        productName={item.name}
+                        productPrice={item.price}
+                      />
+                    </Grid>
+                  ))
+                ) : (
+                  <NoProductToShow />
+                )}
               </Grid>
             )}
           </Grid>
@@ -204,22 +232,32 @@ export default function ProductListView() {
 }
 
 interface CategoryButtonProps {
-  mainCategory: string;
+  mainCategory: {
+    name: string;
+    id: string;
+  };
   subCategories: string[];
+  mainOnClick: (value: string) => void;
+  subOnClick: (value: string) => void;
 }
-function CategoryButton({ mainCategory, subCategories }: CategoryButtonProps) {
+function CategoryButton({ mainCategory, subCategories, mainOnClick, subOnClick }: CategoryButtonProps) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <ListItemButton onClick={() => setOpen((prev) => !prev)}>
-        <ListItemText primary={mainCategory} />
+      <ListItemButton
+        onClick={() => {
+          mainOnClick(mainCategory.id);
+          setOpen((prev) => !prev);
+        }}
+      >
+        <ListItemText primary={mainCategory.name} />
         {subCategories.length > 0 ? open ? <ExpandLess /> : <ExpandMore /> : null}
       </ListItemButton>
       {subCategories.length > 0 ? (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List>
             {subCategories.map((item: string) => (
-              <ListItemButton key={item}>
+              <ListItemButton key={item} onClick={() => subOnClick(item)}>
                 <ListItemText primary={item} />
               </ListItemButton>
             ))}
@@ -227,5 +265,21 @@ function CategoryButton({ mainCategory, subCategories }: CategoryButtonProps) {
         </Collapse>
       ) : null}
     </>
+  );
+}
+
+function NoProductToShow() {
+  return (
+    <Stack
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        height: "50vh",
+      }}
+    >
+      <Typography>Sorry! No Products Found</Typography>
+      <img src={NoProductsIMG} alt="no product" width={200} height={200} />
+    </Stack>
   );
 }
