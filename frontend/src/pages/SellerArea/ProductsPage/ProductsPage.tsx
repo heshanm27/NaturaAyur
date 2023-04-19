@@ -1,11 +1,11 @@
 import { Box, Button, Container, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import SummaryCard from "../../../components/card/summarycard/summarycard";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "@tanstack/react-query";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { fetchAllProducts } from "../../../api/productApi";
+import { fetchAllProductsForSeller } from "../../../api/productApi";
+import { useAppSelector } from "../../../redux/redux-hooks";
 type Person = {
   name: {
     firstName: string;
@@ -18,7 +18,7 @@ type Person = {
 
 export default function ProductsPage() {
   const navigate = useNavigate();
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["products"], queryFn: fetchAllProducts });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["products"], queryFn: fetchAllProductsForSeller });
 
   const [open, setOpen] = useState(false);
   const columns = useMemo<MRT_ColumnDef[]>(
@@ -68,7 +68,7 @@ export default function ProductsPage() {
           isLoading,
           showAlertBanner: isError,
         }}
-        rowCount={data?.products.length ?? 0}
+        rowCount={data?.products?.length ?? 0}
         columns={columns}
         data={data?.products ?? []}
         muiToolbarAlertBannerProps={

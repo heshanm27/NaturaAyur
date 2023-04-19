@@ -68,6 +68,7 @@ export default function AddProductForm() {
   // Formik validation schema
   const validationSchema = Yup.object().shape({
     productName: Yup.string().required("Product Name is required"),
+    productBrand: Yup.string().required("Product Brand is required"),
     productPrice: Yup.number().required("Product Price is required").min(1, "Minimum value is 1").max(100000, "Maximum value is 100000"),
     productQuantity: Yup.number().required("Product Quantity is required").min(1, "Minimum value is 0").max(10000, "Maximum value is 10000"),
   });
@@ -76,6 +77,7 @@ export default function AddProductForm() {
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
       productName: "",
+      productBrand: "",
       productPrice: 1,
       productQuantity: 1,
       mainCategory: "",
@@ -91,6 +93,7 @@ export default function AddProductForm() {
         subCategory: values.subCategory,
         description: richText,
         images: selectedFiles,
+        brand: values.productBrand,
       });
     },
   });
@@ -170,6 +173,15 @@ export default function AddProductForm() {
                 error={errors.productName ? true : false}
               />
               <TextField
+                label="Product Brand"
+                name="productBrand"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                autoFocus={errors.productBrand ? true : false}
+                helperText={errors.productBrand ? errors.productBrand : null}
+                error={errors.productBrand ? true : false}
+              />
+              <TextField
                 label="Product Price"
                 name="productPrice"
                 type="number"
@@ -188,6 +200,10 @@ export default function AddProductForm() {
                 error={errors.productPrice ? true : false}
                 inputProps={{ min: "1", max: "100000", step: ".01" }}
               />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Stack direction={"column"} spacing={2}>
               <TextField
                 type="number"
                 label="Product Quantity"
@@ -200,10 +216,6 @@ export default function AddProductForm() {
                 error={errors.productQuantity ? true : false}
                 inputProps={{ min: "0", max: "10000" }}
               />
-            </Stack>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Stack direction={"column"} spacing={2}>
               <Box>
                 <Typography>Select Main Categorey</Typography>
                 <Select

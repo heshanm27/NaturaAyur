@@ -109,7 +109,10 @@ export async function findProductById(id: string) {
   return product;
 }
 export async function findProductBySellerId(id: string) {
-  const products = await ProductSchema.find({ sellerId: id });
+  const products = await ProductSchema.find({
+    seller: id,
+  });
+  console.log(id);
   if (!products) {
     throw new BadRequestError("Products not found");
   }

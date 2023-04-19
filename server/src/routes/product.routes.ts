@@ -19,12 +19,12 @@ const Router = express.Router();
 Router.route("/")
   .get(validateSchema(getAllProductListSchema), getAllProductList)
   .post(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), upload.array("images[]", 6), addNewProduct);
-
-//paramterized routes
+Router.route("/seller").get(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), getOneSellerProductList);
+Router.route("/reviews/:id").get(validateUserRoleAndToken([ROLES.USER, ROLES.ADMIN, ROLES.SELLER]), getReviewsForProduct);
+// //paramterized routes
 Router.route("/:id")
   .get(getOneProductDetails)
   .patch(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), updateProduct)
   .delete(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), deleteProduct);
-Router.route("/reviews/:id").get(validateUserRoleAndToken([ROLES.USER, ROLES.ADMIN, ROLES.SELLER]), getReviewsForProduct);
-Router.route("/seller/:id").get(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), getOneSellerProductList);
+
 export default Router;

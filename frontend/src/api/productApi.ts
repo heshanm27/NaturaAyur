@@ -8,6 +8,7 @@ export interface Product {
   subCategory: string[];
   images: File[];
   stock: number;
+  brand: string;
 }
 
 export interface IFilter {
@@ -27,6 +28,15 @@ export const fetchAllProducts = async (filters: any): Promise<any> => {
     const response = await apiClient.get("/product", {
       params: filters,
     });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const fetchAllProductsForSeller = async () => {
+  try {
+    const response = await apiClient.get(`/product/seller`);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

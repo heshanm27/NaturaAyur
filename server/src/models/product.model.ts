@@ -6,6 +6,7 @@ export interface IProduct {
   name: string;
   productCode: string;
   description: string;
+  brand: string;
   price: number;
   category: string;
   subCategory?: string[];
@@ -27,6 +28,7 @@ const ProductSchema = new Schema<IProduct, IProductModel, IProductMethod>(
     description: { type: String, required: true },
     price: { type: Number, required: true, default: 0 },
     category: { type: String, required: true, trim: true, lowercase: true },
+    brand: { type: String, required: true },
     subCategory: {
       type: [String],
       required: true,

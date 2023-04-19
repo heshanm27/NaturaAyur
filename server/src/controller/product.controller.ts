@@ -8,7 +8,7 @@ import {
   getAllReviewsForProduct,
   findProductById,
 } from "../service/product.service";
-import { GetAllProductListInput, UpdateProductInput, DefaultParamsInput } from "../schema/product.schema";
+import { GetAllProductListInput } from "../schema/product.schema";
 import { gernateRandomUniqueCode } from "../util/genrate-product-code";
 
 export const addNewProduct = async (req: Request, res: Response) => {
@@ -35,6 +35,7 @@ export const addNewProduct = async (req: Request, res: Response) => {
     stock: req.body.stock,
     productCode: gernateRandomUniqueCode("PD"),
     seller: user._id,
+    brand: req.body.brand,
   };
   const product = await addProduct(productBody);
   return res.status(200).json({
@@ -69,19 +70,20 @@ export const getAllProductList = async (req: Request<{}, {}, {}, GetAllProductLi
   });
 };
 
-export const getOneProductDetails = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
+export const getOneProductDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const product = await findProductById(id);
-
   return res.status(200).json({
     message: "Product found Successfully",
     product,
   });
 };
 
-export const getOneSellerProductList = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
-  const products = await findProductBySellerId(req.body);
+export const getOneSellerProductList = async (req: Request, res: Response) => {
+  const user: any = req?.user;
+  console.log("called");
+  console.log(user._id);
+  const products = await findProductBySellerId(user._id);
 
   return res.status(200).json({
     message: "Sellet found Successfully",
@@ -89,7 +91,7 @@ export const getOneSellerProductList = async (req: Request<DefaultParamsInput["p
   });
 };
 
-export const getReviewsForProduct = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
+export const getReviewsForProduct = async (req: Request, res: Response) => {
   const productReviews = await getAllReviewsForProduct(req.body);
 
   return res.status(200).json({
@@ -98,7 +100,7 @@ export const getReviewsForProduct = async (req: Request<DefaultParamsInput["para
   });
 };
 
-export const updateProduct = async (req: Request<UpdateProductInput["params"], {}, UpdateProductInput["body"]>, res: Response) => {
+export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   const updateProduct = await patchProduct(id, req.body);
 
@@ -108,7 +110,7 @@ export const updateProduct = async (req: Request<UpdateProductInput["params"], {
   });
 };
 
-export const deleteProduct = async (req: Request<DefaultParamsInput["params"]>, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   const deletedProduct = await removeProduct(id);
 
