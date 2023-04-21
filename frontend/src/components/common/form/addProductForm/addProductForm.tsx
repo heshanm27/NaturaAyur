@@ -85,6 +85,7 @@ export default function AddProductForm() {
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log(selectedFiles);
       productMutatuion.mutate({
         name: values.productName,
         price: values.productPrice,

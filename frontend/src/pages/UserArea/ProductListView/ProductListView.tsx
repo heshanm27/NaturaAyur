@@ -29,6 +29,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import SortIcon from "@mui/icons-material/Sort";
 import NoProductsIMG from "../../../assets/images/noproducts.svg";
+import ClearIcon from "@mui/icons-material/Clear";
 export default function ProductListView() {
   const queryClient = new QueryClient();
   const [filter, setFilter] = useState<IFilter>({
@@ -40,7 +41,7 @@ export default function ProductListView() {
     sortBy: "createdAt",
     subCat: [],
   });
-
+  const [showClearButton, setShowClearButton] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -48,6 +49,7 @@ export default function ProductListView() {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuButton = (filterValue: string) => {
+    setShowClearButton(true);
     switch (filterValue) {
       case "oldest":
         setFilter((prev: any) => ({
@@ -107,6 +109,7 @@ export default function ProductListView() {
   // const [maxPrice, setMaxPrice] = React.useState(10000);
   console.log("productlist", data?.products);
   const mainCategoreySelect = (value: string) => {
+    setShowClearButton(true);
     setFilter((prev: any) => ({
       ...prev,
       cat: value,
@@ -114,12 +117,24 @@ export default function ProductListView() {
   };
 
   const subCategoreySelect = (value: string) => {
+    setShowClearButton(true);
     setFilter((prev: any) => ({
       ...prev,
       cat: value,
     }));
   };
-
+  const handleClearFilters = () => {
+    setFilter({
+      cat: "",
+      limit: 10,
+      order: -1,
+      page: 1,
+      search: "",
+      sortBy: "createdAt",
+      subCat: [],
+    });
+    setShowClearButton(false);
+  };
   return (
     <>
       <Navbar />
@@ -172,7 +187,12 @@ export default function ProductListView() {
             </Box>
           </Grid>
           <Grid item md={10}>
-            <Stack direction={"row"} justifyContent={"end"} sx={{ mb: 5 }}>
+            <Stack direction={"row"} justifyContent={"space-between"} sx={{ mb: 5 }}>
+              {showClearButton && (
+                <Button variant="outlined" color="error" endIcon={<ClearIcon />} onClick={handleClearFilters}>
+                  Clear Filters
+                </Button>
+              )}
               <Button
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}
@@ -211,6 +231,7 @@ export default function ProductListView() {
                         productImg={item.images[0]}
                         productName={item.name}
                         productPrice={item.price}
+                        productStock={item.stock}
                       />
                     </Grid>
                   ))

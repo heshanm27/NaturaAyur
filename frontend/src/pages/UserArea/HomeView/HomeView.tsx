@@ -82,7 +82,7 @@ export default function HomeView() {
           <Grid container spacing={2}>
             {[1, 2, 3, 4, 5, 6].map((item, i) => (
               <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" />
+                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" productStock={2} />
               </Grid>
             ))}
           </Grid>
@@ -94,7 +94,7 @@ export default function HomeView() {
           <Grid container spacing={2}>
             {[1, 2, 3, 4, 5, 6].map((item, i) => (
               <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" />
+                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" productStock={2} />
               </Grid>
             ))}
           </Grid>

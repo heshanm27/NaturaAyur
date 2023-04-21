@@ -1,27 +1,7 @@
 import { BadRequestError } from "../errors";
 import Order, { IOrder } from "../models/order.model";
 
-export async function createOrder(input: any) {
-  try {
-    const { userId, products, shippingAddress, paymentMethod, taxPrice, totalPrice } = input;
-    const order = await Order.create({
-      userId,
-      products,
-      shippingAddress,
-      paymentMethod,
-      taxPrice,
-      totalPrice,
-    });
-    return {
-      message: "Order Created Successfully",
-      order,
-    };
-  } catch (e: any) {
-    return {
-      message: e.message,
-    };
-  }
-}
+export async function createOrder(input: any) {}
 
 export async function patchOrder(input: any) {}
 

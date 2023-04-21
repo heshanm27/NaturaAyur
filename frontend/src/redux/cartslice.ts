@@ -7,6 +7,7 @@ export interface IItem {
   price: number;
   quantity: number;
   image: string;
+  stock: number;
   totalPrice: number;
 }
 interface CartState {
@@ -24,7 +25,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<any>) => {
-      const { productID, productName, productPrice, productImg } = action.payload;
+      const { productID, productName, productPrice, productImg, productStock } = action.payload;
       console.log("add to cart", productID, productName, productPrice, productImg);
       const existingItem = state.items.find((item) => item._id === productID);
       if (existingItem) {
@@ -36,6 +37,7 @@ export const cartSlice = createSlice({
           name: productName,
           price: productPrice,
           image: productImg,
+          stock: productStock,
           quantity: 1,
           totalPrice: productPrice,
         });
@@ -46,6 +48,7 @@ export const cartSlice = createSlice({
       const itemId = action.payload;
       const existingItem = state.items.find((item) => item._id === itemId);
       if (existingItem) {
+        if (existingItem.quantity === existingItem.stock) return;
         existingItem.quantity++;
         existingItem.totalPrice = existingItem.quantity * existingItem.price;
         state.total += existingItem.price;

@@ -9,10 +9,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AvatarBtn from "../avatarbtn/AvatarBtn";
-import { Container, useTheme } from "@mui/material";
+import { Container, Paper, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../redux/redux-hooks";
 import { Typography, Link, Badge } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import SearchField from "../SearchField/SearchField";
 
 export default function Navbar() {
   const theme = useTheme();
@@ -22,34 +23,21 @@ export default function Navbar() {
   console.log("items in cart", items);
   return (
     <>
-      <AppBar color="inherit" position="fixed" elevation={0}>
+      <AppBar color="inherit" position="fixed">
         <Toolbar>
           <Container maxWidth="xl" sx={{ height: "40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Link href="/">
-              <img src={Logo} alt="logo" style={{ width: "60px", height: "50px" }} />
+              <img src={Logo} alt="logo" style={{ width: "70px", height: "50px" }} />
             </Link>
+
             <Box sx={{ width: "50%" }}>
-              <TextField
-                id="outlined-basic"
-                label="Search for products"
-                size="small"
-                fullWidth
-                variant="outlined"
-                placeholder="Search for products, brands and more"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <SearchField />
             </Box>
             <Box>
               <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                 {isLoggedIn ? <AvatarBtn /> : <Login />}
 
-                <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={() => navigate("/cart")}>
+                <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }} onClick={() => navigate("/cart")}>
                   <Badge badgeContent={items.length} color="error">
                     <ShoppingCartIcon />
                   </Badge>

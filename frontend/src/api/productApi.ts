@@ -55,7 +55,7 @@ export const fetchProduct = async (id: string) => {
 export const addProduct = async (value: Product) => {
   try {
     const subCategory = value.subCategory.map((obj: any) => obj.value);
-    const { category, description, name, price, stock, images } = value;
+    const { category, description, name, price, stock, images, brand } = value;
     const response = await apiClient.post(
       "/product",
       {
@@ -66,6 +66,7 @@ export const addProduct = async (value: Product) => {
         stock,
         images,
         subCategory,
+        brand,
       },
       {
         headers: {

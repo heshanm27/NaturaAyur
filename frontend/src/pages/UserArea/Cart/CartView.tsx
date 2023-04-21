@@ -15,6 +15,7 @@ import {
   TableRow,
   Divider,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SummaryCard from "../../../components/card/summarycard/summarycard";
@@ -27,6 +28,13 @@ import { decreaseQuantity, increaceQuantity, removeFromCart, clearCart } from ".
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { useNavigate } from "react-router-dom";
 import EmptyCartSVG from "../../../assets/images/emptycart.svg";
+import CustomeDialog from "../../../components/common/CustomDialog/CustomDialog";
+import { useState } from "react";
+import ChangeAddressForm from "../../../components/common/form/changeAddressForm/ChangeAddressForm";
+import { useMutation } from "@tanstack/react-query";
+import { addOrder } from "../../../api/orderApi";
+import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
+
 const deliveryAddress = {
   houseNumber: "100",
   streetName: "Raja Veedia",
@@ -50,6 +58,8 @@ interface DeliveryProps {
 }
 
 const DeliveryDetails: React.FC<DeliveryProps> = ({ deliveryAddress }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Box p={2} border={1} borderColor="grey.300" borderRadius={4}>
       <Typography variant="h6">Delivery Address</Typography>
@@ -63,6 +73,15 @@ const DeliveryDetails: React.FC<DeliveryProps> = ({ deliveryAddress }) => {
         <Typography variant="body1">City: {deliveryAddress.city}</Typography>
         <Typography variant="body1">Postal Code: {deliveryAddress.postalCode}</Typography>
       </Box>
+      <Box mt={2} sx={{ display: "flex", justifyContent: "end" }}>
+        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+          Change Address
+        </Button>
+      </Box>
+
+      <CustomeDialog title="Change address" open={open} setOpen={setOpen}>
+        <ChangeAddressForm />
+      </CustomeDialog>
     </Box>
   );
 };
@@ -124,7 +143,7 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
                   +
                 </Button>
               </TableCell>
-              <TableCell align="right">{item.price * item.quantity}</TableCell>
+              <TableCell align="right">{(item.price * item.quantity).toFixed(2)}</TableCell>
               <TableCell>
                 <IconButton size="small" color="error" onClick={() => handleRemove(item._id)}>
                   <DeleteForeverIcon />
@@ -154,6 +173,28 @@ export default function CartView() {
   const onlySmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const onlyMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const onlyLargeScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const { mutate, isLoading, error } = useMutation({
+    mutationFn: addOrder,
+  });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+  const handleCheckout = () => {
+    // if (items.length === 0) {
+    //   setNotify({
+    //     isOpen: true,
+    //     message: "No items in the cart",
+    //     title: "Error",
+    //     type: "error",
+    //   });
+    //   return;
+    // }
+    mutate(items);
+    // dispatch(clearCart());
+  };
   return (
     <>
       <Navbar />
@@ -210,12 +251,13 @@ export default function CartView() {
             <SummaryCard width="400px" height="auto">
               <TotalBox total={total} tax={10.0} />
             </SummaryCard>
-            <Button variant="contained" color="primary" size="large" fullWidth>
-              Check Out
+            <Button variant="contained" color="primary" size="large" fullWidth onClick={handleCheckout}>
+              {isLoading ? <CircularProgress /> : "Check Out"}
             </Button>
           </Stack>
         </Stack>
       </Container>
+      <CustomSnackBar notify={notify} setNotify={setNotify} />
       <Footer />
     </>
   );
