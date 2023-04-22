@@ -87,9 +87,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
     const orderId = req.params.id;
     const order = await OrderService.deleteOrder(orderId);
     res.status(200).json({
-      order,
-    });
-    res.status(200).json({
       message: "Order deleted",
     });
   } catch (error: any) {

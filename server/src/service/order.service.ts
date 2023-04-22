@@ -2,6 +2,8 @@ import Product from "../models/product.model";
 import mongoose from "mongoose";
 import { BadRequestError } from "../errors";
 import Order, { IOrder } from "../models/order.model";
+import { sendEmail } from "../util/send-mail";
+import { generateOrderEmailBody } from "../util/mail-html-body-gen";
 
 interface IOrderPay {
   shippingAddress: {
@@ -71,7 +73,29 @@ export async function payForOrder(input: IOrderPay) {
   }
 }
 
-export async function sendOrderRecipet(input: any) {}
+export async function sendOrderRecipet(username: string, email: string, recieptUrl: string): Promise<void> {
+  try {
+    const mailStatus = await sendEmail({
+      subject: "Order Recipet",
+      emailBody: generateOrderEmailBody(username, recieptUrl, "http://localhost:3000/seller/orders/live"),
+      toEmail: email,
+    });
+
+    if (!mailStatus) console.log("Error in sending email");
+
+    console.log("Email Sent");
+
+    // const foundOrder = await Order.findOne({
+    //   _id: input.orderId,
+    // }).exec();
+    // if (!foundOrder) throw new BadRequestError("Order Not Found");
+    // foundOrder.status = "Sent";
+    // foundOrder.sentAt = new Date();
+    // await foundOrder.save();
+  } catch (e: any) {
+    throw new Error(e.message);
+  }
+}
 export async function deliverOrder(input: any) {
   try {
     const foundOrder = await Order.findOne({

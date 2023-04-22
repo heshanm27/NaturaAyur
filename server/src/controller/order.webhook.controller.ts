@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import StripeService from "../util/stripe-service";
-import { payForOrder } from "../service/order.service";
+import { payForOrder, sendOrderRecipet } from "../service/order.service";
 
 export const OrderpayemntHandler = async (req: Request, res: Response) => {
   const sig: any = req.headers["stripe-signature"];
@@ -19,7 +19,6 @@ export const OrderpayemntHandler = async (req: Request, res: Response) => {
   switch (event.type) {
     case "checkout.session.completed":
       const session: any = event.data.object;
-      console.log("session", session);
       payForOrder({
         isPaid: true,
         orderId: session.metadata.orderId,
@@ -40,14 +39,17 @@ export const OrderpayemntHandler = async (req: Request, res: Response) => {
         shippingPrice: session.shipping_cost.amount_total,
         totalPrice: session.amount_total / 100,
       });
+      console.log("session", session);
       break;
     case "payment_intent.created":
       break;
     case "charge.succeeded":
-      //   const charge = event.data.object;
-      //   console.log("charge", charge);
+      const charge: any = event.data.object;
+      await sendOrderRecipet(charge.billing_details.name, charge.billing_details.email, charge.receipt_url);
       break;
     case "payment_intent.succeeded":
+      const paymentIntentSucceeded = event.data.object;
+      console.log("paymentIntentSucceeded", paymentIntentSucceeded);
       break;
     case "payment_intent.payment_failed":
       const paymentIntentFailed = event.data.object;
