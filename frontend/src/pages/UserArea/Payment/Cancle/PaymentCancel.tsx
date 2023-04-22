@@ -2,12 +2,25 @@ import React, { useEffect } from "react";
 import { Box, Typography, Button, Paper, CircularProgress, useTheme } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { deleteOrder } from "../../../../api/orderApi";
+import { useAppDispatch, useAppSelector } from "../../../../redux/redux-hooks";
+import { clearOrder } from "../../../../redux/orderslice";
 
 const PaymentCancel = () => {
   const theme = useTheme();
+  const { orderID } = useAppSelector((state) => state.orderSlice);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: deleteOrder,
+    onSuccess: () => {
+      dispatch(clearOrder());
+    },
+  });
 
   useEffect(() => {
+    mutate(orderID);
     const redirectTimeout = setTimeout(() => {
       navigate("/list", { replace: true });
     }, 10000);

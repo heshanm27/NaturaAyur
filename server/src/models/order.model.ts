@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 
 export interface IOrder {
   _id?: string;
+  orderId: string;
   user: {
     type: mongoose.Schema.Types.ObjectId;
     ref: "User";
@@ -15,9 +16,6 @@ export interface IOrder {
         ref: "Product";
       };
       quantity: number;
-      seller: {
-        type: mongoose.Schema.Types.ObjectId;
-      };
     }
   ];
   status: string;
@@ -41,6 +39,7 @@ export interface IOrder {
   paidAt: Date;
   isDelivered: boolean;
   deliveredAt: Date;
+  receipt_url: string;
 }
 
 interface IOrderMethod {}
@@ -48,15 +47,15 @@ interface OrderModel extends Model<IOrder, {}, IOrderMethod> {}
 
 const OrderSchema = new Schema<IOrder, OrderModel, IOrderMethod>(
   {
+    orderId: { type: String, required: true, unique: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
     orderItems: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
-        quantity: { type: Number, required: true },
-        seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        quantity: { type: Number },
       },
     ],
     status: {
@@ -65,25 +64,26 @@ const OrderSchema = new Schema<IOrder, OrderModel, IOrderMethod>(
       default: "new",
     },
     shippingAddress: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      postalCode: { type: Number, required: true },
-      country: { type: String, required: true },
+      address: { type: String },
+      city: { type: String },
+      postalCode: { type: Number },
+      country: { type: String },
     },
-    taxPrice: { type: Number, required: true },
-    shippingPrice: { type: Number, required: true },
-    totalPrice: { type: Number, required: true },
+    taxPrice: { type: Number, default: 0 },
+    shippingPrice: { type: Number },
+    totalPrice: { type: Number },
     paidAt: { type: Date },
     deliveredAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     isPaid: { type: Boolean, default: false },
-    paymentMethod: { type: String, required: true },
+    paymentMethod: { type: String },
     paymentResult: {
       id: { type: String },
       status: { type: String },
       update_time: { type: String },
       email_address: { type: String },
     },
+    receipt_url: { type: String },
   },
   {
     timestamps: true,

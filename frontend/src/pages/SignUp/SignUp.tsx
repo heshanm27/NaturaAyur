@@ -122,12 +122,6 @@ export default function SignUp() {
       email: values.email,
       firstName: values.firstName,
       lastName: values.lastName,
-      address: {
-        street: values.street,
-        city: values.city,
-        provience: values.provience,
-        postalCode: values.postalCode,
-      },
       avatar,
       confirmPassword: values.confirmpassword,
     });
@@ -211,7 +205,7 @@ export default function SignUp() {
                       helperText={errors.email}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <TextField
                       required
                       fullWidth
@@ -284,8 +278,8 @@ export default function SignUp() {
                       error={Boolean(errors.postalCode)}
                       helperText={errors.postalCode}
                     />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
+                  </Grid> */}
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       fullWidth

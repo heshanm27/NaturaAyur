@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import StripeService from "../util/stripe-service";
 import Stripe from "stripe";
+import * as OrderService from "../service/order.service";
+import { gernateRandomUniqueCode } from "../util/genrate-product-code";
+import { BadRequestError } from "../errors";
 
 export const getAllOrderList = async (req: Request, res: Response) => {
   try {
@@ -18,6 +21,12 @@ export const getOneUserOrderList = async (req: Request, res: Response) => {};
 export const addOrder = async (req: Request, res: Response) => {
   try {
     const user: any = req.user;
+
+    const PlacedOrder: any = await OrderService.addOrder({
+      user: user._id,
+      orderItems: req.body,
+      orderId: gernateRandomUniqueCode("ORD"),
+    });
     const params: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ["card"],
       shipping_options: [
@@ -49,53 +58,42 @@ export const addOrder = async (req: Request, res: Response) => {
       }),
       mode: "payment",
       success_url: `${req.headers.origin}/user/payment/success`,
-      cancel_url: `${req.headers.origin}/list`,
+      cancel_url: `${req.headers.origin}/user/payment/cancel`,
       currency: "usd",
       customer_email: user.email,
+      metadata: {
+        order: "order",
+        order_id: PlacedOrder._id,
+        orderId: PlacedOrder.orderId,
+      },
     };
     const session = await StripeService.checkout.sessions.create(params);
-    // console.log(session);
     res.status(200).json({
       url: session.url,
+      orderId: PlacedOrder._id,
     });
   } catch (err: any) {
-    res.status(err.statusCode || 500).json(err.message);
+    res.status(err.statusCode || 400).json(err.message);
   }
-};
-
-export const OrderpayemntHandler = async (req: Request, res: Response) => {
-  const sig: any = req.headers["stripe-signature"];
-
-  let event;
-  console.log("ket", process.env.PUBLIC_STRIPE_WEBHOOK_SECRET_KEY);
-  console.log("body", req.body);
-  try {
-    event = StripeService.webhooks.constructEvent(req.body, sig, process.env.PUBLIC_STRIPE_WEBHOOK_SECRET_KEY!);
-  } catch (err: any) {
-    console.log(err);
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
-
-  // Handle the event
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntentSucceeded = event.data.object;
-      console.log("paymentIntentSucceeded", paymentIntentSucceeded);
-      // Then define and call a function to handle the event payment_intent.succeeded
-      break;
-    case "payment_intent.payment_failed":
-      const paymentIntentFailed = event.data.object;
-      console.log("paymentIntentFailed", paymentIntentFailed);
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  // Return a 200 response to acknowledge receipt of the event
-  res.send("suesss");
 };
 
 export const updateOrder = async (req: Request, res: Response) => {};
 
 export const getPaymentDetailsOfOneOrder = async (req: Request, res: Response) => {};
+
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    console.log(req.params.id);
+    const orderId = req.params.id;
+    const order = await OrderService.deleteOrder(orderId);
+    res.status(200).json({
+      order,
+    });
+    res.status(200).json({
+      message: "Order deleted",
+    });
+  } catch (error: any) {
+    console.log(error);
+    throw new BadRequestError(error.message);
+  }
+};

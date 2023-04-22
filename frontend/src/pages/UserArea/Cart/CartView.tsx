@@ -34,7 +34,8 @@ import ChangeAddressForm from "../../../components/common/form/changeAddressForm
 import { useMutation } from "@tanstack/react-query";
 import { addOrder } from "../../../api/orderApi";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
-
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 const deliveryAddress = {
   houseNumber: "100",
   streetName: "Raja Veedia",
@@ -109,12 +110,12 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
 
   console.log(cartItems);
   return (
-    <TableContainer component={Paper} style={{ maxHeight: "auto", overflowY: "auto" }}>
+    <TableContainer component={Paper} variant="outlined" style={{ maxHeight: "70vh", overflowY: "auto" }}>
       <Table>
         <TableHead style={{ position: "sticky", top: 0, background: "white", zIndex: 1 }}>
           <TableRow>
             <TableCell>Item</TableCell>
-            <TableCell align="right">Price</TableCell>
+
             <TableCell align="right">Quantity</TableCell>
             <TableCell align="right">Total</TableCell>
             <TableCell>Action</TableCell>
@@ -124,26 +125,35 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
           {cartItems.map((item: any) => (
             <TableRow key={item._id}>
               <TableCell sx={{ display: "flex", justifyContent: "left", alignItems: "start", flexDirection: "column" }}>
-                <img src={item.image} alt={item.name} style={{ width: "60px", height: "60px", borderRadius: "10px", margin: "5px" }} />
+                <img src={item.image} alt={item.name} style={{ width: "50px", height: "50px", borderRadius: "10px", margin: "5px" }} />
                 <Typography
                   variant="caption"
                   align="left"
-                  sx={{ width: "120px", height: "40px", overflow: "hidden", textOverflow: "ellipsis", lineHeight: "1.5em" }}
+                  sx={{ flex: 1, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", maxWidth: "200px" }}
                 >
-                  {item.name}
+                  {item.name}ssssssss
                 </Typography>
               </TableCell>
-              <TableCell align="right">${item.price.toFixed(2)}</TableCell>
+
               <TableCell align="right">
-                <Button size="small" onClick={() => handleDecrease(item._id)} disabled={item.quantity === 1}>
-                  -
-                </Button>
-                {item.quantity}
-                <Button size="small" onClick={() => handleIncrease(item._id)}>
-                  +
-                </Button>
+                <Stack direction={"row"} spacing={2}>
+                  <IconButton color="error" aria-label="delete" size="small" onClick={() => handleDecrease(item._id)} disabled={item.quantity === 1}>
+                    <RemoveIcon fontSize="inherit" />
+                  </IconButton>
+
+                  <Typography sx={{ fontSize: "14px" }}>{item.quantity}</Typography>
+                  <IconButton color="primary" aria-label="delete" size="small" onClick={() => handleIncrease(item._id)} disabled={item.quantity === 1}>
+                    <AddIcon fontSize="inherit" />
+                  </IconButton>
+                </Stack>
               </TableCell>
-              <TableCell align="right">{(item.price * item.quantity).toFixed(2)}</TableCell>
+              <TableCell align="right">
+                {" "}
+                <Typography variant="body1">${(item.price * item.quantity).toFixed(2)}</Typography>
+                <Typography sx={{ display: "inline-flex", fontSize: "12px" }} color="text.secondary" noWrap>
+                  each ${item.price.toFixed(2)}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <IconButton size="small" color="error" onClick={() => handleRemove(item._id)}>
                   <DeleteForeverIcon />
@@ -198,7 +208,7 @@ export default function CartView() {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ height: "70vh", maxHeight: "auto" }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography sx={{ pl: 5, pr: 5 }} variant="h5" align="left" color={theme.palette.primary.main}>
             Your Cart
@@ -218,16 +228,14 @@ export default function CartView() {
         <Divider sx={{ mb: 2, mt: 2 }} />
         <Stack spacing={2} direction={onlyLargeScreen ? "column" : "row"} justifyContent="space-around" alignItems="start">
           <Stack direction="column">
-            <Paper>
-              <Box width="600px" height="auto">
-                <Stack direction="row" justifyContent={"space-between"}>
-                  <CartTable cartItems={items} onDecrease={() => {}} onIncrease={() => {}} onRemove={() => {}} />
-                </Stack>
-              </Box>
-            </Paper>
+            <Box width="600px" height="auto">
+              <Stack direction="row" justifyContent={"space-between"}>
+                <CartTable cartItems={items} onDecrease={() => {}} onIncrease={() => {}} onRemove={() => {}} />
+              </Stack>
+            </Box>
           </Stack>
           <Stack direction="column" justifyContent={"center"} alignItems={"center"} alignContent={"center"} spacing={3}>
-            <SummaryCard width="400px" height="100px">
+            {/* <SummaryCard width="400px" height="100px">
               <Box sx={{ p: 2 }}>
                 <Typography variant="h6" color={theme.palette.primary.main}>
                   Select Courier
@@ -247,10 +255,10 @@ export default function CartView() {
             </SummaryCard>
             <SummaryCard width="400px" height="auto">
               <DeliveryDetails deliveryAddress={deliveryAddress} />
-            </SummaryCard>
-            <SummaryCard width="400px" height="auto">
-              <TotalBox total={total} tax={10.0} />
-            </SummaryCard>
+            </SummaryCard> */}
+
+            <TotalBox total={total} tax={10.0} />
+
             <Button variant="contained" color="primary" size="large" fullWidth onClick={handleCheckout}>
               {isLoading ? <CircularProgress /> : "Check Out"}
             </Button>
@@ -270,22 +278,24 @@ interface TotalBoxProps {
 
 const TotalBox: React.FC<TotalBoxProps> = ({ total, tax }) => {
   return (
-    <Box p={2} border={1} borderColor="grey.300" borderRadius={4} display="flex" justifyContent="space-between" flexDirection={"column"}>
-      <Typography variant="subtitle1">Order Summary</Typography>
-      <Box>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          <Typography variant="body1">Total:</Typography>
-          <Typography variant="body1"> ${total.toFixed(2)}</Typography>
-        </Stack>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          <Typography variant="body1">Shipping Cost:</Typography>
-          <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
-        </Stack>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          <Typography variant="body1">Tax:</Typography>
-          <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
-        </Stack>
+    <Paper variant="outlined" sx={{ borderRadius: "15px" }}>
+      <Box sx={{ width: "400px" }} p={2} display="flex" justifyContent="space-between" flexDirection={"column"}>
+        <Typography variant="subtitle1">Order Summary</Typography>
+        <Box>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+            <Typography variant="body1">Total:</Typography>
+            <Typography variant="body1"> ${total.toFixed(2)}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+            <Typography variant="body1">Shipping Cost:</Typography>
+            <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+            <Typography variant="body1">Tax:</Typography>
+            <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
+          </Stack>
+        </Box>
       </Box>
-    </Box>
+    </Paper>
   );
 };

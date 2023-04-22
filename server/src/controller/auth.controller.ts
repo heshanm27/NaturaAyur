@@ -12,13 +12,13 @@ import { genrateAccessToken } from "../util/genrate-jwt-keys";
 
 export const userSignUp = async (req: any, res: Response) => {
   try {
-    const { email, password, firstName, lastName, address, contactNo } = req.body;
+    const { email, password, firstName, lastName, contactNo } = req.body;
     let avatar = "https://ds-nature-ayur.s3.ap-southeast-1.amazonaws.com/Default_pfp.svg.png";
     if (req.files && req.files.length > 0) {
       avatar = req.files[0].location;
     }
 
-    const token = await SignUp({ email, password, firstName, lastName, address, avatar, contactNo });
+    const token = await SignUp({ email, password, firstName, lastName, avatar, contactNo });
     const emailBody = generateVerifiedEmailBody(firstName + " " + lastName, token);
     await sendEmail({
       toEmail: email,

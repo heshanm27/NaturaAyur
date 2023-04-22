@@ -4,6 +4,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from "redux-persist/lib/storage";
 import { authSlice } from "./auth/authslice";
 import { cartSlice } from "./cartslice";
+import { orderSlice } from "./orderslice";
 
 const persistConfig = {
   key: "dynamic",
@@ -15,6 +16,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   authSlice: authSlice.reducer,
   cartSlice: cartSlice.reducer,
+  orderSlice: orderSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

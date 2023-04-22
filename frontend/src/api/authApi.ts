@@ -4,12 +4,6 @@ export interface SignUpValues {
   firstName: string;
   lastName: string;
   email: string;
-  address: {
-    street: string;
-    city: string;
-    provience: string;
-    postalCode: string;
-  };
   avatar?: File | null;
   contactNo: string;
   password: string;

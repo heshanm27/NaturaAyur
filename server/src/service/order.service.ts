@@ -1,22 +1,27 @@
+import Product from "../models/product.model";
+import mongoose from "mongoose";
 import { BadRequestError } from "../errors";
 import Order, { IOrder } from "../models/order.model";
 
-//create funtion to update order status to pending after 1 hour
-export async function updateOrderStatusToPending() {
-  const orders = await Order.find({}, { status: "new", createdAt: { $gte: new Date(new Date().getTime() - 1 * 60 * 60 * 1000) } });
-  if (orders) {
-    await Order.updateMany(orders, { status: "pending" });
-  }
-}
-
-//create funtion to update order status when received status
-export async function updateOrderStatusToReceived(input: any) {
-  const order = await Order.findOneAndUpdate({ _id: input.orderId }, { status: input.status }, { new: true }).exec();
-
-  if (!order) {
-    throw new BadRequestError("Order not found");
-  }
-  return order;
+interface IOrderPay {
+  shippingAddress: {
+    address: string;
+    city: string;
+    postalCode: number;
+    country: string;
+  };
+  paymentMethod: string;
+  paymentResult: {
+    id: string;
+    status: string;
+    update_time: string;
+    email_address: string;
+  };
+  shippingPrice: number;
+  totalPrice: number;
+  isPaid: boolean;
+  paidAt: Date;
+  orderId: string;
 }
 
 export async function addOrder(input: any) {
@@ -24,34 +29,25 @@ export async function addOrder(input: any) {
     const order = new Order({
       user: input.user,
       orderItems: input.orderItems,
-      shippingAddress: input.shippingAddress,
-      paymentMethod: input.paymentMethod,
-      itemsPrice: input.itemsPrice,
-      shippingPrice: input.shippingPrice,
-      taxPrice: input.taxPrice,
-      totalPrice: input.totalPrice,
+      orderId: input.orderId,
     });
 
     const createdOrder = await order.save();
 
-    return {
-      message: "Order Created Successfully",
-      order: createdOrder,
-    };
+    return createdOrder;
   } catch (e: any) {
     throw new Error(e.message);
   }
 }
 
-export async function payForOrder(input: any) {
+export async function payForOrder(input: IOrderPay) {
+  console.log(input);
   try {
     const foundOrder = await Order.findOne({
-      _id: input.orderId,
+      orderId: input.orderId,
     }).exec();
 
     if (!foundOrder) throw new BadRequestError("Order Not Found");
-
-    foundOrder.status = "Paid";
     foundOrder.paymentResult = {
       id: input.paymentResult.id,
       status: input.paymentResult.status,
@@ -59,11 +55,23 @@ export async function payForOrder(input: any) {
       email_address: input.paymentResult.email_address,
     };
     foundOrder.paidAt = new Date();
+    foundOrder.paymentMethod = input.paymentMethod;
+    foundOrder.shippingAddress = {
+      address: input.shippingAddress.address,
+      city: input.shippingAddress.city,
+      postalCode: input.shippingAddress.postalCode,
+      country: input.shippingAddress.country,
+    };
+    foundOrder.isPaid = true;
+    foundOrder.paidAt = new Date();
+
+    await foundOrder.save();
   } catch (e: any) {
     throw new Error(e.message);
   }
 }
 
+export async function sendOrderRecipet(input: any) {}
 export async function deliverOrder(input: any) {
   try {
     const foundOrder = await Order.findOne({
@@ -141,20 +149,6 @@ export async function findOrderByUserId(input: any) {
   }
 }
 
-export async function findPaymentDetailsByOrderId(input: any) {
-  try {
-    const FoundOrder = await Order.findOne({
-      _id: input.orderId,
-    });
-
-    if (!FoundOrder) throw new BadRequestError("Order Not Found");
-
-    return FoundOrder.paymentResult;
-  } catch (e: any) {
-    throw new Error(e.message);
-  }
-}
-
 //find all orders that status not pending or new
 export async function findOrdersHistory() {
   try {
@@ -170,24 +164,91 @@ export async function findOrdersHistory() {
   }
 }
 
-//find all orders that passed seller id match with order items seller id
-//orders should be found by seller id
-// this function should map each item and check if seller id match with order item seller id
-//if match return order item with order details except other order items
-//if not match return null
-
 export async function findOrdersDetailsBySellerId(input: any) {}
 
-export async function findOrdersBySellerId(input: any) {
+export async function findOrdersForSeller(sellerId: string) {
+  const orders = await Order.find().populate({
+    path: "orderItems.product",
+    populate: {
+      path: "sellerId",
+    },
+  });
+  const filteredOrders = orders.filter((order) => {
+    return order.orderItems.some((orderItem: any) => orderItem.product.sellerId._id.toString() === sellerId);
+  });
+  return {
+    message: "Order List Fetched Successfully",
+    orders: filteredOrders,
+  };
+}
+
+//create funtion to update order status when received status
+export async function updateOrderStatus(input: any) {
   try {
-    const orders = await Order.find({ "orderItems.seller": input.sellerId });
-    return {
-      message: "Order List Fetched Successfully",
-      orders,
-    };
+    const order = await Order.findOneAndUpdate({ _id: input.orderId }, { status: input.status }, { new: true }).exec();
+
+    if (!order) {
+      throw new BadRequestError("Order not found");
+    }
+    return order;
   } catch (e: any) {
-    return {
-      message: e.message,
-    };
+    throw new Error(e.message);
   }
 }
+
+export async function deleteOrder(id: string) {
+  return Order.findByIdAndDelete(id);
+}
+
+export async function updateOrderStatusToPending() {
+  const currentDate = new Date().getTime();
+  const oneHourAgo = new Date(currentDate - 60 * 60 * 1000); // subtract one hour in milliseconds
+
+  const orders = await Order.find({ createdAt: { $lt: oneHourAgo } });
+
+  for (const order of orders) {
+    order.status = "pending";
+    await order.save();
+  }
+
+  return {
+    message: "Orders updated successfully",
+  };
+}
+// export async function updateOrderPaymentStatus(input: any) {
+//   try {
+//     const foundOrder = await Order.findOne({
+//       _id: input.orderId,
+//     }).exec();
+
+//     if (!foundOrder) throw new BadRequestError("Order Not Found");
+
+//     foundOrder.isPaid = true;
+//     foundOrder.paidAt = new Date();
+
+//     await foundOrder.save();
+//   } catch (e: any) {
+//     throw new Error(e.message);
+//   }
+// }
+
+// export async function addOrderShippingDetails(input: any) {
+//   try {
+//     const foundOrder = await Order.findOne({
+//       _id: input.orderId,
+//     }).exec();
+
+//     if (!foundOrder) throw new BadRequestError("Order Not Found");
+//     foundOrder.paymentMethod = input.paymentMethod;
+//     foundOrder.shippingAddress = {
+//       address: input.shippingAddress.address,
+//       city: input.shippingAddress.city,
+//       postalCode: input.shippingAddress.postalCode,
+//       country: input.shippingAddress.country,
+//     };
+
+//     await foundOrder.save();
+//   } catch (e: any) {
+//     throw new Error(e.message);
+//   }
+// }
