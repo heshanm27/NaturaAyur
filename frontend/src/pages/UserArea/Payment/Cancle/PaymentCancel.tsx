@@ -1,17 +1,44 @@
-import React from "react";
-import { Box, Typography, Button } from "@mui/material";
-import { Cancel } from "@mui/icons-material";
+import React, { useEffect } from "react";
+import { Box, Typography, Button, Paper, CircularProgress, useTheme } from "@mui/material";
+import { CheckCircleOutline } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const PaymentCancel = () => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const redirectTimeout = setTimeout(() => {
+      navigate("/list", { replace: true });
+    }, 10000);
+
+    return () => clearTimeout(redirectTimeout);
+  }, []);
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh" }}>
-      <Cancel sx={{ fontSize: "6rem", color: "#f44336" }} />
-      <Typography variant="h4" sx={{ mt: 2, mb: 4 }}>
-        Payment Cancelled
-      </Typography>
-      <Button variant="contained" color="primary" href="/">
-        Back to Home
-      </Button>
+    <Box
+      sx={{
+        height: "80vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Paper sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <CheckCircleOutline sx={{ fontSize: "4rem", color: "#4caf50" }} />
+          <Typography variant="body2" color={theme.palette.error.main} sx={{ fontSize: "30px" }}>
+            Payment Faild
+          </Typography>
+          <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: "16px" }}>
+            Unfortunately, your payment was not successful. Please try again.
+          </Typography>
+          <Button sx={{ my: 2 }} variant="contained" color="error" href="/">
+            Back to Home
+          </Button>
+          <p>You will be automatically redirected with in 10 seconds.</p>
+        </Box>
+      </Paper>
     </Box>
   );
 };

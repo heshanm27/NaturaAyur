@@ -36,7 +36,8 @@ function routes(app: Express) {
   app.use("/api/v1/category", CategoryRoute);
   app.use("/api/v1/product", ProdutRoute);
   app.use("/api/v1/user", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), UserRoute);
-  app.use("/api/v1/order", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), OrderRoute);
+  app.use("/api/v1/order", OrderRoute);
+
   app.use("/api/v1/auth", AuthRoute);
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);

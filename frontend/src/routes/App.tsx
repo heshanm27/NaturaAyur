@@ -55,18 +55,18 @@ function App() {
           <Route path="/seller/orders:id" element={<ProductsPage />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller", "user"]} />}> */}
-          <Route path="/user/cart" element={<ProductsPage />} />
-          <Route path="/user/orders" element={<ProductsPage />} />
-          <Route path="/user/orders:id" element={<ProductsPage />} />
-          <Route path="/user/profile" element={<ProductsPage />} />
-          <Route path="/user/payment/success" element={<PaymentSuccess />} />
-          <Route path="/user/payment/cancel" element={<PaymentCancel />} />
-          {/* </Route>
-          </Route> */}
-          <Route path="/liveorder" element={<LiveOrder />} />
-          <Route path="/orderview" element={<OrderView />} />
-          <Route path="/add" element={<AddProduct />} />
         </Route>
+        <Route path="/user/cart" element={<ProductsPage />} />
+        <Route path="/user/orders" element={<ProductsPage />} />
+        <Route path="/user/orders:id" element={<ProductsPage />} />
+        <Route path="/user/profile" element={<ProductsPage />} />
+        <Route path="/user/payment/success" element={<PaymentSuccess />} />
+        <Route path="/user/payment/cancel" element={<PaymentCancel />} />
+        {/* </Route>
+          </Route> */}
+        <Route path="/liveorder" element={<LiveOrder />} />
+        <Route path="/orderview" element={<OrderView />} />
+        <Route path="/add" element={<AddProduct />} />
         <Route path="/" element={<HomeView />} />
         <Route path="/cart" element={<CartView />} />
         <Route path="/product/:id" element={<ProductView />} />

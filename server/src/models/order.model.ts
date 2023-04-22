@@ -8,13 +8,16 @@ export interface IOrder {
     type: mongoose.Schema.Types.ObjectId;
     ref: "User";
   };
-  products: [
+  orderItems: [
     {
       product: {
         type: mongoose.Schema.Types.ObjectId;
         ref: "Product";
       };
       quantity: number;
+      seller: {
+        type: mongoose.Schema.Types.ObjectId;
+      };
     }
   ];
   status: string;
@@ -49,16 +52,17 @@ const OrderSchema = new Schema<IOrder, OrderModel, IOrderMethod>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    products: [
+    orderItems: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
         quantity: { type: Number, required: true },
+        seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
       },
     ],
     status: {
       type: String,
-      enum: ["pending", "cart", "delivered", "canceled"],
-      default: "cart",
+      enum: ["pending", "new", "rejected", "approved", "accepted", "shipped", "cancelled"],
+      default: "new",
     },
     shippingAddress: {
       address: { type: String, required: true },

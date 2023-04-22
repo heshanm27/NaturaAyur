@@ -1,4 +1,4 @@
-import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import SlideOneImg from "../../../assets/slider/Banner1.png";
 import SlideTwoImg from "../../../assets/slider/ayurvedic-skin-cream-online_2048x.webp";
@@ -9,6 +9,10 @@ import PopularCard from "../../../components/card/PopularCard/PopularCard";
 import ProductCard from "../../../components/card/ProductCard/ProductCard";
 import Grid from "@mui/material/Grid";
 import Footer from "../../../components/common/footer/Footer";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PaymentIcon from "@mui/icons-material/Payment";
+import GppGoodIcon from "@mui/icons-material/GppGood";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 export default function HomeView() {
   var items = [
     {
@@ -36,7 +40,7 @@ export default function HomeView() {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
+      <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
         <Box sx={{ maxHeight: "330px" }}>
           <Carousel
             animation="slide"
@@ -99,6 +103,7 @@ export default function HomeView() {
             ))}
           </Grid>
         </Box>
+        <Wrapper />
       </Container>
       <Footer />
     </>
@@ -118,5 +123,54 @@ function Item(props: any) {
         </Box>
       </Stack>
     </Paper>
+  );
+}
+
+function Wrapper() {
+  const data = [
+    {
+      cover: <LocalShippingIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Free Delivery",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <PaymentIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Safe Payment",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <GppGoodIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Shop With Confidence ",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <SupportAgentIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "24/7 Support ",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+  ];
+
+  return (
+    <>
+      <Container maxWidth="xl" sx={{ mt: 5 }}>
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+          {data.map((item, i) => (
+            <Grid item xs={6} md={3} lg={3}>
+              <Paper sx={{ p: 3, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                <Avatar variant="circular" sx={{ bgcolor: "#f3f5f9", width: "70px", height: "70px" }}>
+                  {item.cover}
+                </Avatar>
+                <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 2, mb: 2 }} align="center">
+                  {item.decs}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </>
   );
 }

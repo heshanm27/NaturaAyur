@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { Box, Typography, Button, Paper, CircularProgress, useTheme } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
+import { useAppDispatch } from "../../../../redux/redux-hooks";
+import { clearCart } from "../../../../redux/cartslice";
 const PaymentSuccess = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
+    dispatch(clearCart());
     const redirectTimeout = setTimeout(() => {
       navigate("/list", { replace: true });
     }, 10000);

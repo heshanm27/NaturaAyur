@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(cookieParser());
+
 const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();
