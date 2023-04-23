@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Chip, Container, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import SummaryCard from "../../../components/card/summarycard/summarycard";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
@@ -7,16 +7,6 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { fetchAllLiveOrders } from "../../../api/orderApi";
 import DetailsCard from "../../../components/card/DetailsCard/DetailsCard";
 import { faEnvelope, faClipboardCheck, faBoxesStacked } from "@fortawesome/free-solid-svg-icons";
-
-type Person = {
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  address: string;
-  city: string;
-  state: string;
-};
 
 export default function LiveOrder() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: fetchAllLiveOrders });
@@ -30,16 +20,34 @@ export default function LiveOrder() {
         enableGlobalFilter: false,
       },
       {
-        accessorKey: "name.lastName",
+        accessorFn: (row: any) => row.user.firstName + " " + row.user.lastName, //access nested data with dot notation
         header: "Customer Name",
+        enableGlobalFilter: true,
       },
       {
         accessorKey: "createdAt", //normal accessorKey
         header: "Date",
+        Cell: ({ renderedCellValue, row }: any) => {
+          return new Date(row.original.createdAt).toLocaleDateString();
+        },
       },
       {
         accessorKey: "status",
         header: "Status",
+        Cell: ({ renderedCellValue, row }: any) => {
+          switch (row.original.status) {
+            case "new":
+              return <Chip label="New" color="error" />;
+            case "approved":
+              return <Chip label="Approved" color="success" />;
+            case "rejected":
+              return <Chip label="Rejected" color="error" />;
+            case "delivered":
+              return <Chip label="Delivered" color="success" />;
+            default:
+              return <Chip label="Pending" color="info" />;
+          }
+        },
       },
       {
         accessorKey: "totalPrice",
@@ -48,6 +56,9 @@ export default function LiveOrder() {
       {
         accessorKey: "isPaid",
         header: "Payment",
+        Cell: ({ renderedCellValue, row }: any) => {
+          return row.original.isPaid ? <Chip label="Paid" color="success" /> : <Chip label="Pending" color="error" />;
+        },
       },
     ],
     []
@@ -71,6 +82,8 @@ export default function LiveOrder() {
       value: data?.newOrders ?? 0,
       title: "New Orders",
       color: "#ffcdd2",
+      animate: true,
+      iconColor: "#f44336",
     },
   ];
   console.log(data);
@@ -83,7 +96,7 @@ export default function LiveOrder() {
         {DetailsCardList.map((item, index) => {
           return (
             <Grid item xs={4} lg={3}>
-              <DetailsCard Icon={item.Icon} value={item.value} title={item.title} color={item.color} />
+              <DetailsCard Icon={item.Icon} value={item.value} title={item.title} color={item.color} animate={item.animate} iconColor={item.iconColor} />
             </Grid>
           );
         })}

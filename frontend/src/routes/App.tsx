@@ -22,6 +22,7 @@ import SellerLiveOrder from "../pages/SellerArea/LiveOrder/LiveOrder";
 import SellerOrderHistory from "../pages/SellerArea/OrderHistory/OrderHistory";
 import AdminLiveOrder from "../pages/AdminArea/LiveOrder/LiveOrder";
 import AdminOrderHistory from "../pages/AdminArea/OrderHistory/OrderHistory";
+import NotFound from "../pages/NotFound/NotFound";
 
 function App() {
   const theme = createTheme({
@@ -57,13 +58,10 @@ function App() {
           <Route path="/seller/orders:id" element={<ProductsPage />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller", "user"]} />}> */}
+          <Route path="/user/orders" element={<ProductsPage />} />
+          <Route path="/user/orders:id" element={<ProductsPage />} />
+          <Route path="/user/profile" element={<ProductsPage />} />
         </Route>
-        <Route path="/user/cart" element={<ProductsPage />} />
-        <Route path="/user/orders" element={<ProductsPage />} />
-        <Route path="/user/orders:id" element={<ProductsPage />} />
-        <Route path="/user/profile" element={<ProductsPage />} />
-        <Route path="/user/payment/success" element={<PaymentSuccess />} />
-        <Route path="/user/payment/cancel" element={<PaymentCancel />} />
         {/* </Route>
           </Route> */}
         <Route path="/orderview" element={<OrderView />} />
@@ -77,7 +75,9 @@ function App() {
         <Route path="/register" element={<SignUp />} />
         <Route path="/register/seller" element={<SellerSignUp />} />
         <Route path="/verify/:token" element={<VerifyArea />} />
-        <Route path="/unauthorized" element={<ProductsPage />} />
+        <Route path="/user/payment/success" element={<PaymentSuccess />} />
+        <Route path="/user/payment/cancel" element={<PaymentCancel />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>
   );

@@ -13,7 +13,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { green } from "@mui/material/colors";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { ADMIN_ROUTES, SELLER_ROUTES } from "./link-routes/link-Routes";
+import { ADMIN_ROUTES, SELLER_ROUTES, USER_ROUTES } from "./link-routes/link-Routes";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useAppSelector } from "../../redux/redux-hooks";
 const drawerWidth = 240;
@@ -110,13 +110,23 @@ export default function SideDrawer() {
           </Box>
           <Box sx={{ mt: 5 }}>
             <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1 }}>
-              {role === "admin"
-                ? ADMIN_ROUTES.map((item, index) => {
-                    return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
-                  })
-                : SELLER_ROUTES.map((item, index) => {
-                    return <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />;
-                  })}
+              {(() => {
+                let routes;
+                switch (role) {
+                  case "admin":
+                    routes = ADMIN_ROUTES;
+                    break;
+                  case "seller":
+                    routes = SELLER_ROUTES;
+                    break;
+                  default:
+                    routes = USER_ROUTES;
+                }
+                return routes.map((item, index) => (
+                  <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />
+                ));
+              })()}
+
               <Box sx={{ flexGrow: 1 }}></Box>
               <CustomLink drawerStatus={open} label={"Logout"} path={"/logout"} activeIcon={<LogoutIcon />} key={"logout"} icon={<LogoutOutlinedIcon />} />
             </List>

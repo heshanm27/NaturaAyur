@@ -26,21 +26,19 @@ const PaymentSuccess = () => {
         alignItems: "center",
       }}
     >
-      <Paper sx={{ p: 2 }}>
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <CheckCircleOutline sx={{ fontSize: "4rem", color: "#4caf50" }} />
-          <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: "30px" }}>
-            Payment Completed Successful!
-          </Typography>
-          <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: "16px" }}>
-            Thank you for your purchase!
-          </Typography>
-          <Button sx={{ my: 2 }} variant="contained" color="primary" href="/">
-            Back to Home
-          </Button>
-          <p>You will be redirected with in 10 seconds.</p>
-        </Box>
-      </Paper>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <CheckCircleOutline sx={{ fontSize: "4rem", color: "#4caf50" }} />
+        <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: "40px" }}>
+          Payment Completed Successful!
+        </Typography>
+        <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: "20px" }}>
+          Thank you for your purchase!
+        </Typography>
+        <Button sx={{ my: 2 }} variant="contained" color="primary" href="/">
+          Back to Home
+        </Button>
+        <p>You will be redirected with in 10 seconds.</p>
+      </Box>
     </Box>
   );
 };
