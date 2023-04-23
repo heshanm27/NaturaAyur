@@ -113,7 +113,7 @@ export async function deliverOrder(input: any) {
   }
 }
 
-export async function findRecentOrders(input: any) {
+export async function findRecentOrders() {
   //get  orders within 24 hours
   try {
     const orders = await Order.find({
@@ -176,10 +176,46 @@ export async function findOrderByUserId(input: any) {
 //find all orders that status not pending or new
 export async function findOrdersHistory() {
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const orders = await Order.find({ status: { $nin: ["new", "pending"] } });
+    const rejectedOrders = orders.filter((order) => order.status === "rejected").length;
+    const approvedOrders = orders.filter((order) => order.status === "approved").length;
+    const totalOrders = await Order.countDocuments({
+      status: { $nin: ["new", "pending"] },
+      createdAt: { $lt: today },
+    });
     return {
       message: "Order List Fetched Successfully",
       orders,
+      rejectedOrders,
+      approvedOrders,
+      totalOrders,
+    };
+  } catch (e: any) {
+    return {
+      message: e.message,
+    };
+  }
+}
+
+//find al order that status is pending or new
+export async function findLiveOrders() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const orders = await Order.find({ status: { $in: ["new", "pending"] } })
+      .sort({ createdAt: -1 })
+      .populate("user");
+    const newOrders = orders.filter((order) => order.status === "new").length;
+    const pendingOrders = orders.filter((order) => order.status === "pending").length;
+    const ordersReceivedToday = await Order.countDocuments({ createdAt: { $gte: today } });
+    return {
+      message: "Order List Fetched Successfully",
+      orders,
+      newOrders,
+      pendingOrders,
+      ordersReceivedToday,
     };
   } catch (e: any) {
     return {

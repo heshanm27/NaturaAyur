@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { SignUp, VerifyUser } from "../service/auth.service";
+import { SignUp, VerifyUser, resetPassword } from "../service/auth.service";
 import { CreateUserSignInInput, ForgotPasswordInput } from "../schema/auth.schema";
 import { generateVerifiedEmailBody, generateResetPasswordEmailBody } from "../util/mail-html-body-gen";
 import { sendEmail } from "../util/send-mail";
@@ -124,23 +124,18 @@ export const forgotPassword = async (req: Request<{}, {}, ForgotPasswordInput>, 
   }
 };
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const userResetPassword = async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
-    const email = JWT.verify(token, process.env.JWT_SECRET!);
-    console.log(email);
+    const { password } = req.body;
+    // const email = JWT.verify(token, process.env.JWT_SECRET!);
+    // console.log(email);
 
-    res.redirect("http://localhost:3000/");
-
-    // const user = await findUserByEmil(email);
-    // if (user) {
-    //   return res.status(200).json({
-    //     message: "User found",
-    //   });
-    // }
-  } catch (e: any) {
-    return res.status(400).json({
-      message: e.message,
+    await resetPassword(token, password);
+    return res.status(200).json({
+      message: "Password Reset Successfully",
     });
+  } catch (e: any) {
+    throw new Error(e.message);
   }
 };

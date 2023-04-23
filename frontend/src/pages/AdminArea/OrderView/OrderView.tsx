@@ -1,5 +1,5 @@
 import { Box, Stack, useTheme, Typography, Button, Container } from "@mui/material";
-import SummaryCard from "../../components/card/summarycard/summarycard";
+import SummaryCard from "../../../components/card/summarycard/summarycard";
 import useMediaQuery from "@mui/material/useMediaQuery";
 export default function OrderView() {
   const theme = useTheme();

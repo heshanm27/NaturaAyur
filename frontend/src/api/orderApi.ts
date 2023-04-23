@@ -21,3 +21,20 @@ export const deleteOrder = async (id: string) => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const fetchAllLiveOrders = async () => {
+  try {
+    const response = await apiClient.get("/order/live");
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+export const fetchAllOrderHistory = async () => {
+  try {
+    const response = await apiClient.get("/order/history");
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};

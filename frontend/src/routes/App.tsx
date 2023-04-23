@@ -1,7 +1,5 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import SideDrawer from "../components/drawer/SideDrawer";
-import OrderView from "../pages/OrderView/OrderView";
-import LiveOrder from "../pages/LiveOrder/LiveOrder";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import HomeView from "../pages/UserArea/HomeView/HomeView";
@@ -16,10 +14,14 @@ import SignUp from "../pages/SignUp/SignUp";
 import VerifyArea from "../pages/VerifyArea/VerifyArea";
 import CategoryPage from "../pages/AdminArea/Category/CategoryPage";
 import UserManagmentPage from "../pages/AdminArea/UserManagment/UserManagmentPage";
-import OrderHistory from "../pages/OrderHistory/OrderHistory";
 import ProductsPage from "../pages/SellerArea/ProductsPage/ProductsPage";
 import PaymentSuccess from "../pages/UserArea/Payment/Success/PaymentSuccess";
 import PaymentCancel from "../pages/UserArea/Payment/Cancle/PaymentCancel";
+import OrderView from "../pages/SellerArea/OrderView/OrderView";
+import SellerLiveOrder from "../pages/SellerArea/LiveOrder/LiveOrder";
+import SellerOrderHistory from "../pages/SellerArea/OrderHistory/OrderHistory";
+import AdminLiveOrder from "../pages/AdminArea/LiveOrder/LiveOrder";
+import AdminOrderHistory from "../pages/AdminArea/OrderHistory/OrderHistory";
 
 function App() {
   const theme = createTheme({
@@ -40,14 +42,14 @@ function App() {
           {/* <Route element={<ProtectedRoute />}>
             <Route element={<RoleRoute allowedRoles={["admin"]} />}> */}
           <Route path="/admin/add" element={<AddProduct />} />
-          <Route path="/admin/orders/live" element={<LiveOrder />} />
-          <Route path="/admin/orders/history" element={<OrderHistory />} />
+          <Route path="/admin/orders/live" element={<AdminLiveOrder />} />
+          <Route path="/admin/orders/history" element={<AdminOrderHistory />} />
           <Route path="/admin/categories" element={<CategoryPage />} />
           <Route path="/admin/usermangment" element={<UserManagmentPage />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller"]} />}> */}
-          <Route path="/seller/orders/live" element={<LiveOrder />} />
-          <Route path="/seller/orders/history" element={<OrderHistory />} />
+          <Route path="/seller/orders/live" element={<SellerLiveOrder />} />
+          <Route path="/seller/orders/history" element={<SellerOrderHistory />} />
           <Route path="/seller/products/add" element={<AddProduct />} />
           <Route path="/seller/products" element={<ProductsPage />} />
           <Route path="/seller/products:id" element={<ProductsPage />} />
@@ -64,7 +66,6 @@ function App() {
         <Route path="/user/payment/cancel" element={<PaymentCancel />} />
         {/* </Route>
           </Route> */}
-        <Route path="/liveorder" element={<LiveOrder />} />
         <Route path="/orderview" element={<OrderView />} />
         <Route path="/add" element={<AddProduct />} />
         <Route path="/" element={<HomeView />} />

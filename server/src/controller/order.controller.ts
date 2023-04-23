@@ -94,3 +94,40 @@ export const deleteOrder = async (req: Request, res: Response) => {
     throw new BadRequestError(error.message);
   }
 };
+
+export const getRecentOrderList = async (req: Request, res: Response) => {
+  try {
+    const orders = await OrderService.findRecentOrders();
+    res.status(200).json(orders);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};
+
+export const getOneOrder = async (req: Request, res: Response) => {
+  try {
+    const orderId = req.params.id;
+    const order = await OrderService.findOrderById(orderId);
+    res.status(200).json(order);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};
+
+export const getOrderHistory = async (req: Request, res: Response) => {
+  try {
+    const orders = await OrderService.findOrdersHistory();
+    res.status(200).json(orders);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};
+
+export const getLiveOrder = async (req: Request, res: Response) => {
+  try {
+    const orders = await OrderService.findLiveOrders();
+    res.status(200).json(orders);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};

@@ -1,5 +1,5 @@
 import express from "express";
-import { addOrder, deleteOrder, getAllOrderList } from "../controller/order.controller";
+import { addOrder, deleteOrder, getAllOrderList, getLiveOrder, getOrderHistory } from "../controller/order.controller";
 
 const Router = express.Router();
 
@@ -8,5 +8,8 @@ Router.route("/").get(getAllOrderList).post(addOrder);
 
 //paramterized routes
 Router.route("/:id").delete(deleteOrder);
+
+Router.route("/live").get(getLiveOrder);
+Router.route("/history").get(getOrderHistory);
 
 export default Router;
