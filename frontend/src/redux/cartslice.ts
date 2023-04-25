@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Replace 'your-types' with the appropriate path to your types
 
 export interface IItem {
-  _id: string;
+  product: string;
   name: string;
   price: number;
   quantity: number;
@@ -27,13 +27,13 @@ export const cartSlice = createSlice({
     addToCart: (state, action: PayloadAction<any>) => {
       const { productID, productName, productPrice, productImg, productStock } = action.payload;
       console.log("add to cart", productID, productName, productPrice, productImg);
-      const existingItem = state.items.find((item) => item._id === productID);
+      const existingItem = state.items.find((item) => item.product === productID);
       if (existingItem) {
         existingItem.quantity++;
         existingItem.totalPrice = existingItem.quantity * productPrice;
       } else {
         state.items.push({
-          _id: productID,
+          product: productID,
           name: productName,
           price: productPrice,
           image: productImg,
@@ -46,7 +46,7 @@ export const cartSlice = createSlice({
     },
     increaceQuantity: (state, action: PayloadAction<string>) => {
       const itemId = action.payload;
-      const existingItem = state.items.find((item) => item._id === itemId);
+      const existingItem = state.items.find((item) => item.product === itemId);
       if (existingItem) {
         if (existingItem.quantity === existingItem.stock) return;
         existingItem.quantity++;
@@ -56,10 +56,10 @@ export const cartSlice = createSlice({
     },
     decreaseQuantity: (state, action: PayloadAction<string>) => {
       const itemId = action.payload;
-      const existingItem = state.items.find((item) => item._id === itemId);
+      const existingItem = state.items.find((item) => item.product === itemId);
       if (existingItem) {
         if (existingItem.quantity === 1) {
-          state.items = state.items.filter((item) => item._id !== itemId);
+          state.items = state.items.filter((item) => item.product !== itemId);
         } else {
           existingItem.quantity--;
           existingItem.totalPrice = existingItem.quantity * existingItem.price;
@@ -69,9 +69,9 @@ export const cartSlice = createSlice({
     },
     removeFromCart: (state, action: PayloadAction<string>) => {
       const itemId = action.payload;
-      const existingItem = state.items.find((item) => item._id === itemId);
+      const existingItem = state.items.find((item) => item.product === itemId);
       if (existingItem) {
-        state.items = state.items.filter((item) => item._id !== itemId);
+        state.items = state.items.filter((item) => item.product !== itemId);
         state.total -= existingItem.quantity * existingItem.price;
       }
     },

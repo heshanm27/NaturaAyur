@@ -66,7 +66,8 @@ export async function payForOrder(input: IOrderPay) {
     };
     foundOrder.isPaid = true;
     foundOrder.paidAt = new Date();
-
+    foundOrder.shippingPrice = input.shippingPrice;
+    foundOrder.totalPrice = input.totalPrice;
     await foundOrder.save();
   } catch (e: any) {
     throw new Error(e.message);
@@ -132,9 +133,7 @@ export async function findRecentOrders() {
 
 export async function findOrderById(input: any) {
   try {
-    const order = await Order.findOne({
-      _id: input.orderId,
-    });
+    const order = await Order.findById(input).populate("user").populate("orderItems.product").exec();
     if (!order) throw new BadRequestError("Order Not Found");
 
     return order;
@@ -202,6 +201,7 @@ export async function findOrdersHistory() {
 //find al order that status is pending or new
 export async function findLiveOrders() {
   try {
+    console.log("findLiveOrders");
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const orders = await Order.find({ status: { $in: ["new", "pending"] } })

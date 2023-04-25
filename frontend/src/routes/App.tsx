@@ -23,6 +23,9 @@ import SellerOrderHistory from "../pages/SellerArea/OrderHistory/OrderHistory";
 import AdminLiveOrder from "../pages/AdminArea/LiveOrder/LiveOrder";
 import AdminOrderHistory from "../pages/AdminArea/OrderHistory/OrderHistory";
 import NotFound from "../pages/NotFound/NotFound";
+import OrderList from "../pages/UserArea/OrdersList/OrderList";
+import UserOrderView from "../pages/UserArea/OrderView/OrderView";
+import AdminOrderView from "../pages/AdminArea/OrderView/OrderView";
 
 function App() {
   const theme = createTheme({
@@ -43,34 +46,33 @@ function App() {
           {/* <Route element={<ProtectedRoute />}>
             <Route element={<RoleRoute allowedRoles={["admin"]} />}> */}
           <Route path="/admin/add" element={<AddProduct />} />
-          <Route path="/admin/orders/live" element={<AdminLiveOrder />} />
-          <Route path="/admin/orders/history" element={<AdminOrderHistory />} />
           <Route path="/admin/categories" element={<CategoryPage />} />
           <Route path="/admin/usermangment" element={<UserManagmentPage />} />
+          <Route path="/admin/orders/live" element={<AdminLiveOrder />} />
+          <Route path="/admin/orders/history" element={<AdminOrderHistory />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderView />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller"]} />}> */}
           <Route path="/seller/orders/live" element={<SellerLiveOrder />} />
           <Route path="/seller/orders/history" element={<SellerOrderHistory />} />
-          <Route path="/seller/products/add" element={<AddProduct />} />
           <Route path="/seller/products" element={<ProductsPage />} />
-          <Route path="/seller/products:id" element={<ProductsPage />} />
-          <Route path="/products:id/edit" element={<ProductsPage />} />
-          <Route path="/seller/orders:id" element={<ProductsPage />} />
+          <Route path="/seller/products/add" element={<AddProduct />} />
+          <Route path="/seller/products/:id" element={<ProductView />} />
+          <Route path="/seller/products/edit/:id" element={<AddProduct />} />
+          <Route path="/seller/orders:id" element={<OrderView />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller", "user"]} />}> */}
-          <Route path="/user/orders" element={<ProductsPage />} />
-          <Route path="/user/orders:id" element={<ProductsPage />} />
+          <Route path="/user/orders" element={<OrderList />} />
           <Route path="/user/profile" element={<ProductsPage />} />
+          <Route path="/orders/view/:id" element={<UserOrderView />} />
+          <Route path="/orders/track/:id" element={<UserOrderView />} />
         </Route>
         {/* </Route>
           </Route> */}
-        <Route path="/orderview" element={<OrderView />} />
-        <Route path="/add" element={<AddProduct />} />
         <Route path="/" element={<HomeView />} />
         <Route path="/cart" element={<CartView />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/list" element={<ProductListView />} />
-        <Route path="/s" element={<OrderView />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/register/seller" element={<SellerSignUp />} />

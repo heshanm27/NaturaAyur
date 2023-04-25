@@ -131,7 +131,7 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
                   align="left"
                   sx={{ flex: 1, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", maxWidth: "200px" }}
                 >
-                  {item.name}ssssssss
+                  {item.name}
                 </Typography>
               </TableCell>
 
@@ -193,17 +193,7 @@ export default function CartView() {
     title: "",
   });
   const handleCheckout = () => {
-    // if (items.length === 0) {
-    //   setNotify({
-    //     isOpen: true,
-    //     message: "No items in the cart",
-    //     title: "Error",
-    //     type: "error",
-    //   });
-    //   return;
-    // }
     mutate(items);
-    // dispatch(clearCart());
   };
   return (
     <>

@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import * as OrderService from "../service/order.service";
 import { gernateRandomUniqueCode } from "../util/genrate-product-code";
 import { BadRequestError } from "../errors";
+import { findProductById } from "../service/product.service";
 
 export const getAllOrderList = async (req: Request, res: Response) => {
   try {
@@ -21,12 +22,17 @@ export const getOneUserOrderList = async (req: Request, res: Response) => {};
 export const addOrder = async (req: Request, res: Response) => {
   try {
     const user: any = req.user;
-
+    console.log(req.body);
     const PlacedOrder: any = await OrderService.addOrder({
       user: user._id,
       orderItems: req.body,
       orderId: gernateRandomUniqueCode("ORD"),
     });
+
+    for (let item of req.body) {
+      const product = await findProductById(item.product, item.quantity);
+    }
+
     const params: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ["card"],
       shipping_options: [
@@ -125,6 +131,7 @@ export const getOrderHistory = async (req: Request, res: Response) => {
 
 export const getLiveOrder = async (req: Request, res: Response) => {
   try {
+    console.log("live order");
     const orders = await OrderService.findLiveOrders();
     res.status(200).json(orders);
   } catch (error: any) {

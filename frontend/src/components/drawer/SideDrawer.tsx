@@ -6,7 +6,7 @@ import AppBar from "@mui/material/AppBar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import SegmentIcon from "@mui/icons-material/Segment";
-import { Avatar, IconButton, Stack, useTheme } from "@mui/material";
+import { Avatar, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -16,21 +16,38 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { ADMIN_ROUTES, SELLER_ROUTES, USER_ROUTES } from "./link-routes/link-Routes";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useAppSelector } from "../../redux/redux-hooks";
+import NavBarMenu from "../common/NavBarMenu/NavBarMenu";
+import { Logout } from "@mui/icons-material";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
   id: string | number;
   collectionName: string;
 }
+
+const menuItems = [
+  {
+    text: "Profile",
+    url: "/",
+    icon: <SegmentIcon />,
+  },
+];
 export default function SideDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const { role } = useAppSelector((state) => state.authSlice);
-
+  const { role, avatar, firstName } = useAppSelector((state) => state.authSlice);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleDrawerClose = () => {
     setOpen(!open);
   };
+  const menuOpen = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <IconButton>
@@ -62,9 +79,9 @@ export default function SideDrawer() {
               <div></div>
             )}
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-              <Avatar alt="Remy Sharp" src="https://images.pexels.com/photos/15579683/pexels-photo-15579683.jpeg" />
-              <Typography>Example User</Typography>
-              <IconButton aria-label="delete">
+              <Avatar alt="Remy Sharp" src={avatar} />
+              <Typography>{firstName}</Typography>
+              <IconButton aria-label="delete" onClick={handleClick}>
                 <KeyboardArrowDownIcon />
               </IconButton>
             </Stack>
@@ -147,6 +164,60 @@ export default function SideDrawer() {
           <Outlet />
         </Box>
       </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={menuOpen}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Home
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   );
 }

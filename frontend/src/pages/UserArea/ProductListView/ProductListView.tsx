@@ -30,7 +30,10 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import SortIcon from "@mui/icons-material/Sort";
 import NoProductsIMG from "../../../assets/images/noproducts.svg";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useLocation } from "react-router-dom";
 export default function ProductListView() {
+  const location = useLocation();
+  console.log("loationstate", location);
   const queryClient = new QueryClient();
   const [filter, setFilter] = useState<IFilter>({
     cat: "",
@@ -92,10 +95,7 @@ export default function ProductListView() {
       page,
     }));
   };
-  function filterValue() {}
-  // function valueLabelFormat(value: number) {
-  //   return marks.findIndex((mark) => mark.value === value) + 1;
-  // }
+
   const { data, error, isLoading, isError, isFetched } = useQuery({
     queryKey: ["productlist", filter],
     queryFn: () => fetchAllProducts(filter),
@@ -113,14 +113,15 @@ export default function ProductListView() {
     setFilter((prev: any) => ({
       ...prev,
       cat: value,
+      subCat: [],
     }));
   };
 
-  const subCategoreySelect = (value: string) => {
+  const subCategoreySelect = (value: string, mainId: string) => {
     setShowClearButton(true);
     setFilter((prev: any) => ({
       ...prev,
-      cat: value,
+      subCat: value,
     }));
   };
   const handleClearFilters = () => {
@@ -135,6 +136,15 @@ export default function ProductListView() {
     });
     setShowClearButton(false);
   };
+  useEffect(() => {
+    if (location?.state?.search) {
+      setShowClearButton(true);
+      setFilter((prevFilter) => ({
+        ...prevFilter,
+        search: location?.state?.search,
+      }));
+    }
+  }, [location]);
   return (
     <>
       <Navbar />
@@ -154,6 +164,7 @@ export default function ProductListView() {
                         id: category._id,
                         name: category.name,
                       }}
+                      key={category._id}
                       subCategories={category?.subCategory}
                       mainOnClick={mainCategoreySelect}
                       subOnClick={subCategoreySelect}
@@ -162,7 +173,7 @@ export default function ProductListView() {
                 )}
               </List>
 
-              <Typography> FILTER BY BRANDS</Typography>
+              {/* <Typography> FILTER BY BRANDS</Typography> */}
               {/* <List>{categoryLoading ? <CircularProgress /> : categories?.map((category: any) => <ListItem key={category}>{category}</ListItem>)}</List> */}
               {/* <Stack spacing={2}>
                 <Typography> FILTER BY Price</Typography>
@@ -187,7 +198,7 @@ export default function ProductListView() {
             </Box>
           </Grid>
           <Grid item md={10}>
-            <Stack direction={"row"} justifyContent={"space-between"} sx={{ mb: 5 }}>
+            <Stack direction={showClearButton ? "row-reverse" : "row"} justifyContent={"space-between"} sx={{ mb: 5 }}>
               {showClearButton && (
                 <Button variant="outlined" color="error" endIcon={<ClearIcon />} onClick={handleClearFilters}>
                   Clear Filters
@@ -224,7 +235,7 @@ export default function ProductListView() {
               <Grid container spacing={4} justifyContent={data?.products.length > 0 ? "start" : "center"}>
                 {data?.products.length > 0 ? (
                   data?.products.map((item: any) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
+                    <Grid item xs={12} sm={6} md={6} lg={3} key={item._id}>
                       <ProductCard
                         productCode={item?.productCode}
                         productID={item._id}
@@ -259,16 +270,43 @@ interface CategoryButtonProps {
   };
   subCategories: string[];
   mainOnClick: (value: string) => void;
-  subOnClick: (value: string) => void;
+  subOnClick: (value: string, mainId: string) => void;
+  key: any;
 }
-function CategoryButton({ mainCategory, subCategories, mainOnClick, subOnClick }: CategoryButtonProps) {
+function CategoryButton({ mainCategory, subCategories, mainOnClick, subOnClick, key }: CategoryButtonProps) {
   const [open, setOpen] = useState(false);
+  const [isCatActive, setIsActive] = useState("");
+  const [isSubAtive, setIsSubActive] = useState("");
+
+  const handleMainClick = () => {
+    mainOnClick(mainCategory.id);
+    setIsActive(mainCategory.id);
+    setOpen((prev) => !prev);
+  };
+
+  const handleSubClick = (item: string) => {
+    setIsSubActive(item);
+    subOnClick(item, mainCategory.id);
+  };
+
+  const handleClearActive = () => {
+    setIsActive("");
+    setIsSubActive("");
+  };
+
+  console.log("check selectd", isCatActive, mainCategory.name);
+  console.log("check select", isCatActive === mainCategory.name);
   return (
     <>
       <ListItemButton
+        key={key}
+        sx={{ backgroundColor: isCatActive === mainCategory.name ? "#E9FBAD" : "" }}
         onClick={() => {
-          mainOnClick(mainCategory.id);
+          setIsSubActive("");
+          setIsActive("");
+          setIsActive(mainCategory.name);
           setOpen((prev) => !prev);
+          mainOnClick(mainCategory.id);
         }}
       >
         <ListItemText primary={mainCategory.name} />
@@ -278,7 +316,14 @@ function CategoryButton({ mainCategory, subCategories, mainOnClick, subOnClick }
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List>
             {subCategories.map((item: string) => (
-              <ListItemButton key={item} onClick={() => subOnClick(item)}>
+              <ListItemButton
+                sx={{ backgroundColor: isSubAtive === item ? "#E9FBCD" : "inherit" }}
+                key={item}
+                onClick={() => {
+                  setIsSubActive(item);
+                  subOnClick(item, mainCategory.id);
+                }}
+              >
                 <ListItemText primary={item} />
               </ListItemButton>
             ))}

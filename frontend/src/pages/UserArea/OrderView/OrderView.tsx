@@ -8,7 +8,7 @@ import ProductTable from "../../../components/common/table/ProductTable/ProductT
 import StatusChips from "../../../components/common/StatusChips/StatusChips";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
 
-export default function OrderView() {
+export default function UserOrderView() {
   const { id } = useParams();
   const theme = useTheme();
   const [docID, setDocID] = useState("");

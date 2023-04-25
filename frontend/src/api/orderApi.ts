@@ -38,3 +38,12 @@ export const fetchAllOrderHistory = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const fetchOneOrder = async (id: string) => {
+  try {
+    const reponse = await apiClient.get(`/order/${id}`);
+    return reponse.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};

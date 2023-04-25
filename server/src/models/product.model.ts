@@ -16,6 +16,7 @@ export interface IProduct {
   numReviews?: number;
   reviews?: ObjectId[];
   seller: ObjectId;
+  soldStock?: number;
 }
 
 interface IProductMethod {}
@@ -40,6 +41,7 @@ const ProductSchema = new Schema<IProduct, IProductModel, IProductMethod>(
     },
     images: { type: [String], required: true, trim: true },
     stock: { type: Number, required: true, default: 0 },
+    soldStock: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },
     reviews: { type: [mongoose.Schema.Types.ObjectId], ref: "Reviews" },

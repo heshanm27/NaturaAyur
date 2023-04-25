@@ -39,7 +39,7 @@ export const OrderpayemntHandler = async (req: Request, res: Response) => {
         shippingPrice: session.shipping_cost.amount_total,
         totalPrice: session.amount_total / 100,
       });
-      console.log("session", session);
+      console.log("session", session.amount_total);
       break;
     case "payment_intent.created":
       break;

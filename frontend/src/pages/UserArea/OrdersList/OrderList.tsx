@@ -10,7 +10,7 @@ import { faEnvelope, faClipboardCheck, faBoxesStacked } from "@fortawesome/free-
 import { Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-export default function LiveOrder() {
+export default function OrderList() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: fetchAllLiveOrders });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [docId, setDocId] = useState("");
