@@ -19,7 +19,7 @@ const settings = {
   nextArrow: <NavigateNextIcon />,
   prevArrow: <ArrowBackIosIcon />,
 };
-export default function NewArrivals() {
+export default function TopBrand() {
   const { data, isLoading } = useQuery({
     queryKey: ["newarrivals"],
     queryFn: fetchAllProductsForSeller,
@@ -29,7 +29,7 @@ export default function NewArrivals() {
       <Stack direction={"row"} justifyContent={"start"} alignItems={"baseline"} spacing={2} mb={2}>
         <AutoAwesomeIcon color="error" />
         <Typography variant="h5" sx={{ mt: 2, mb: 2 }} fontWeight={"bold"}>
-          New Arrival
+          Top Brand
         </Typography>
       </Stack>
 

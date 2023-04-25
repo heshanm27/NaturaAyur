@@ -11,7 +11,7 @@ import { addToCart } from "../../../redux/cartslice";
 import { useNavigate } from "react-router-dom";
 interface ProductProps {
   productName: string;
-  productPrice: string;
+  productPrice: number;
   productCode: string;
   productID: string;
   productImg: string;

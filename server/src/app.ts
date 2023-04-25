@@ -33,8 +33,8 @@ const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();
 
-  Scheduler.dailySchedule.start();
-
+  // Scheduler.dailySchedule.start();
+  Scheduler.dailyScheduleTwo.start();
   routes(app);
 });
 

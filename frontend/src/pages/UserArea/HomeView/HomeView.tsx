@@ -13,27 +13,39 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PaymentIcon from "@mui/icons-material/Payment";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import CarousalSlide, { ICrousalProps } from "../../../components/CarousalSlide/CarousalSlide";
+import NewArrivals from "./NewArrivals/NewArrivals";
+import PopularProducts from "./PopularProducts/PopularProducts";
+import TopBrand from "./TopBrands/TopBrand";
 export default function HomeView() {
-  var items = [
+  const items: ICrousalProps[] = [
     {
-      name: "Random Name #1",
-      description: "Probably the most random thing you have ever seen!",
-      img: SlideOneImg,
+      button: "Buy Now",
+      title: "Organic Hair Oil",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Natural Face Wash",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Herbal Shampoo",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Ayurvedic Toothpaste",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
   ];
 
@@ -63,46 +75,14 @@ export default function HomeView() {
             }}
           >
             {items.map((item, i) => (
-              <Item key={i} item={item} />
+              <CarousalSlide button={item.button} description={item.description} image={item.image} title={item.title} url={item.url} key={i} />
             ))}
           </Carousel>
         </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Popular Categories
-          </Typography>
-          <Grid container spacing={2} alignContent={"center"}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={2}>
-                <PopularCard />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Popular Products
-          </Typography>
-          <Grid container spacing={2}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" productStock={2} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Top Brands
-          </Typography>
-          <Grid container spacing={2}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" productStock={2} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <NewArrivals />
+        <PopularProducts />
+        <TopBrand />
+
         <Wrapper />
       </Container>
       <Footer />
