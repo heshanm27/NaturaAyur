@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -6,9 +6,11 @@ import "slick-carousel/slick/slick-theme.css";
 import { useQuery } from "@tanstack/react-query";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { fetchAllProductsForSeller } from "../../../../api/productApi";
+import { getNewArrivalsProduct } from "../../../../api/productApi";
+
 import ProductCard from "../../../../components/card/ProductCard/ProductCard";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import SkeltonCard from "../../../../components/card/SkeltonCard/SkeltonCard";
 const settings = {
   dots: false,
   infinite: true,
@@ -22,10 +24,10 @@ const settings = {
 export default function NewArrivals() {
   const { data, isLoading } = useQuery({
     queryKey: ["newarrivals"],
-    queryFn: fetchAllProductsForSeller,
+    queryFn: getNewArrivalsProduct,
   });
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, mb: 2 }}>
       <Stack direction={"row"} justifyContent={"start"} alignItems={"baseline"} spacing={2} mb={2}>
         <AutoAwesomeIcon color="error" />
         <Typography variant="h5" sx={{ mt: 2, mb: 2 }} fontWeight={"bold"}>
@@ -34,9 +36,20 @@ export default function NewArrivals() {
       </Stack>
 
       <Slider {...settings}>
-        {data?.products?.map((item: any) => (
-          <ProductCard productCode="" productID="" productImg="" productName="" productPrice={0} productStock={0} />
-        ))}
+        {isLoading
+          ? [1, 2, 3, 4, 5].map(() => <SkeltonCard />)
+          : data?.newArrivals?.map((item: any) => (
+              <Box sx={{ p: 2 }}>
+                <ProductCard
+                  productCode={item?.productCode}
+                  productID={item._id}
+                  productImg={item.images[0]}
+                  productName={item.name}
+                  productPrice={item.price}
+                  productStock={item.stock}
+                />
+              </Box>
+            ))}
       </Slider>
     </Box>
   );

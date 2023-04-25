@@ -7,7 +7,7 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import SegmentIcon from "@mui/icons-material/Segment";
 import { Avatar, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { green } from "@mui/material/colors";
@@ -15,9 +15,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { ADMIN_ROUTES, SELLER_ROUTES, USER_ROUTES } from "./link-routes/link-Routes";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { useAppSelector } from "../../redux/redux-hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/redux-hooks";
 import NavBarMenu from "../common/NavBarMenu/NavBarMenu";
 import { Logout } from "@mui/icons-material";
+import { logOut } from "../../redux/auth/authslice";
+import HomeIcon from "@mui/icons-material/Home";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
@@ -40,13 +42,29 @@ export default function SideDrawer() {
   const handleDrawerClose = () => {
     setOpen(!open);
   };
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const menuOpen = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleClose = (state: string) => {
+    switch (state) {
+      case "Logout":
+        dispatch(logOut("logout"));
+        navigate("/signin", { replace: true });
+        setAnchorEl(null);
+        return;
+      case "home":
+        navigate("/", { replace: true });
+        setAnchorEl(null);
+        return;
+        break;
+      default:
+        setAnchorEl(null);
+        return;
+    }
   };
   return (
     <>
@@ -168,8 +186,8 @@ export default function SideDrawer() {
         anchorEl={anchorEl}
         id="account-menu"
         open={menuOpen}
-        onClose={handleClose}
-        onClick={handleClose}
+        onClose={() => handleClose("")}
+        onClick={() => handleClose("")}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -199,19 +217,13 @@ export default function SideDrawer() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => handleClose("home")}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <HomeIcon fontSize="small" />
           </ListItemIcon>
           Home
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => handleClose("logout")}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

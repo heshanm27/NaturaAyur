@@ -72,7 +72,7 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
       <Box sx={{ ...theme.mixins.toolbar, mb: 5 }}></Box>
-      <Box sx={{ ...theme.mixins.toolbar, mb: 5 }}></Box>
+      <Box sx={{ ...theme.mixins.toolbar }}></Box>
     </>
   );
 }
