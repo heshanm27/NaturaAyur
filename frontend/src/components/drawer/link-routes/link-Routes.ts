@@ -64,3 +64,18 @@ export const SELLER_ROUTES: LinkRoute[] = [
     activeIcon: createElement(AllInboxIcon),
   },
 ];
+
+export const USER_ROUTES: LinkRoute[] = [
+  {
+    path: "/user/orders",
+    name: "Products",
+    icon: createElement(AllInboxOutlinedIcon),
+    activeIcon: createElement(AllInboxIcon),
+  },
+  {
+    path: "/user/profile",
+    name: "Products",
+    icon: createElement(AllInboxOutlinedIcon),
+    activeIcon: createElement(AllInboxIcon),
+  },
+];

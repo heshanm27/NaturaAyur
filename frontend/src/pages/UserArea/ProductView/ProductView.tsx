@@ -1,11 +1,18 @@
-import { Box, Button, Container, Divider, Grid, Paper, Rating, Stack, TextField, Typography } from "@mui/material";
-import React from "react";
+import { Badge, Box, Button, Chip, Container, Divider, Grid, IconButton, Link, Paper, Rating, Stack, TextField, Typography } from "@mui/material";
+import React, { useRef, useState } from "react";
 import Navbar from "../../../components/common/navbar/navbar";
 import Footer from "../../../components/common/footer/Footer";
-import SlideOneImg from "../../../assets/slider/Banner1.png";
-import SlideTwoImg from "../../../assets/slider/ayurvedic-skin-cream-online_2048x.webp";
+
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
+import { useLocation, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProduct } from "../../../api/productApi";
+import CustomCirculerProgress from "../../../components/common/CustomCirculerProgress/CustomCirculerProgress";
+import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
+import { Editor } from "@tinymce/tinymce-react";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 
 const images = [
   {
@@ -39,73 +46,166 @@ const reviewData = {
     // Add more reviews here...
   ],
 };
-var items = [
-  {
-    name: "Random Name #1",
-    description: "Probably the most random thing you have ever seen!",
-    img: SlideOneImg,
-  },
-  {
-    name: "Random Name #2",
-    description: "Hello World!",
-    img: SlideTwoImg,
-  },
-  {
-    name: "Random Name #2",
-    description: "Hello World!",
-    img: SlideTwoImg,
-  },
-  {
-    name: "Random Name #2",
-    description: "Hello World!",
-    img: SlideTwoImg,
-  },
-];
+interface IImageGallery {
+  original: string;
+  thumbnail: string;
+}
+function convertImageGalleryArray(items: string[]): IImageGallery[] {
+  return items
+    ? items?.map((item: any) => {
+        return {
+          original: item,
+          thumbnail: item,
+        };
+      })
+    : [];
+}
 
 export default function ProductView() {
+  const parms = useParams();
+  const [quantity, setQuantity] = useState<number>(1);
+  const editorRef = useRef<any>(null);
+  const [richText, setRichText] = useState<string>("");
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["product", parms.id],
+    queryFn: () => fetchProduct(parms.id ?? ""),
+    onError: (error: any) => {
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: "error",
+        title: "Error",
+      });
+    },
+  });
+
+  const { data: seller } = useQuery({
+    queryKey: ["product-seller", parms.id],
+    queryFn: () => fetchProduct(parms.id ?? ""),
+    onError: (error: any) => {
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: "error",
+        title: "Error",
+      });
+    },
+  });
+  console.log(data);
+  if (isLoading) {
+    return <CustomCirculerProgress />;
+  }
+  const handleEditorChange = (content: any, editor: any) => {
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+      if (setRichText.length > 100) {
+        alert("You need to enter 100 words or more.");
+        return;
+      }
+      setRichText(editorRef.current.getContent());
+    }
+  };
+
+  const handleDecrease = () => {
+    if (quantity <= 1) {
+      setNotify({
+        isOpen: true,
+        message: "You can't add less than 1",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    setQuantity((prevQuantity) => prevQuantity - 1);
+  };
+
+  const handleIncrease = () => {
+    if (quantity >= data?.product.stock) {
+      setNotify({
+        isOpen: true,
+        message: "You can't add more than available stock",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    console.log(quantity);
+    setQuantity((prevQuantity: number) => prevQuantity + 1);
+  };
+
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <ImageGallery items={images} thumbnailPosition="bottom" showFullscreenButton={false} showNav={false} />
+          <Grid item xs={12} md={4} order={{ xs: 2, sm: 1 }}>
+            <ImageGallery
+              items={convertImageGalleryArray(data?.product.images)}
+              thumbnailPosition="bottom"
+              showFullscreenButton={false}
+              showNav={false}
+              autoPlay
+            />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, height: "410px" }}>
-              <Stack direction="column" justifyContent="start" alignItems="start" spacing={2}>
-                <Typography variant="h6" align="left">
-                  NEW!! Invicta Men's 43MM Pro Diver Quartz 3 Hand Blue Dial Gold-tone Watch
-                </Typography>
+          <Grid item xs={12} md={5} order={{ xs: 1, sm: 2 }}>
+            <Stack direction="column" justifyContent="start" alignItems="start" spacing={1}>
+              <Typography variant="h6" align="left" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+                {data?.product.name}
+              </Typography>
+              <Typography variant="subtitle1" align="left" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+                by{" "}
+                <Link href="#" underline="hover">
+                  {'underline="hover"'}
+                </Link>
+              </Typography>
+              <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Rating name="avg-rating" precision={0.5} value={5} readOnly />
+              </Stack>
+              <Divider sx={{ width: "100%" }} flexItem />
+              <Typography></Typography>
+              <Chip variant="outlined" color="primary" size="small" label={`Avaliable Stock ${data?.product.stock}`} />
+              <Divider sx={{ width: "100%" }} />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={3} order={{ xs: 3, sm: 3 }}>
+            <Paper sx={{ p: 2 }} variant="outlined">
+              <Typography variant="h4" align="left" sx={{ mb: 3 }}>
+                US ${data?.product.price.toFixed(2)}
+              </Typography>
+              <Stack direction="column" justifyContent="center" alignItems="center" textAlign={"end"} spacing={2} width={"100%"}>
                 <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                  <Typography variant="body1" gutterBottom>
-                    Avg rating:
-                  </Typography>
-                  <Rating name="avg-rating" precision={0.5} value={5} readOnly sx={{ my: 1 }} />
-                </Stack>
-                <Typography variant="h6" align="left">
-                  Price:{" "}
-                  <Typography component="span" sx={{ ml: 1 }}>
-                    US $59.95
-                  </Typography>
-                </Typography>
-
-                <Typography variant="h6" gutterBottom></Typography>
-                <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                  <Typography variant="h6" component="span" sx={{ mr: 1, textAlign: "center" }}>
+                  <Typography variant="h6" component="span" sx={{ textAlign: "center" }}>
                     Quantity:
                   </Typography>
-                  <TextField type="number" inputProps={{ min: 1 }} size="small" />
-                  <Typography variant="body2" sx={{ mb: 1 }}>
-                    10 available / 6 sold
-                  </Typography>
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    value={quantity}
+                    inputProps={{ min: 1, max: data?.product.stock, style: { textAlign: "center" }, readOnly: true }}
+                    sx={{ "& .MuiInputBase-input": { textAlign: "center" } }}
+                    InputProps={{
+                      startAdornment: (
+                        <IconButton onClick={handleDecrease}>
+                          <RemoveIcon />
+                        </IconButton>
+                      ),
+                      endAdornment: (
+                        <>
+                          <IconButton onClick={handleIncrease}>
+                            <AddIcon />
+                          </IconButton>
+                        </>
+                      ),
+                    }}
+                  />
                 </Stack>
-
-                {/* <IconButton color="secondary" onClick={handleShareClick}>
-        <ShareIcon />
-      </IconButton> */}
-              </Stack>
-              <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mt: 5 }} spacing={2} width={"100%"}>
                 <Button variant="contained" color="primary" sx={{ mb: 1, width: "50%" }}>
                   Add to Cart
                 </Button>
@@ -113,22 +213,17 @@ export default function ProductView() {
             </Paper>
           </Grid>
         </Grid>
-
-        <Box p={2}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6">About this product</Typography>
+        <Box p={1}>
+          <Paper sx={{ p: 2 }} variant="outlined">
+            <Typography variant="h6">Product Overview</Typography>
             <Divider sx={{ mt: 2, mb: 2 }} />
-            <Typography>
-              Hello, and thank you for your kind words. I have given this idea some thought in the past, and I'm not sure if it would be wise to implement it.
-              You see, this carousel is built to "host" anything inside it, from simple <img /> to complicated components with tables and buttons. The question
-              then becomes, how do you create the thumbnails, and what do you display inside them, given that the carousel size and content is variable? The
-              answer to that question is not obvious. I was thinking of creating another library that implements an image gallery, that works similarly to this
-              one, but that's not something that is currently on my roadmap.
-            </Typography>
+            <Box sx={{ p: 2 }}>
+              <div dangerouslySetInnerHTML={{ __html: data?.product.description }}></div>
+            </Box>
           </Paper>
           {/* Add review and rating */}
 
-          <Paper sx={{ p: 2, mt: 5, mb: 5 }}>
+          <Paper sx={{ p: 2, mt: 5, mb: 5 }} variant="outlined">
             <Stack direction={"column"} spacing={2}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography variant="h6">Rate this product</Typography>
@@ -140,7 +235,43 @@ export default function ProductView() {
                   // }}
                 />
               </Stack>
-              <TextField label="Add Review" multiline rows={4} fullWidth />
+              <Editor
+                onInit={(evt, editor) => (editorRef!.current = editor)}
+                onChange={handleEditorChange}
+                apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
+                init={{
+                  height: 200,
+                  menubar: false,
+
+                  plugins: [
+                    "advlist",
+                    "autolink",
+                    "lists",
+                    "link",
+                    "image",
+                    "charmap",
+                    "preview",
+                    "anchor",
+                    "searchreplace",
+                    "visualblocks",
+                    "code",
+                    "fullscreen",
+                    "insertdatetime",
+                    "media",
+                    "table",
+                    "code",
+                    "help",
+                    "wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | blocks | " +
+                    "bold italic forecolor | alignleft aligncenter " +
+                    "alignright alignjustify | bullist numlist outdent indent | " +
+                    "removeformat | help" +
+                    "| image",
+                  content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                }}
+              />
               <Box mt={2} display="flex" justifyContent="end">
                 <Button variant="contained" color="primary" onClick={() => {}}>
                   Submit Your Review
@@ -152,6 +283,7 @@ export default function ProductView() {
 
         <ProductReview title={reviewData.title} ratings={reviewData.ratings} reviews={reviewData.reviews} />
       </Container>
+      <CustomSnackBar notify={notify} setNotify={setNotify} />
       <Footer />
     </>
   );
@@ -183,47 +315,43 @@ const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }
   const displayedReviews = reviews.slice(0, 10);
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Stack direction={{ md: "row", sm: "column" }} justifyContent="space-around" alignItems={{ md: "start", sm: "center" }} spacing={2}>
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Typography variant="h6">{title}</Typography>
-          <Box sx={{ mt: 1 }}>
-            {ratings.map(({ rating, votes }, index) => (
-              <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
-                <Rating value={rating} max={5} precision={0.5} readOnly />
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  ({votes} {votes === 1 ? "vote" : "votes"})
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <Box sx={{ maxHeight: "400px", overflow: "auto" }}>
-          {displayedReviews.map(({ name, review, rating }, index) => (
-            <Box key={index} sx={{ mt: index > 0 ? 2 : 0 }}>
-              <Typography variant="subtitle1">{name}</Typography>
-              <Rating value={rating} max={5} precision={0.5} readOnly />
-              <Typography variant="body1">{review}</Typography>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={3}>
+        <Paper sx={{ p: 2 }} variant="outlined">
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Stack direction={"row"} spacing={2}>
+              <Typography variant="h3">{4.8}</Typography>
+              <Stack>
+                <Rating name="avg-rating" precision={0.5} value={4.8} readOnly sx={{ my: 1 }} />
+                <Typography variant="body1">Based on {reviews.length} reviews</Typography>
+              </Stack>
+            </Stack>
+            <Box sx={{ mt: 1 }}>
+              {ratings.map(({ rating, votes }, index) => (
+                <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
+                  <Rating value={rating} max={5} precision={0.5} readOnly />
+                  <Typography variant="body1" sx={{ ml: 1 }}>
+                    ({votes} {votes === 1 ? "vote" : "votes"})
+                  </Typography>
+                </Box>
+              ))}
             </Box>
+          </Box>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} md={9}>
+        <Box sx={{ overflow: "auto" }}>
+          {displayedReviews.map(({ name, review, rating }, index) => (
+            <Paper sx={{ p: 2, borderRadius: "10px", mt: index > 0 ? 2 : 0, mb: 2 }} variant="outlined">
+              <Box key={index}>
+                <Typography variant="subtitle1">{name}</Typography>
+                <Rating value={rating} max={5} precision={0.5} readOnly />
+                <Typography variant="body1">{review}</Typography>
+              </Box>
+            </Paper>
           ))}
         </Box>
-      </Stack>
-    </Paper>
+      </Grid>
+    </Grid>
   );
 };
-function Item(props: any) {
-  return (
-    <Paper style={{ height: "500px", cursor: "pointer", pointerEvents: "none", borderRadius: "10px" }}>
-      <Stack direction="row" justifyContent="space-around" alignItems="center" spacing={2}>
-        {/* <Box width={"50%"} height={"300px"} sx={{ backgroundColor: "black" }}>
-          <h2>{props.item.name}</h2>
-          <p>{props.item.description}</p>
-        </Box> */}
-        <Box sx={{ p: 0 }}>
-          <img src={props.item.img} alt="" style={{ height: "500px", width: "100%", zIndex: -1, objectFit: "cover", borderRadius: "10px" }} />
-        </Box>
-      </Stack>
-    </Paper>
-  );
-}

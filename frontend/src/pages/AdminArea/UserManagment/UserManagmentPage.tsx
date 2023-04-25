@@ -21,7 +21,7 @@ export default function UserManagmentPage() {
     () => [
       {
         accessorFn: (row: any) => row.firstName + " " + row.lastName, //access nested data with dot notation
-        header: "First Name",
+        header: "User Name",
         enableGlobalFilter: true,
         enableEditing: false,
       },

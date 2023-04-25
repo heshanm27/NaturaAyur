@@ -65,40 +65,31 @@ export function generateResetPasswordEmailBody(userName: string, token: string) 
 //   });
 // }
 
-export function generateProductReviewEmailBody(userName: string, productData: any) {
+export function generateOrderEmailBody(userName: string, recieptUrl: string, dashboardUrl: string) {
   return mailGenerator.generate({
     body: {
-      name: "John Appleseed",
-      intro: "Your order has been processed successfully.",
-      table: {
-        data: [
-          productData.map((item: any) => {
-            return {
-              item: item.name,
-              price: item.price,
-            };
-          }),
-        ],
-        columns: {
-          // Optionally, customize the column widths
-          customWidth: {
-            item: "20%",
-            price: "15%",
-          },
-          // Optionally, change column text alignment
-          customAlignment: {
-            price: "right",
+      name: userName,
+      intro: "Your order has been paid successfully.",
+      title: "Order Receipt",
+
+      action: [
+        {
+          instructions: "You can check the order receipt ",
+          button: {
+            color: "#22BC66",
+            text: "View Order Receipt",
+            link: recieptUrl,
           },
         },
-      },
-      action: {
-        instructions: "You can check the status of your order and more in your dashboard:",
-        button: {
-          color: "#3869D4",
-          text: "Go to Dashboard",
-          link: "https://mailgen.js/confirm?s=d9729feb74992cc3482b350163a1a010",
+        {
+          instructions: "You can check the status of your order and more in your dashboard:",
+          button: {
+            color: "#22BC66",
+            text: "Go to Dashboard",
+            link: dashboardUrl,
+          },
         },
-      },
+      ],
       outro: "We thank you for your purchase.",
     },
   });

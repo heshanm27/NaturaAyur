@@ -100,8 +100,17 @@ export async function findAllProducts({ search = "", sortBy = "createdAt", order
   return { products, total, maxProductsPrice, minProductsPrice };
 }
 
-export async function findProductById(id: string) {
-  const product = await ProductSchema.findById(id);
+export async function findProductById(id: string, quantity?: number) {
+  const product = await ProductSchema.findById(id).exec();
+  if (product && quantity) {
+    if (product.stock >= quantity) {
+      product.stock -= quantity;
+      product.soldStock! += quantity;
+      await product.save();
+    } else {
+      throw new BadRequestError("Product out of stock");
+    }
+  }
   if (!product) {
     throw new BadRequestError("Product not found");
   }

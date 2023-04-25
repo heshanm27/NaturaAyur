@@ -1,26 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Replace 'your-types' with the appropriate path to your types
 
+export interface IItem {
+  product: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  stock: number;
+  totalPrice: number;
+}
 interface CartState {
-  items: any[];
+  items: IItem[];
   total: number;
 }
 
 const initialState: CartState = {
-  items: [
-    {
-      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
-    },
-    {
-      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
-    },
-    {
-      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
-    },
-    {
-      _id: "5f9f1b0b0b5b8c0b5c0b5c0b",
-    },
-  ],
+  items: [],
   total: 0,
 };
 
@@ -29,33 +25,61 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<any>) => {
-      const { _id, name, price } = action.payload;
-      const existingItem = state.items.find((item) => item._id === _id);
+      const { productID, productName, productPrice, productImg, productStock } = action.payload;
+      console.log("add to cart", state);
+      const existingItem = state.items.find((item) => item.product === productID);
       if (existingItem) {
+        console.log("existing item", existingItem);
+        if (existingItem.quantity === existingItem.stock) return;
         existingItem.quantity++;
-        existingItem.totalPrice = existingItem.quantity * price;
+        existingItem.totalPrice = existingItem.quantity * productPrice;
       } else {
         state.items.push({
-          _id,
-          name,
-          price,
+          product: productID,
+          name: productName,
+          price: productPrice,
+          image: productImg,
+          stock: productStock,
           quantity: 1,
-          totalPrice: price,
+          totalPrice: productPrice,
         });
       }
-      state.total += price;
+      state.total += productPrice;
     },
-    removeFromCart: (state, action: PayloadAction<string>) => {
+    increaceQuantity: (state, action: PayloadAction<string>) => {
       const itemId = action.payload;
-      const existingItem = state.items.find((item) => item._id === itemId);
+      const existingItem = state.items.find((item) => item.product === itemId);
+      if (existingItem) {
+        if (existingItem.quantity === existingItem.stock) {
+          console.error("Quantity cannot exceed stock.");
+          return;
+        }
+        existingItem.quantity++;
+        existingItem.totalPrice = existingItem.quantity * existingItem.price;
+        state.total += existingItem.price;
+      }
+    },
+    decreaseQuantity: (state, action: PayloadAction<string>) => {
+      const itemId = action.payload;
+      const existingItem = state.items.find((item) => item.product === itemId);
       if (existingItem) {
         if (existingItem.quantity === 1) {
-          state.items = state.items.filter((item) => item._id !== itemId);
+          state.items = state.items.filter((item) => item.product !== itemId);
         } else {
           existingItem.quantity--;
           existingItem.totalPrice = existingItem.quantity * existingItem.price;
         }
         state.total -= existingItem.price;
+      }
+    },
+    removeFromCart: (state, action: PayloadAction<string>) => {
+      const itemId = action.payload;
+      console.log("remove from cart", itemId);
+      const existingItem = state.items.find((item) => item.product === itemId);
+      console.log("existing item", existingItem);
+      if (existingItem) {
+        state.items = state.items.filter((item) => item.product !== itemId);
+        state.total -= existingItem.quantity * existingItem.price;
       }
     },
     clearCart: (state) => {
@@ -66,4 +90,4 @@ export const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, decreaseQuantity, increaceQuantity } = cartSlice.actions;

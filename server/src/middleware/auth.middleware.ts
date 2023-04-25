@@ -27,19 +27,21 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
       if (!user) {
         throw new BadRequestError("User not found");
       }
-
       if (!requiredRole) {
         //attach the user to the request object
         req.user = user;
+        console.log("user", user);
         //call the next middleware
         next();
       }
       //check if the user has the required role
       if (!requiredRole.includes(user.role as ROLES)) {
+        console.log("unauthorized in middleware");
         throw new UnAuthorized("You are not authorized to access this resource");
       }
       //attach the user to the request object
       req.user = user;
+
       //call the next middleware
       next();
     } catch (err: any) {

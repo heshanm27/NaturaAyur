@@ -61,6 +61,7 @@ export interface IUser {
 
 interface IUserMethod {
   generateJWTToken: () => string;
+  resetPassword: (password: string) => Promise<string>;
 }
 
 interface UserModel extends Model<IUser, {}, IUserMethod> {
@@ -125,11 +126,19 @@ UserSchema.methods.generateJWTToken = function () {
   });
 };
 
+UserSchema.methods.resetPassword = async function (password: string) {
+  const salt = await bcrypt.genSalt();
+  console.log("salt", password);
+  return await bcrypt.hash(password, salt);
+};
+
 UserSchema.statics.login = async function (email, password): Promise<IToken> {
   const user = await this.findOne({ email });
   if (user) {
+    console.log("userpassword", user.password);
+    console.log("password", password);
     const IsPasswordMatched = await bcrypt.compare(password, user.password);
-    console.log("IsPasswordMatched", IsPasswordMatched);
+    console.log(IsPasswordMatched);
     if (IsPasswordMatched) {
       return {
         accessToken: user.generateJWTToken(),

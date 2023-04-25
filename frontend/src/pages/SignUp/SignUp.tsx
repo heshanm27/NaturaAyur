@@ -38,10 +38,6 @@ interface FormValues {
   firstName: string;
   lastName: string;
   email: string;
-  street: string;
-  city: string;
-  provience: string;
-  postalCode: string;
   phoneno: string;
   password: string;
   confirmpassword: string;
@@ -61,10 +57,6 @@ export default function SignUp() {
       firstName: "",
       lastName: "",
       email: "",
-      street: "",
-      city: "",
-      provience: "",
-      postalCode: "",
       phoneno: "",
       password: "",
       confirmpassword: "",
@@ -73,10 +65,6 @@ export default function SignUp() {
       firstName: Yup.string().required("First Name is required"),
       lastName: Yup.string().required("Last Name is required"),
       email: Yup.string().email("Invalid email address").required("Email is required"),
-      street: Yup.string().required("Street is required"),
-      city: Yup.string().required("City is required"),
-      provience: Yup.string().required("Provience is required"),
-      postalCode: Yup.string().required("Postal Code is required"),
       phoneno: Yup.string().required("Phone No is required"),
       password: Yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
       confirmpassword: Yup.string()
@@ -122,12 +110,6 @@ export default function SignUp() {
       email: values.email,
       firstName: values.firstName,
       lastName: values.lastName,
-      address: {
-        street: values.street,
-        city: values.city,
-        provience: values.provience,
-        postalCode: values.postalCode,
-      },
       avatar,
       confirmPassword: values.confirmpassword,
     });
@@ -211,7 +193,7 @@ export default function SignUp() {
                       helperText={errors.email}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <TextField
                       required
                       fullWidth
@@ -284,8 +266,8 @@ export default function SignUp() {
                       error={Boolean(errors.postalCode)}
                       helperText={errors.postalCode}
                     />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
+                  </Grid> */}
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       fullWidth

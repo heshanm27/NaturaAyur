@@ -10,6 +10,10 @@ import passport from "passport";
 import cors from "cors";
 import "./util/passport-config.util";
 import cookieParser from "cookie-parser";
+import { raw } from "body-parser";
+import { OrderpayemntHandler } from "./controller/order.webhook.controller";
+import * as Scheduler from "./scheduler/order-scheduler";
+
 const app: Express = express();
 
 //cors oprions
@@ -18,14 +22,19 @@ const corsOptions = {
   method: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
+app.post("/webhook", raw({ type: "*/*" }), OrderpayemntHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(cookieParser());
+
 const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();
+
+  // Scheduler.dailySchedule.start();
+  Scheduler.dailyScheduleTwo.start();
   routes(app);
 });
 

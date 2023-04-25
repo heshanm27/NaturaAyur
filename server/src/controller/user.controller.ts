@@ -6,7 +6,10 @@ export const getAllUsertList = async (req: Request, res: Response) => {
   res.status(200).json({ users });
 };
 
-export const getOneUser = async (req: Request, res: Response) => {};
+export const getOneUser = async (req: Request, res: Response) => {
+  const user = await UserServices.findUserById(req.params.id);
+  res.status(200).json({ user });
+};
 
 export const updateUserProfile = async (req: Request, res: Response) => {};
 

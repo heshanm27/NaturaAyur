@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, IconButton, Container, CircularProgress } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, IconButton, Container, CircularProgress, Stack } from "@mui/material";
 import NotListedLocationIcon from "@mui/icons-material/NotListedLocation";
 import { useTheme } from "@mui/material";
 
@@ -32,10 +32,15 @@ export default function ConfirmDialog({ open, isOpen, title, subTitle, onConfirm
           <Typography variant="subtitle2">{subTitle}</Typography>
         </DialogContent>
         {loading ? (
-          <CircularProgress />
+          <Stack direction={"row"} justifyContent={"center"} alignItems={"center"}>
+            <CircularProgress />
+          </Stack>
         ) : (
           <DialogActions sx={{ justifyContent: "center" }}>
-            <Button onClick={onConfirm}>Yes</Button>
+            <Button color="error" onClick={onConfirm}>
+              Yes
+            </Button>
+
             <Button variant="outlined" onClick={isOpen}>
               No
             </Button>

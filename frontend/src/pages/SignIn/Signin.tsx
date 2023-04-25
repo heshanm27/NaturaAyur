@@ -67,9 +67,10 @@ export default function SignIn() {
       dispatch(login(resposne.data));
       resetForm();
     } catch (e: any) {
+      console.log("error", e);
       setNotify({
         isOpen: true,
-        message: e.message,
+        message: e.response.data.message,
         type: "error",
         title: "Error            ",
       });

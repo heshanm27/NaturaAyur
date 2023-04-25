@@ -66,7 +66,7 @@ export const addProduct = async (value: Product) => {
         stock,
         images,
         subCategory,
-        brand
+        brand,
       },
       {
         headers: {

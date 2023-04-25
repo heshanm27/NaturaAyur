@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Box, Typography, Link, List, ListItem, Stack, ListItemIcon } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import FacebookIcon from "@mui/icons-material/Facebook";
-
+import { v4 as uuidv4 } from "uuid";
 interface Link {
   name: string;
   icon?: JSX.Element;
@@ -80,12 +80,12 @@ export default function Footer() {
         <Divider sx={{ p: 0, m: 0 }} />
         <Stack sx={{ p: 2 }} direction="row" justifyContent="space-between" alignItems="start" spacing={2}>
           {footerData.map((item) => (
-            <Box>
+            <Box key={uuidv4()}>
               <Typography align="center">{item.title}</Typography>
               <Divider />
               <List>
                 {item.links.map((link, i) => (
-                  <ListItem disablePadding sx={{ pt: 1, pb: 1, pr: 0, pl: 0 }}>
+                  <ListItem disablePadding sx={{ pt: 1, pb: 1, pr: 0, pl: 0 }} key={uuidv4()}>
                     {link!.icon && <ListItemIcon sx={{ minWidth: "0px", pr: 1 }}>{link!.icon}</ListItemIcon>}
                     <FooterLink name={link.name} url={link.url} />
                   </ListItem>

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import SlideOneImg from "../../../assets/slider/Banner1.png";
 import SlideTwoImg from "../../../assets/slider/ayurvedic-skin-cream-online_2048x.webp";
@@ -9,34 +9,50 @@ import PopularCard from "../../../components/card/PopularCard/PopularCard";
 import ProductCard from "../../../components/card/ProductCard/ProductCard";
 import Grid from "@mui/material/Grid";
 import Footer from "../../../components/common/footer/Footer";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PaymentIcon from "@mui/icons-material/Payment";
+import GppGoodIcon from "@mui/icons-material/GppGood";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import CarousalSlide, { ICrousalProps } from "../../../components/CarousalSlide/CarousalSlide";
+import NewArrivals from "./NewArrivals/NewArrivals";
+import PopularProducts from "./PopularProducts/PopularProducts";
+import TopBrand from "./TopBrands/TopBrand";
 export default function HomeView() {
-  var items = [
+  const items: ICrousalProps[] = [
     {
-      name: "Random Name #1",
-      description: "Probably the most random thing you have ever seen!",
-      img: SlideOneImg,
+      button: "Buy Now",
+      title: "Organic Hair Oil",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Natural Face Wash",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Herbal Shampoo",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
-      img: SlideTwoImg,
+      button: "Buy Now",
+      title: "Ayurvedic Toothpaste",
+      description:
+        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
+      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
     },
   ];
 
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
+      <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
         <Box sx={{ maxHeight: "330px" }}>
           <Carousel
             animation="slide"
@@ -59,46 +75,15 @@ export default function HomeView() {
             }}
           >
             {items.map((item, i) => (
-              <Item key={i} item={item} />
+              <CarousalSlide button={item.button} description={item.description} image={item.image} title={item.title} url={item.url} key={i} />
             ))}
           </Carousel>
         </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Popular Categories
-          </Typography>
-          <Grid container spacing={2} alignContent={"center"}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={2}>
-                <PopularCard />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Popular Products
-          </Typography>
-          <Grid container spacing={2}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" sx={{ mt: 2, mb: 2 }}>
-            Top Brands
-          </Typography>
-          <Grid container spacing={2}>
-            {[1, 2, 3, 4, 5, 6].map((item, i) => (
-              <Grid item xs={6} md={4} lg={3}>
-                <ProductCard productCode="" productID="" productImg="" productName="" productPrice="" />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <NewArrivals />
+        <PopularProducts />
+        <TopBrand />
+
+        <Wrapper />
       </Container>
       <Footer />
     </>
@@ -118,5 +103,54 @@ function Item(props: any) {
         </Box>
       </Stack>
     </Paper>
+  );
+}
+
+function Wrapper() {
+  const data = [
+    {
+      cover: <LocalShippingIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Free Delivery",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <PaymentIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Safe Payment",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <GppGoodIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "Shop With Confidence ",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+    {
+      cover: <SupportAgentIcon color="primary" sx={{ width: "35px", height: "35px" }} />,
+      title: "24/7 Support ",
+      decs: "We offer competitive prices on our 100 million plus product any range.",
+    },
+  ];
+
+  return (
+    <>
+      <Container maxWidth="xl" sx={{ mt: 5 }}>
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+          {data.map((item, i) => (
+            <Grid item xs={6} md={3} lg={3}>
+              <Paper sx={{ p: 3, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                <Avatar variant="circular" sx={{ bgcolor: "#f3f5f9", width: "70px", height: "70px" }}>
+                  {item.cover}
+                </Avatar>
+                <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 2, mb: 2 }} align="center">
+                  {item.decs}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </>
   );
 }

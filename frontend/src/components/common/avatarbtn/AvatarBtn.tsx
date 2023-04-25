@@ -14,12 +14,22 @@ export default function AvatarBtn() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { firstName, avatar } = useAppSelector((state) => state.authSlice);
+  const { firstName, avatar, role } = useAppSelector((state) => state.authSlice);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    switch (role) {
+      case "seller":
+        navigate("/seller/orders/live", { replace: true });
+        break;
+      case "admin":
+        navigate("/admin/orders/live", { replace: true });
+        break;
+      default:
+        break;
+    }
     setAnchorEl(null);
   };
 
@@ -59,6 +69,7 @@ export default function AvatarBtn() {
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
+        {role === "seller" || role === "admin" ? <MenuItem onClick={handleClose}>Dashboard</MenuItem> : null}
         <MenuItem onClick={hadnleLogout}>Logout</MenuItem>
       </Menu>
     </>

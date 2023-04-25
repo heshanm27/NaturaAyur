@@ -35,10 +35,16 @@ export default function ProductsPage() {
       {
         accessorKey: "price",
         header: "Product Price",
+        Cell: ({ renderedCellValue, row }: any) => {
+          return "$" + row.original.price.toFixed(2);
+        },
       },
       {
         accessorKey: "stock",
         header: "Product Stock",
+        Cell: ({ renderedCellValue, row }: any) => {
+          return row.original.stock + " units";
+        },
       },
     ],
     []
@@ -46,7 +52,7 @@ export default function ProductsPage() {
 
   return (
     <Container maxWidth="xl" sx={{ p: 2 }}>
-      <Typography variant="h3" sx={{ mt: 5, mb: 5 }}>
+      <Typography variant="h3" sx={{ mt: 5, mb: 5 }} fontWeight={"bold"}>
         Your Products
       </Typography>
 

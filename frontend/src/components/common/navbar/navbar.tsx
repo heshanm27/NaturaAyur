@@ -9,45 +9,42 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AvatarBtn from "../avatarbtn/AvatarBtn";
-import { Container, useTheme } from "@mui/material";
+import { Button, Container, Paper, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../redux/redux-hooks";
 import { Typography, Link, Badge } from "@mui/material";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import SearchField from "../SearchField/SearchField";
+import { useEffect, useState } from "react";
 export default function Navbar() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { isLoggedIn } = useAppSelector((state) => state.authSlice);
   const { items } = useAppSelector((state) => state.cartSlice);
-  console.log("items in cart", items);
+
+  const menuItems = [
+    { label: "Home", link: "/" },
+    { label: "Products", link: "/list" },
+    { label: "About", link: "/about" },
+    { label: "Contact", link: "/contact" },
+  ];
+
   return (
     <>
-      <AppBar color="inherit" position="fixed" elevation={0}>
+      <AppBar color="inherit" position="fixed">
         <Toolbar>
           <Container maxWidth="xl" sx={{ height: "40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Link href="/">
-              <img src={Logo} alt="logo" style={{ width: "60px", height: "50px" }} />
+              <img src={Logo} alt="logo" style={{ width: "100px", height: "50px" }} />
             </Link>
+
             <Box sx={{ width: "50%" }}>
-              <TextField
-                id="outlined-basic"
-                label="Search for products"
-                size="small"
-                fullWidth
-                variant="outlined"
-                placeholder="Search for products, brands and more"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <SearchField />
             </Box>
             <Box>
               <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                 {isLoggedIn ? <AvatarBtn /> : <Login />}
 
-                <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+                <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }} onClick={() => navigate("/cart")}>
                   <Badge badgeContent={items.length} color="error">
                     <ShoppingCartIcon />
                   </Badge>
@@ -62,7 +59,19 @@ export default function Navbar() {
             {/* <img src={Logo} alt="logo" style={{ width: "100px", height: "100px" }} /> */}
           </Container>
         </Toolbar>
+        <Toolbar>
+          <Container maxWidth="xl">
+            <Stack direction={"row"} justifyContent={"end"}>
+              {menuItems.map((item) => (
+                <Box key={item.label}>
+                  <CustomLink label={item.label} url={item.link} />
+                </Box>
+              ))}
+            </Stack>
+          </Container>
+        </Toolbar>
       </AppBar>
+      <Box sx={{ ...theme.mixins.toolbar, mb: 5 }}></Box>
       <Box sx={{ ...theme.mixins.toolbar, mb: 5 }}></Box>
     </>
   );
@@ -89,5 +98,25 @@ function Login() {
         </Link>
       </Typography>
     </>
+  );
+}
+interface ICustomLink {
+  label: string;
+  url: string;
+}
+function CustomLink({ label, url }: ICustomLink) {
+  const { pathname } = useLocation();
+  const [isActive, setIsActive] = useState(false);
+  const theme = useTheme();
+  useEffect(() => {
+    if (pathname === url) {
+      setIsActive(true);
+    }
+  }, [pathname]);
+
+  return (
+    <Link sx={{ ml: 4, mr: 4, fontSize: "18px" }} href={url} underline="hover" color={isActive ? theme.palette.primary.main : theme.palette.common.black}>
+      {label}
+    </Link>
   );
 }
