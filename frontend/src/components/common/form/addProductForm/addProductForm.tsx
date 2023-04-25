@@ -93,7 +93,7 @@ export default function AddProductForm() {
         subCategory: values.subCategory,
         description: richText,
         images: selectedFiles,
-        brand: values.productBrand,
+        brand: values.productBrand ,
       });
     },
   });
