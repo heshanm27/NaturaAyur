@@ -59,13 +59,12 @@ function App() {
           <Route path="/seller/products/add" element={<AddProduct />} />
           <Route path="/seller/products/:id" element={<ProductView />} />
           <Route path="/seller/products/edit/:id" element={<AddProduct />} />
-          <Route path="/seller/orders:id" element={<OrderView />} />
+          <Route path="/seller/orders/:id" element={<OrderView />} />
           {/* </Route> */}
           {/* <Route element={<RoleRoute allowedRoles={["admin", "seller", "user"]} />}> */}
           <Route path="/user/orders" element={<OrderList />} />
           <Route path="/user/profile" element={<ProductsPage />} />
-          <Route path="/orders/view/:id" element={<UserOrderView />} />
-          <Route path="/orders/track/:id" element={<UserOrderView />} />
+          <Route path="/user/orders/view/:id" element={<UserOrderView />} />
         </Route>
         {/* </Route>
           </Route> */}

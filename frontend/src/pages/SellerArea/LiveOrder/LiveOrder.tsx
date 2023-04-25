@@ -22,7 +22,7 @@ export default function LiveOrder() {
   };
   const handleClose = () => {
     setAnchorEl(null);
-    navigate(`/orders/view/${docId}`);
+    navigate(`/seller/orders/${docId}`);
   };
 
   const columns = useMemo<MRT_ColumnDef[]>(

@@ -1,17 +1,23 @@
 import { Box, Stack, useTheme, Typography, Button, Container, CircularProgress, Divider, Paper, Grid, Skeleton } from "@mui/material";
 
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { fetchOneOrder } from "../../../api/orderApi";
+import { fetchOneOrder, updateOrderStatus } from "../../../api/orderApi";
 import ProductTable from "../../../components/common/table/ProductTable/ProductTable";
 import StatusChips from "../../../components/common/StatusChips/StatusChips";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
-
+import InventoryIcon from "@mui/icons-material/Inventory";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ConfirmDialog from "../../../components/common/ConfirmDialog/ConfirmDialog";
 export default function OrderView() {
   const { id } = useParams();
   const theme = useTheme();
   const [docID, setDocID] = useState("");
+  const [status, setStatus] = useState("");
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -24,11 +30,39 @@ export default function OrderView() {
     queryFn: () => fetchOneOrder(docID),
   });
 
+  const { mutate, isLoading: isActionLoad } = useMutation({
+    mutationFn: updateOrderStatus,
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries(["order-view"]);
+      setNotify({
+        isOpen: true,
+        message: "Order status updated successfully",
+        type: "success",
+        title: "Success",
+      });
+      setOpen(false);
+    },
+    onError: (error: any) => {
+      setNotify({
+        isOpen: true,
+        message: "Error occured while updating order status",
+        type: "error",
+        title: "Error",
+      });
+    },
+  });
+
   useEffect(() => {
     setDocID(id!);
   }, [id]);
 
-  console.log("id", data);
+  const handleOrderStatus = () => {
+    mutate({
+      id: docID,
+      status: status,
+    });
+  };
+
   if (isLoading) {
     return (
       <Container maxWidth="xl" sx={{ mt: 5 }}>
@@ -52,12 +86,33 @@ export default function OrderView() {
           Order Number #{data?.orderId}
         </Typography>
         <Stack spacing={2} direction={"row"}>
-          <Button variant="contained" color="success">
-            {" "}
-            Approve
+          <Button
+            endIcon={data?.status === "processing" ? <LocalShippingIcon /> : <InventoryIcon />}
+            variant="contained"
+            color={data?.status === "processing" ? "info" : "success"}
+            onClick={() => {
+              if (data?.status === "processing") {
+                setStatus("shipped");
+                setOpen(true);
+                return;
+              }
+              setStatus("processing");
+              setOpen(true);
+            }}
+          >
+            {data?.status === "processing" ? "Shipped" : "Process"}
           </Button>
-          <Button variant="contained" color="error">
-            Reject
+          <Button
+            endIcon={<ThumbDownIcon />}
+            variant="contained"
+            color="error"
+            disabled={data?.status === "processing" ? true : false}
+            onClick={() => {
+              setStatus("cancelled");
+              setOpen(true);
+            }}
+          >
+            cancelled
           </Button>
         </Stack>
       </Stack>
@@ -103,6 +158,14 @@ export default function OrderView() {
         </Grid>
       </Grid>
       <CustomSnackBar notify={notify} setNotify={setNotify} />
+      <ConfirmDialog
+        isOpen={() => setOpen(false)}
+        onConfirm={handleOrderStatus}
+        open={open}
+        subTitle="This action can't be undone"
+        title="Update Order Status"
+        loading={isActionLoad}
+      />
     </Container>
   );
 }

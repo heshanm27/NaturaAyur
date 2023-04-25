@@ -63,7 +63,9 @@ export default function Navbar() {
           <Container maxWidth="xl">
             <Stack direction={"row"} justifyContent={"end"}>
               {menuItems.map((item) => (
-                <CustomLink label={item.label} url={item.link} />
+                <Box key={item.label}>
+                  <CustomLink label={item.label} url={item.link} />
+                </Box>
               ))}
             </Stack>
           </Container>

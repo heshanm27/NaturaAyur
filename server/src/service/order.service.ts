@@ -4,6 +4,7 @@ import { BadRequestError } from "../errors";
 import Order, { IOrder } from "../models/order.model";
 import { sendEmail } from "../util/send-mail";
 import { generateOrderEmailBody } from "../util/mail-html-body-gen";
+import ProductSchema from "../models/product.model";
 
 interface IOrderPay {
   shippingAddress: {
@@ -257,6 +258,21 @@ export async function updateOrderStatus(input: any) {
 }
 
 export async function deleteOrder(id: string) {
+  // Find the order in the database by its ID
+  const order = await Order.findById(id).exec();
+
+  // Restore the quantities of the items in the order to the inventory
+  for (let item of order?.orderItems!) {
+    // Find the item in the database by its ID
+    const product = await ProductSchema.findById(item.product).exec();
+
+    if (product) {
+      product.stock! += item.quantity;
+      product.soldStock! -= item.quantity;
+    }
+    // Increase the quantity of the item in the inventory
+    await product?.save();
+  }
   return Order.findByIdAndDelete(id);
 }
 

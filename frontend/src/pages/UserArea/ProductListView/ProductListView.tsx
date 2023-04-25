@@ -37,7 +37,7 @@ export default function ProductListView() {
   const queryClient = new QueryClient();
   const [filter, setFilter] = useState<IFilter>({
     cat: "",
-    limit: 10,
+    limit: 12,
     order: -1,
     page: 1,
     search: "",
@@ -300,7 +300,7 @@ function CategoryButton({ mainCategory, subCategories, mainOnClick, subOnClick, 
     <>
       <ListItemButton
         key={key}
-        sx={{ backgroundColor: isCatActive === mainCategory.name ? "#E9FBAD" : "" }}
+        // sx={{ backgroundColor: isCatActive === mainCategory.name ? "#E9FBAD" : "" }}
         onClick={() => {
           setIsSubActive("");
           setIsActive("");

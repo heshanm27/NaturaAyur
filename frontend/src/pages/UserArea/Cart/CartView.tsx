@@ -36,6 +36,7 @@ import { addOrder } from "../../../api/orderApi";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { v4 as uuidv4 } from "uuid";
 const deliveryAddress = {
   houseNumber: "100",
   streetName: "Raja Veedia",
@@ -97,6 +98,7 @@ interface Props {
 const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecrease }) => {
   const dispatch = useAppDispatch();
   const handleRemove = (itemId: string) => {
+    console.log("remove", itemId);
     dispatch(removeFromCart(itemId));
   };
 
@@ -123,7 +125,7 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
         </TableHead>
         <TableBody>
           {cartItems.map((item: any) => (
-            <TableRow key={item._id}>
+            <TableRow key={uuidv4()}>
               <TableCell sx={{ display: "flex", justifyContent: "left", alignItems: "start", flexDirection: "column" }}>
                 <img src={item.image} alt={item.name} style={{ width: "50px", height: "50px", borderRadius: "10px", margin: "5px" }} />
                 <Typography
@@ -155,7 +157,7 @@ const CartTable: React.FC<Props> = ({ cartItems, onRemove, onIncrease, onDecreas
                 </Typography>
               </TableCell>
               <TableCell>
-                <IconButton size="small" color="error" onClick={() => handleRemove(item._id)}>
+                <IconButton size="small" color="error" onClick={() => handleRemove(item.product)}>
                   <DeleteForeverIcon />
                 </IconButton>
               </TableCell>
@@ -276,14 +278,14 @@ const TotalBox: React.FC<TotalBoxProps> = ({ total, tax }) => {
             <Typography variant="body1">Total:</Typography>
             <Typography variant="body1"> ${total.toFixed(2)}</Typography>
           </Stack>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+          {/* <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="body1">Shipping Cost:</Typography>
             <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
           </Stack>
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="body1">Tax:</Typography>
             <Typography variant="body1"> ${tax.toFixed(2)}</Typography>
-          </Stack>
+          </Stack> */}
         </Box>
       </Box>
     </Paper>

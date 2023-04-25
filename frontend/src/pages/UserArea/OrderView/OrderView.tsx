@@ -7,6 +7,7 @@ import { fetchOneOrder } from "../../../api/orderApi";
 import ProductTable from "../../../components/common/table/ProductTable/ProductTable";
 import StatusChips from "../../../components/common/StatusChips/StatusChips";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
+import CustomStepper from "../../../components/CustomStepper/CustomStepper";
 
 export default function UserOrderView() {
   const { id } = useParams();
@@ -51,18 +52,12 @@ export default function UserOrderView() {
         <Typography variant="h4" fontWeight={"bold"}>
           Order Number #{data?.orderId}
         </Typography>
-        <Stack spacing={2} direction={"row"}>
-          <Button variant="contained" color="success">
-            {" "}
-            Approve
-          </Button>
-          <Button variant="contained" color="error">
-            Reject
-          </Button>
-        </Stack>
       </Stack>
+      <Paper sx={{ p: 4 }}>
+        <CustomStepper orderStatus={data?.status} />
+      </Paper>
 
-      <Grid container spacing={5} sx={{ mb: 5 }}>
+      <Grid container spacing={5} sx={{ mb: 5, mt: 5 }}>
         <Grid item xs={12} md={8}>
           <Stack direction="column" spacing={2}>
             <ProductTable cartItems={data?.orderItems ?? []} isLoading />

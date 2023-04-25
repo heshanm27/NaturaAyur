@@ -40,12 +40,12 @@ export default function OrderHistory() {
               return <Chip label="New" color="error" />;
             case "approved":
               return <Chip label="Approved" color="success" />;
-            case "rejected":
-              return <Chip label="Rejected" color="error" />;
-            case "delivered":
-              return <Chip label="Delivered" color="success" />;
+            case "cancelled":
+              return <Chip label="Cancelled" color="error" />;
+            case "shipped":
+              return <Chip label="Shipped" color="success" />;
             default:
-              return <Chip label="Pending" color="info" />;
+              return <Chip label="Processing" color="info" />;
           }
         },
       },
@@ -57,7 +57,7 @@ export default function OrderHistory() {
         accessorKey: "isPaid",
         header: "Payment",
         Cell: ({ renderedCellValue, row }: any) => {
-          return row.original.isPaid ? <Chip label="Paid" color="success" /> : <Chip label="Pending" color="error" />;
+          return row.original.isPaid ? <Chip label="Paid" color="success" /> : <Chip label="UnPaid" color="default" />;
         },
       },
     ],

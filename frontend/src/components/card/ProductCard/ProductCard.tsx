@@ -6,7 +6,7 @@ import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, Stack } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useAppDispatch } from "../../../redux/redux-hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/redux-hooks";
 import { addToCart } from "../../../redux/cartslice";
 import { useNavigate } from "react-router-dom";
 interface ProductProps {
@@ -21,6 +21,7 @@ interface ProductProps {
 export default function ProductCard({ productCode, productID, productImg, productName, productPrice, productStock }: ProductProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { items, total } = useAppSelector((state) => state.cartSlice);
   const handleAddToCart = () => {
     dispatch(addToCart({ productID, productName, productPrice, productImg, productStock }));
   };
@@ -41,10 +42,10 @@ export default function ProductCard({ productCode, productID, productImg, produc
       </CardActionArea>
       <CardActions>
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-          <Button variant="outlined" onClick={handleBuyNow}>
+          <Button variant="outlined" disabled={productStock <= 0 ? true : false} onClick={handleBuyNow}>
             Buy Now
           </Button>
-          <Button variant="contained" startIcon={<ShoppingCartIcon />} onClick={handleAddToCart}>
+          <Button variant="contained" disabled={productStock <= 0 ? true : false} startIcon={<ShoppingCartIcon />} onClick={handleAddToCart}>
             Add Cart
           </Button>
         </Stack>

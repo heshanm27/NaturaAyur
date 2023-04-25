@@ -138,3 +138,19 @@ export const getLiveOrder = async (req: Request, res: Response) => {
     throw new BadRequestError(error.message);
   }
 };
+
+export const patchOrderStatus = async (req: Request, res: Response) => {
+  try {
+    console.log(req.body);
+    const orderId = req.params.id;
+    const order = await OrderService.updateOrderStatus({
+      orderId,
+      status: req.body.status,
+    });
+    res.status(200).json({
+      message: "Order status updated",
+    });
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};

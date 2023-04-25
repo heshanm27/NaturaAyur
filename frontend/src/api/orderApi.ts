@@ -47,3 +47,12 @@ export const fetchOneOrder = async (id: string) => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const updateOrderStatus = async (input: any) => {
+  try {
+    const response = await apiClient.patch(`/order/${input.id}`, { status: input.status });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
