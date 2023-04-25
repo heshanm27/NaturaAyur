@@ -28,24 +28,24 @@ export default function HomeView() {
     },
     {
       button: "Buy Now",
-      title: "Natural Face Wash",
+      title: "Kunkumadi Tailam",
       description:
-        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
-      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
+        "Discoloration of face, pimples, wrinkles, premature greying of hair. For external application as well as nasyam. Gives colour and complexion for the skin.",
+      image: "https://www.ayurkart.com/cdn/shop/products/Kumkumadi-tailam-kottakkal1_5e97adb7-7ff0-417b-8b1e-c059c19fb7d4_1200x1200.jpg?v=1599410994",
     },
     {
       button: "Buy Now",
-      title: "Herbal Shampoo",
+      title: "Brahmi Caps",
       description:
-        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
-      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
+        "Brahmi Caps (Bacopa monnieri) - very well known ayurvedic medicine for memory power, used as a memory booster, and other brain-related disorders",
+      image: "https://www.ayurkart.com/cdn/shop/products/Brahmi-Caps_1200x1200.jpg?v=1563436516",
     },
     {
       button: "Buy Now",
-      title: "Ayurvedic Toothpaste",
+      title: "Vilwadi Leham",
       description:
-        "Ayurveda is a traditional Indian system of medicine. It aims to preserve health and wellness by keeping the mind, body, and spirit in balance and preventing disease rather than treating it. Ayurveda brings health and keeping the doshas in balance.",
-      image: "https://cdn.shopify.com/s/files/1/0055/9064/6857/products/Chyavanaprasam_360x.jpg?v=1563436530",
+        "Ayurveda understand the cycle of nature, it provides what you need and makes the rhythm of life enjoyable in this dynamic circumstances.",
+      image: "https://www.ayurkart.com/cdn/shop/products/Vilwadi-Leham_600x.jpg?v=1563436722",
     },
   ];
 
