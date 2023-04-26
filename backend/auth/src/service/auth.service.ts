@@ -39,3 +39,17 @@ export async function VerifyUser(token: string): Promise<void> {
     throw new BadRequestError("Invalid Token");
   }
 }
+
+export async function resetPassword(id: string, password: string) {
+  try {
+    const user = await UserSchema.findById(id);
+    if (!user) throw new BadRequestError("User does not exist");
+    const newPassword = await user.resetPassword(password);
+    const updateUser = await UserSchema.findByIdAndUpdate(id, { password: newPassword }, { new: true });
+    const login = await UserSchema.login(user.email, password);
+    console.log("new user", updateUser);
+  } catch (e: any) {
+    console.log(e);
+    throw new Error("Password Reset Failed");
+  }
+}

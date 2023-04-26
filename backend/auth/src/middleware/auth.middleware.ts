@@ -5,7 +5,6 @@ import { BadRequestError, UnAuthorized } from "../errors";
 
 export function validateUserRoleAndToken(requiredRole: ROLES[]) {
   return async function (req: Request, res: Response, next: NextFunction) {
-    console.log("checked");
     // Get the token from the cookie header
     const authHeader = req.headers?.authorization;
 
@@ -20,7 +19,7 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
     try {
       //extract the user id from the token
       const { id }: any = jwt.verify(token, process.env.JWT_SECRET!);
-      console.log("checked");
+
       //find the user in the database
       const user: Pick<IUser, "role"> | null = await UserSchema.findById(id);
 
@@ -28,7 +27,6 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
       if (!user) {
         throw new BadRequestError("User not found");
       }
-
       if (!requiredRole) {
         //attach the user to the request object
         req.user = user;
@@ -38,12 +36,12 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
       }
       //check if the user has the required role
       if (!requiredRole.includes(user.role as ROLES)) {
-        throw new UnAuthorized(
-          "You are not authorized to access this resource"
-        );
+        console.log("unauthorized in middleware");
+        throw new UnAuthorized("You are not authorized to access this resource");
       }
       //attach the user to the request object
       req.user = user;
+
       //call the next middleware
       next();
     } catch (err: any) {

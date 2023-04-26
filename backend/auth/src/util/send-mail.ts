@@ -6,11 +6,7 @@ interface IEmailProps {
   subject: string;
 }
 
-export const sendEmail = async ({
-  toEmail,
-  subject,
-  emailBody,
-}: IEmailProps) => {
+export const sendEmail = async ({ toEmail, subject, emailBody }: IEmailProps): Promise<boolean> => {
   try {
     const message = {
       from: "natureayure@gmail.com",
@@ -24,6 +20,7 @@ export const sendEmail = async ({
     if (result) {
       return true;
     }
+    return false;
   } catch (e: any) {
     throw new Error("Error in sending email");
   }
