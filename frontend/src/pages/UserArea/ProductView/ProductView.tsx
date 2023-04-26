@@ -6,7 +6,7 @@ import Footer from "../../../components/common/footer/Footer";
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
 import { useLocation, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchProduct } from "../../../api/productApi";
 import CustomCirculerProgress from "../../../components/common/CustomCirculerProgress/CustomCirculerProgress";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
@@ -66,6 +66,7 @@ export default function ProductView() {
   const [quantity, setQuantity] = useState<number>(1);
   const editorRef = useRef<any>(null);
   const [richText, setRichText] = useState<string>("");
+  const [rating, setRating] = useState<number>(0);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -86,6 +87,7 @@ export default function ProductView() {
     },
   });
 
+  const { isLoading: isReviewLooding } = useMutation({});
   const { data: seller } = useQuery({
     queryKey: ["product-seller", parms.id],
     queryFn: () => fetchProduct(parms.id ?? ""),
@@ -140,6 +142,11 @@ export default function ProductView() {
     setQuantity((prevQuantity: number) => prevQuantity + 1);
   };
 
+  const handleRatingChange = (value: number) => {
+    setRating(value);
+  };
+
+  const handleReviewSubmit = () => {};
   return (
     <>
       <Navbar />
@@ -229,10 +236,10 @@ export default function ProductView() {
                 <Typography variant="h6">Rate this product</Typography>
                 <Rating
                   name="rating"
-                  // value={rating}
-                  // onChange={(event, newValue) => {
-                  //   handleRatingChange(newValue);
-                  // }}
+                  value={rating}
+                  onChange={(event, newValue) => {
+                    handleRatingChange(newValue!);
+                  }}
                 />
               </Stack>
               <Editor

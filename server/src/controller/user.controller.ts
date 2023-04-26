@@ -11,7 +11,10 @@ export const getOneUser = async (req: Request, res: Response) => {
   res.status(200).json({ user });
 };
 
-export const updateUserProfile = async (req: Request, res: Response) => {};
+export const updateUserProfile = async (req: Request, res: Response) => {
+  const user = await UserServices.UpdateUser(req.params.id, req.body);
+  res.status(200).json({ user });
+};
 
 export const addItemsToCart = async (req: Request, res: Response) => {};
 

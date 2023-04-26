@@ -26,6 +26,7 @@ import NotFound from "../pages/NotFound/NotFound";
 import OrderList from "../pages/UserArea/OrdersList/OrderList";
 import UserOrderView from "../pages/UserArea/OrderView/OrderView";
 import AdminOrderView from "../pages/AdminArea/OrderView/OrderView";
+import AboutUs from "../pages/UserArea/AboutUs/AboutUs";
 
 function App() {
   const theme = createTheme({
@@ -75,6 +76,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/register/seller" element={<SellerSignUp />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/verify/:token" element={<VerifyArea />} />
         <Route path="/user/payment/success" element={<PaymentSuccess />} />
         <Route path="/user/payment/cancel" element={<PaymentCancel />} />

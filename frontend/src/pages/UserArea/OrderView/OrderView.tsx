@@ -165,6 +165,7 @@ interface IOrderSummary {
 }
 
 function OrderSummary({ orderCreated, orderTime, subTotal, shipping }: IOrderSummary) {
+  const val: string = "0.00";
   const details = [
     {
       name: "Order Created",
@@ -195,7 +196,7 @@ function OrderSummary({ orderCreated, orderTime, subTotal, shipping }: IOrderSum
           <Box sx={{ pt: 2, pb: 2 }}>
             <Stack key={detail.name + index} direction={"row"} justifyContent={"space-between"}>
               <Typography fontWeight={"bold"}>{detail.name}</Typography>
-              {detail.chip ? StatusChips(detail.value === 0.0 ? "Free Shipping" : "ss") : <Typography>{detail.value}</Typography>}
+              {detail.chip && detail.value <= 0 ? StatusChips("Free Shipping") : <Typography>{detail.value}</Typography>}
             </Stack>
           </Box>
         );

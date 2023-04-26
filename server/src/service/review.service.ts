@@ -160,9 +160,9 @@ export async function getReviewById(id: string) {
   }
 }
 
-export async function updateReview(id: string) {
+export async function updateReview(id: string, data: any) {
   try {
-    const review = await Reviews.findById(id);
+    const review = await Reviews.findByIdAndUpdate(id, data, { new: true });
     return review;
   } catch (e: any) {
     throw new Error(e.message);

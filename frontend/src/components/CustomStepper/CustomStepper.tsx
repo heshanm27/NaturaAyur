@@ -88,7 +88,11 @@ export default function CustomStepper({ orderStatus }: Props) {
               sx={{
                 "& .MuiStepLabel-iconContainer": {
                   backgroundColor: completedSteps.includes(label) ? "green" : cancelledSteps.includes(label) ? "red" : theme.palette.grey[100],
-                  p: 1,
+                  width: "40px",
+                  height: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   borderRadius: "50%",
                   color: "inherit",
                 },

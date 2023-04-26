@@ -6,9 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import CustomeDialog from "../../../components/common/CustomDialog/CustomDialog";
 import AddCategoryForm from "../../../components/common/form/addCategoryForm/AddCategoryForm";
 import { fetchAllUsers } from "../../../api/userApi";
+import UpdateUserForm from "../../../components/common/form/updateUserForm/UpdateUserForm";
 export default function UserManagmentPage() {
   const [open, setOpen] = useState(false);
-  const { data, error, isLoading, isError, isSuccess } = useQuery({ queryKey: ["categories"], queryFn: fetchAllUsers });
+  const [selectedUser, setSelectedUser] = useState<any>();
+  const { data, error, isLoading, isError, isSuccess } = useQuery({ queryKey: ["users"], queryFn: fetchAllUsers });
   const [tableData, setTableData] = useState<any>();
   console.log(data);
 
@@ -126,15 +128,20 @@ export default function UserManagmentPage() {
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: "flex", gap: "1rem" }}>
             <Tooltip arrow placement="left" title="Edit">
-              <IconButton onClick={() => table.setEditingRow(row)}>
+              <IconButton
+                onClick={() => {
+                  setSelectedUser(row.original);
+                  setOpen(true);
+                }}
+              >
                 <Edit />
               </IconButton>
             </Tooltip>
           </Box>
         )}
       />
-      <CustomeDialog open={open} setOpen={setOpen} title={"Create new note"}>
-        {/* <AddCategoryForm /> */}
+      <CustomeDialog open={open} setOpen={setOpen} title={"Update User Role"}>
+        <UpdateUserForm user={selectedUser} setOpen={setOpen} />
       </CustomeDialog>
     </Container>
   );
