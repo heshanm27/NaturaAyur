@@ -1,7 +1,20 @@
-import mongoose from "mongoose";
+import mongoose, { Model, ObjectId } from "mongoose";
 const { Schema } = mongoose;
 
-const ReviewSchema = new Schema(
+export interface IReview {
+  _id?: string;
+  user: ObjectId;
+  product: ObjectId;
+  rating: number;
+  comment: string;
+  seller: ObjectId;
+  isEdited: boolean;
+}
+
+interface IReviewMethod {}
+interface ReviewModel extends Model<IReview, {}, IReviewMethod> {}
+
+const ReviewSchema = new Schema<IReview, ReviewModel, IReviewMethod>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,14 +24,16 @@ const ReviewSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
+    seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     rating: { type: Number, required: true },
     comment: { type: String, required: true },
-    isDeleted: { type: Boolean, required: true, default: false },
     isEdited: { type: Boolean, required: true, default: false },
-    deletedAt: { type: Date },
   },
   { timestamps: true }
 );
 
-const Reviews = mongoose.model("Reviews", ReviewSchema);
+const Reviews = mongoose.model<IReview, ReviewModel>("Reviews", ReviewSchema);
 export default Reviews;

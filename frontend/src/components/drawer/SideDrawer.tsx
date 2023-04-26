@@ -3,34 +3,74 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import SegmentIcon from "@mui/icons-material/Segment";
-import { Avatar, IconButton, Stack, useTheme } from "@mui/material";
+import { Avatar, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import AddIcon from "@mui/icons-material/Add";
 import CustomLink from "./custom-link/custom-link";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-const drawerWidth = 300;
+import { green } from "@mui/material/colors";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { ADMIN_ROUTES, SELLER_ROUTES, USER_ROUTES } from "./link-routes/link-Routes";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { useAppDispatch, useAppSelector } from "../../redux/redux-hooks";
+import NavBarMenu from "../common/NavBarMenu/NavBarMenu";
+import { Logout } from "@mui/icons-material";
+import { logOut } from "../../redux/auth/authslice";
+import HomeIcon from "@mui/icons-material/Home";
+const drawerWidth = 240;
 const drawerWidthClose = 60;
 interface ICollection {
   id: string | number;
   collectionName: string;
 }
+
+const menuItems = [
+  {
+    text: "Profile",
+    url: "/",
+    icon: <SegmentIcon />,
+  },
+];
 export default function SideDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const navigate = useNavigate();
-
+  const { role, avatar, firstName } = useAppSelector((state) => state.authSlice);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleDrawerClose = () => {
     setOpen(!open);
   };
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const menuOpen = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
+  const handleClose = (state: string) => {
+    switch (state) {
+      case "Logout":
+        dispatch(logOut("logout"));
+        navigate("/signin", { replace: true });
+        setAnchorEl(null);
+        return;
+      case "home":
+        navigate("/", { replace: true });
+        setAnchorEl(null);
+        return;
+        break;
+      default:
+        setAnchorEl(null);
+        return;
+    }
+  };
   return (
     <>
+      <IconButton>
+        <PhotoCamera />
+      </IconButton>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar
@@ -41,13 +81,14 @@ export default function SideDrawer() {
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
+            mb: theme.mixins.toolbar,
             transition: theme.transitions.create("width", {
               easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
               duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
             }),
           }}
         >
-          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 2 }}>
+          <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 1 }}>
             {!open ? (
               <Typography variant="h6" noWrap component="div">
                 NatureAyur
@@ -56,9 +97,9 @@ export default function SideDrawer() {
               <div></div>
             )}
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-              <Avatar alt="Remy Sharp" src="https://images.pexels.com/photos/15579683/pexels-photo-15579683.jpeg" />
-              <Typography>Example User</Typography>
-              <IconButton aria-label="delete">
+              <Avatar alt="Remy Sharp" src={avatar} />
+              <Typography>{firstName}</Typography>
+              <IconButton aria-label="delete" onClick={handleClick}>
                 <KeyboardArrowDownIcon />
               </IconButton>
             </Stack>
@@ -102,27 +143,93 @@ export default function SideDrawer() {
               <SegmentIcon />
             </IconButton>
           </Box>
+          <Box sx={{ mt: 5 }}>
+            <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1 }}>
+              {(() => {
+                let routes;
+                switch (role) {
+                  case "admin":
+                    routes = ADMIN_ROUTES;
+                    break;
+                  case "seller":
+                    routes = SELLER_ROUTES;
+                    break;
+                  default:
+                    routes = USER_ROUTES;
+                }
+                return routes.map((item, index) => (
+                  <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />
+                ));
+              })()}
 
-          <List sx={{ mt: 5 }}>
-            {[1, 2, 3, 4, 5].map((item, index) => {
-              return <CustomLink drawerStatus={open} label="Test Nav" handleClick={() => alert(item)} key={item} icon={<DashboardIcon />} />;
-            })}
-          </List>
+              <Box sx={{ flexGrow: 1 }}></Box>
+              <CustomLink drawerStatus={open} label={"Logout"} path={"/logout"} activeIcon={<LogoutIcon />} key={"logout"} icon={<LogoutOutlinedIcon />} />
+            </List>
+          </Box>
         </Drawer>
         <Box
           component="main"
           sx={{
-            mt: 4,
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            backgroundColor: "#FAFCF7",
-            height: "96vh",
+            mt: "60px",
+            minHeight: "calc(100vh - 60px)",
+            backgroundColor: green["50"],
             overflowY: "hidden",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 0,
           }}
         >
-          <Toolbar />
           <Outlet />
         </Box>
       </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={menuOpen}
+        onClose={() => handleClose("")}
+        onClick={() => handleClose("")}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem onClick={() => handleClose("home")}>
+          <ListItemIcon>
+            <HomeIcon fontSize="small" />
+          </ListItemIcon>
+          Home
+        </MenuItem>
+        <MenuItem onClick={() => handleClose("logout")}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   );
 }
