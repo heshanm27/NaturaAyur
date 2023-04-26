@@ -137,3 +137,29 @@ export async function getAllReviewsForProduct(id: string) {
 
   return produtReviews;
 }
+
+export async function findNewArrivals() {
+  // Get the date and time 24 hours ago as a JavaScript date object
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  // Find products that were created within the last 24 hours
+  const products = await ProductSchema.find({
+    createdAt: { $gte: yesterday },
+  })
+    .sort({ createdAt: -1 })
+    .limit(10);
+
+  if (products.length < 4) {
+    const products = await ProductSchema.find().sort({ createdAt: -1 }).limit(10);
+    return products;
+  }
+  return products;
+}
+
+export async function findPopularProducts() {
+  const popularProducts = await ProductSchema.find({ soldStock: { $gt: 0 } })
+    .sort({ soldStock: -1 })
+    .limit(10);
+
+  return popularProducts;
+}

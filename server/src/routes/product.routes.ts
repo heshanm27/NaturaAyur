@@ -7,6 +7,8 @@ import {
   getOneSellerProductList,
   updateProduct,
   deleteProduct,
+  getNewArrivals,
+  getPopularProducts,
 } from "../controller/product.controller";
 import validateSchema from "../middleware/schemavalidator.middleware";
 import { getAllProductListSchema } from "../schema/product.schema";
@@ -20,6 +22,9 @@ Router.route("/")
   .get(validateSchema(getAllProductListSchema), getAllProductList)
   .post(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), upload.array("images[]", 6), addNewProduct);
 Router.route("/seller").get(validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER]), getOneSellerProductList);
+Router.route("/newArrivals").get(getNewArrivals);
+Router.route("/popular").get(getPopularProducts);
+
 Router.route("/reviews/:id").get(validateUserRoleAndToken([ROLES.USER, ROLES.ADMIN, ROLES.SELLER]), getReviewsForProduct);
 // //paramterized routes
 Router.route("/:id")

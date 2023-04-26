@@ -1,12 +1,8 @@
 import { Avatar, Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import SlideOneImg from "../../../assets/slider/Banner1.png";
-import SlideTwoImg from "../../../assets/slider/ayurvedic-skin-cream-online_2048x.webp";
 import Navbar from "../../../components/common/navbar/navbar";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import PopularCard from "../../../components/card/PopularCard/PopularCard";
-import ProductCard from "../../../components/card/ProductCard/ProductCard";
 import Grid from "@mui/material/Grid";
 import Footer from "../../../components/common/footer/Footer";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -52,7 +48,7 @@ export default function HomeView() {
   return (
     <>
       <Navbar />
-      <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
+      <Container maxWidth="xl" sx={{ marginTop: "20px" }}>
         <Box sx={{ maxHeight: "330px" }}>
           <Carousel
             animation="slide"

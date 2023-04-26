@@ -6,6 +6,7 @@ import express, { Express } from "express";
 const app: Express = express();
 import logger from "./config/logger.config";
 import { createProxyMiddleware, Filter, Options, RequestHandler } from "http-proxy-middleware";
+import routes from "./routes";
 
 //cors oprions
 const corsOptions = {
@@ -21,6 +22,7 @@ const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}`);
   console.log(`Server is running on port ${process.env.PORT}`);
   console.log(`Press CTRL-C to stop\n`);
+  routes(app);
 });
 
 // server grcefully shutdown handle

@@ -12,7 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Paper } from "@mui/material";
+import { FormHelperText, Paper } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomSnackBar from "../../components/common/snackbar/Snackbar";
 import Navbar from "../../components/common/navbar/navbar";

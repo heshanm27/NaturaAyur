@@ -97,3 +97,21 @@ export const deleteProduct = async (id: string) => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const getNewArrivalsProduct = async () => {
+  try {
+    const response = await apiClient.get(`/product/newArrivals`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const getPopularProducts = async () => {
+  try {
+    const response = await apiClient.get(`/product/popular`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};

@@ -7,6 +7,8 @@ import {
   removeProduct,
   getAllReviewsForProduct,
   findProductById,
+  findNewArrivals,
+  findPopularProducts,
 } from "../service/product.service";
 import { GetAllProductListInput } from "../schema/product.schema";
 import { gernateRandomUniqueCode } from "../util/genrate-product-code";
@@ -117,5 +119,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
   return res.status(200).json({
     message: "Product Deleted Successfully",
     deletedProduct,
+  });
+};
+
+export const getNewArrivals = async (req: Request, res: Response) => {
+  const newArrivals = await findNewArrivals();
+
+  return res.status(200).json({
+    message: "New Arrivals found Successfully",
+    newArrivals,
+  });
+};
+
+export const getPopularProducts = async (req: Request, res: Response) => {
+  const popularProducts = await findPopularProducts();
+
+  return res.status(200).json({
+    message: "Popular Barnds found Successfully",
+    popularProducts,
   });
 };
