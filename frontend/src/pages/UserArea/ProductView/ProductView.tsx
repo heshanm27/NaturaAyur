@@ -398,8 +398,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRati
             <Stack direction={"row"} spacing={2}>
               <Typography variant="h3">{avgRating?.toFixed(1)}</Typography>
               <Stack>
-                <Rating name="avg-rating" precision={0.5} value={avgRating} readOnly sx={{ my: 1 }} />
-                <Typography variant="body1">Based on {reviews.length} reviews</Typography>
+                <Rating name="avg-rating" precision={0.5} value={avgRating!} readOnly sx={{ my: 1 }} />
+                <Typography variant="body1">Based on {reviews?.length} reviews</Typography>
               </Stack>
             </Stack>
             <Box sx={{ mt: 1 }}>
@@ -423,7 +423,6 @@ const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRati
                 <Typography variant="subtitle1">{val?.user?.firstName + val.user.lastName}</Typography>
                 <Rating value={val?.rating} max={5} precision={0.5} readOnly />
                 <div dangerouslySetInnerHTML={{ __html: val.comment }}></div>
-                {/* <Typography variant="body1">{val.comment}</Typography> */}
               </Box>
             </Paper>
           ))}
