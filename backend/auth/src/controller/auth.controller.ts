@@ -6,7 +6,7 @@ import { generateVerifiedEmailBody, generateResetPasswordEmailBody } from "../ut
 import { sendEmail } from "../util/send-mail";
 import { findUserByEmil, findUserById } from "../service/user.service";
 import JWT from "jsonwebtoken";
-import { IToken } from "../models/user.model";
+import { IToken } from "../model/user.model";
 import { BadRequestError } from "../errors";
 import { genrateAccessToken } from "../util/genrate-jwt-keys";
 

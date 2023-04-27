@@ -3,14 +3,21 @@ import jwt from "jsonwebtoken";
 import { BadRequestError, UnAuthorized } from "../errors";
 import axios from "axios";
 
+export interface IGetUserAuthInfoRequest extends Request {
+  user?: any; // or any other type
+}
 export enum ROLES {
   ADMIN = "admin",
   USER = "user",
   SELLER = "seller",
 }
+async function getUserFromService(id: string) {
+  const response = await axios.get(`${process.env.PROCESS_USER_SERVICE_URL}/${id}`);
+  return response.data;
+}
 
 export function validateUserRoleAndToken(requiredRole: ROLES[]) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
     // Get the token from the cookie header
     const authHeader = req.headers?.authorization;
 
@@ -26,9 +33,8 @@ export function validateUserRoleAndToken(requiredRole: ROLES[]) {
       //extract the user id from the token
       const { id }: any = jwt.verify(token, process.env.JWT_SECRET!);
 
-      const user = await axios.get("");
       //find the user in the database
-      const user: Pick<IUser, "role"> | null = await UserSchema.findById(id);
+      const user: any = await getUserFromService(id);
 
       //check if the user is present
       if (!user) {
