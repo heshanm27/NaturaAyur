@@ -2,7 +2,7 @@ import { Express, Request, Response } from "express";
 import OrderRoute from "../routes/order.routes";
 import NotFoundMiddleware from "../middleware/notfound.middleware";
 import ErrorHandlerMiddleware from "../middleware/errorhandler.middleware";
-import { validateUserRoleAndToken } from "../middleware/auth.middleware";
+// import { validateUserRoleAndToken } from "../middleware/auth.middleware";
 export enum ROLES {
   ADMIN = "admin",
   USER = "user",
@@ -15,7 +15,8 @@ function routes(app: Express) {
       server: "Server Is running",
     });
   });
-  app.use("/api/v1/order", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), OrderRoute);
+  // app.use("/api/v1/order", validateUserRoleAndToken([ROLES.ADMIN, ROLES.SELLER, ROLES.USER]), OrderRoute);
+  app.use("/api/v1/order", OrderRoute);
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);
 }

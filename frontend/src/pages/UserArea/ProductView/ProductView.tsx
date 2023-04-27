@@ -403,7 +403,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRati
               </Stack>
             </Stack>
             <Box sx={{ mt: 1 }}>
-              {ratings.map(({ rating, count }, index) => (
+              {ratings?.map(({ rating, count }, index) => (
                 <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
                   <Rating value={rating} max={5} precision={0.5} readOnly />
                   <Typography variant="body1" sx={{ ml: 1 }}>
@@ -417,10 +417,10 @@ const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRati
       </Grid>
       <Grid item xs={12} md={9}>
         <Box sx={{ overflow: "auto", height: 400 }}>
-          {reviews.map((val: any, index: number) => (
+          {reviews?.map((val: any, index: number) => (
             <Paper sx={{ p: 2, borderRadius: "10px", mt: index > 0 ? 2 : 0, mb: 2 }} variant="outlined">
               <Box key={index}>
-                <Typography variant="subtitle1">{val.user.firstName + val.user.lastName}</Typography>
+                <Typography variant="subtitle1">{val?.user?.firstName + val.user.lastName}</Typography>
                 <Rating value={val?.rating} max={5} precision={0.5} readOnly />
                 <div dangerouslySetInnerHTML={{ __html: val.comment }}></div>
                 {/* <Typography variant="body1">{val.comment}</Typography> */}
