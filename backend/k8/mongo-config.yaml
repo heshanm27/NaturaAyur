@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+data:
+  mongo-url: mongo-service
+  #comeback here
+  #mongo service is taken from service (deployment.yaml -> service -> metadata -> name)

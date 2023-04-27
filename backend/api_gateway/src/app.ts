@@ -5,7 +5,6 @@ import cors from "cors";
 import express, { Express } from "express";
 const app: Express = express();
 import logger from "./config/logger.config";
-import { createProxyMiddleware, Filter, Options, RequestHandler } from "http-proxy-middleware";
 import routes from "./routes";
 
 //cors oprions

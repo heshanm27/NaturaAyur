@@ -1,4 +1,20 @@
-import { Badge, Box, Button, Chip, Container, Divider, Grid, IconButton, Link, Paper, Rating, Stack, TextField, Typography } from "@mui/material";
+import {
+  Badge,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  Link,
+  Paper,
+  Rating,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import Navbar from "../../../components/common/navbar/navbar";
 import Footer from "../../../components/common/footer/Footer";
@@ -6,13 +22,16 @@ import Footer from "../../../components/common/footer/Footer";
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
 import { useLocation, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchProduct } from "../../../api/productApi";
 import CustomCirculerProgress from "../../../components/common/CustomCirculerProgress/CustomCirculerProgress";
 import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
 import { Editor } from "@tinymce/tinymce-react";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import { addReview, fetchAllProductReviews } from "../../../api/reviewApi";
+import { useAppDispatch, useAppSelector } from "../../../redux/redux-hooks";
+import { addToCart } from "../../../redux/cartslice";
 
 const images = [
   {
@@ -29,23 +48,23 @@ const images = [
   },
 ];
 // Example data set
-const reviewData = {
-  title: "Great product",
-  ratings: [
-    { rating: 1, votes: 0 },
-    { rating: 2, votes: 0 },
-    { rating: 3, votes: 0 },
-    { rating: 4, votes: 3 },
-    { rating: 5, votes: 5 },
-  ],
-  reviews: [
-    { name: "John", rating: 5, review: "I absolutely love this product! It exceeded my expectations." },
-    { name: "Sarah", rating: 4, review: "Great product! It works well and is easy to" },
-    { name: "Michael", rating: 3, review: "It's an okay product. It gets the job done, but could be improved." },
-    { name: "Emily", rating: 4.5, review: "I'm very happy with this product. It's reliable and efficient." },
-    // Add more reviews here...
-  ],
-};
+// const reviewData = {
+//   title: "Great product",
+//   ratings: [
+//     { rating: 1, votes: 0 },
+//     { rating: 2, votes: 0 },
+//     { rating: 3, votes: 0 },
+//     { rating: 4, votes: 3 },
+//     { rating: 5, votes: 5 },
+//   ],
+//   reviews: [
+//     { name: "John", rating: 5, review: "I absolutely love this product! It exceeded my expectations." },
+//     { name: "Sarah", rating: 4, review: "Great product! It works well and is easy to" },
+//     { name: "Michael", rating: 3, review: "It's an okay product. It gets the job done, but could be improved." },
+//     { name: "Emily", rating: 4.5, review: "I'm very happy with this product. It's reliable and efficient." },
+//     // Add more reviews here...
+//   ],
+// };
 interface IImageGallery {
   original: string;
   thumbnail: string;
@@ -63,9 +82,11 @@ function convertImageGalleryArray(items: string[]): IImageGallery[] {
 
 export default function ProductView() {
   const parms = useParams();
+  const dispatch = useAppDispatch();
   const [quantity, setQuantity] = useState<number>(1);
   const editorRef = useRef<any>(null);
   const [richText, setRichText] = useState<string>("");
+  const [rating, setRating] = useState<number>(0);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -86,9 +107,23 @@ export default function ProductView() {
     },
   });
 
-  const { data: seller } = useQuery({
-    queryKey: ["product-seller", parms.id],
-    queryFn: () => fetchProduct(parms.id ?? ""),
+  const { data: reviews, isLoading: isReview } = useQuery({
+    queryKey: ["one-product-reviews", parms.id],
+    queryFn: () => fetchAllProductReviews(parms?.id!),
+  });
+
+  const { mutate, isLoading: isReviewLooding } = useMutation({
+    mutationFn: addReview,
+    onSuccess: (data: any) => {
+      setNotify({
+        isOpen: true,
+        message: data.message,
+        type: "success",
+        title: "Success",
+      });
+      setRating(0);
+      editorRef.current.setContent("");
+    },
     onError: (error: any) => {
       setNotify({
         isOpen: true,
@@ -98,6 +133,7 @@ export default function ProductView() {
       });
     },
   });
+
   console.log(data);
   if (isLoading) {
     return <CustomCirculerProgress />;
@@ -140,6 +176,46 @@ export default function ProductView() {
     setQuantity((prevQuantity: number) => prevQuantity + 1);
   };
 
+  const handleRatingChange = (value: number) => {
+    setRating(value);
+  };
+
+  const handleReviewSubmit = () => {
+    console.log(richText, rating, parms.id);
+    if (rating === 0) {
+      setNotify({
+        isOpen: true,
+        message: "Please select rating",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    if (richText.length < 1) {
+      setNotify({
+        isOpen: true,
+        message: "You need to enter comment",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    mutate({
+      comment: richText,
+      rating: rating,
+      product: parms.id,
+    });
+  };
+  const handleCart = () => {
+    const productID = data?.product._id;
+    const productName = data?.product.name;
+    const productPrice = data?.product.price;
+    const productImg = data?.product.images[0];
+    const productStock = data?.product.stock;
+
+    dispatch(addToCart({ productID, productName, productPrice, productImg, productStock }));
+  };
+  console.log("reviews", reviews);
   return (
     <>
       <Navbar />
@@ -206,7 +282,7 @@ export default function ProductView() {
                     }}
                   />
                 </Stack>
-                <Button variant="contained" color="primary" sx={{ mb: 1, width: "50%" }}>
+                <Button variant="contained" color="primary" sx={{ mb: 1, width: "50%" }} onClick={handleCart}>
                   Add to Cart
                 </Button>
               </Stack>
@@ -229,10 +305,10 @@ export default function ProductView() {
                 <Typography variant="h6">Rate this product</Typography>
                 <Rating
                   name="rating"
-                  // value={rating}
-                  // onChange={(event, newValue) => {
-                  //   handleRatingChange(newValue);
-                  // }}
+                  value={rating}
+                  onChange={(event, newValue) => {
+                    handleRatingChange(newValue!);
+                  }}
                 />
               </Stack>
               <Editor
@@ -273,15 +349,15 @@ export default function ProductView() {
                 }}
               />
               <Box mt={2} display="flex" justifyContent="end">
-                <Button variant="contained" color="primary" onClick={() => {}}>
-                  Submit Your Review
+                <Button variant="contained" color="primary" onClick={handleReviewSubmit}>
+                  {isReviewLooding ? <CircularProgress /> : "Submit Your Review"}
                 </Button>
               </Box>
             </Stack>
           </Paper>
         </Box>
 
-        <ProductReview title={reviewData.title} ratings={reviewData.ratings} reviews={reviewData.reviews} />
+        <ProductReview ratings={reviews?.review?.rateData} reviews={reviews?.review?.reviews} avgRating={reviews?.review?.avgRating} />
       </Container>
       <CustomSnackBar notify={notify} setNotify={setNotify} />
       <Footer />
@@ -295,24 +371,24 @@ interface ReviewItem {
 }
 
 interface ProductReviewProps {
-  title: string;
-  ratings: { rating: number; votes: number }[];
-  reviews: ReviewItem[];
+  ratings: { rating: number; count: number }[];
+  reviews: any;
+  avgRating?: number;
 }
 
-const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }) => {
+const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRating }) => {
+  console.log("ggg", ratings, reviews);
   // Group reviews by rating in the same range (1-5)
-  const reviewsByRating: { [key: number]: ReviewItem[] } = {};
-  reviews.forEach((review) => {
-    const rating = Math.floor(review.rating);
-    if (!reviewsByRating[rating]) {
-      reviewsByRating[rating] = [];
-    }
-    reviewsByRating[rating].push(review);
-  });
+  // const reviewsByRating: { [key: number]: ReviewItem[] } = {};
+  // reviews.forEach((review:any) => {
+  //   const rating = Math.floor(review.rating);
+  //   if (!reviewsByRating[rating]) {
+  //     reviewsByRating[rating] = [];
+  //   }
+  //   reviewsByRating[rating].push(review);
+  // });
 
   // Display up to 10 reviews
-  const displayedReviews = reviews.slice(0, 10);
 
   return (
     <Grid container spacing={2}>
@@ -320,18 +396,18 @@ const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }
         <Paper sx={{ p: 2 }} variant="outlined">
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Stack direction={"row"} spacing={2}>
-              <Typography variant="h3">{4.8}</Typography>
+              <Typography variant="h3">{avgRating?.toFixed(1)}</Typography>
               <Stack>
-                <Rating name="avg-rating" precision={0.5} value={4.8} readOnly sx={{ my: 1 }} />
-                <Typography variant="body1">Based on {reviews.length} reviews</Typography>
+                <Rating name="avg-rating" precision={0.5} value={avgRating!} readOnly sx={{ my: 1 }} />
+                <Typography variant="body1">Based on {reviews?.length} reviews</Typography>
               </Stack>
             </Stack>
             <Box sx={{ mt: 1 }}>
-              {ratings.map(({ rating, votes }, index) => (
+              {ratings?.map(({ rating, count }, index) => (
                 <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
                   <Rating value={rating} max={5} precision={0.5} readOnly />
                   <Typography variant="body1" sx={{ ml: 1 }}>
-                    ({votes} {votes === 1 ? "vote" : "votes"})
+                    ({count} {count === 1 ? "vote" : "votes"})
                   </Typography>
                 </Box>
               ))}
@@ -340,13 +416,13 @@ const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }
         </Paper>
       </Grid>
       <Grid item xs={12} md={9}>
-        <Box sx={{ overflow: "auto" }}>
-          {displayedReviews.map(({ name, review, rating }, index) => (
+        <Box sx={{ overflow: "auto", height: 400 }}>
+          {reviews?.map((val: any, index: number) => (
             <Paper sx={{ p: 2, borderRadius: "10px", mt: index > 0 ? 2 : 0, mb: 2 }} variant="outlined">
               <Box key={index}>
-                <Typography variant="subtitle1">{name}</Typography>
-                <Rating value={rating} max={5} precision={0.5} readOnly />
-                <Typography variant="body1">{review}</Typography>
+                <Typography variant="subtitle1">{val?.user?.firstName + val.user.lastName}</Typography>
+                <Rating value={val?.rating} max={5} precision={0.5} readOnly />
+                <div dangerouslySetInnerHTML={{ __html: val.comment }}></div>
               </Box>
             </Paper>
           ))}

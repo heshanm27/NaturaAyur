@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser";
 import { raw } from "body-parser";
 import { OrderpayemntHandler } from "./controller/order.webhook.controller";
 import * as Scheduler from "./scheduler/order-scheduler";
+import { schedule } from "node-cron";
 
 const app: Express = express();
 
@@ -33,8 +34,18 @@ const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
   connect();
 
-  // Scheduler.dailySchedule.start();
-  Scheduler.dailyScheduleTwo.start();
+  Scheduler.dailySchedule.start();
+  // Scheduler.dailyScheduleTwo.start();
+  // schedule(
+  //   "* * * * * *",
+  //   () => {
+  //     console.log("running every minute 1, 2, 4 and 5");
+  //   },
+  //   {
+  //     scheduled: false,
+  //     name: "test",
+  //   }
+  // ).start();
   routes(app);
 });
 

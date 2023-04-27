@@ -1,3 +1,24 @@
 {
-  "services": [{}]
+  "services": [
+    {
+      "name": "auth",
+      "url": "http://localhost:8002"
+    },
+    {
+      "name": "user",
+      "url": "http://localhost:8003"
+    },
+    {
+      "name": "order",
+      "url": "http://localhost:8004"
+    },
+    {
+      "name": "product",
+      "url": "http://localhost:8005"
+    },
+    {
+      "name": "category",
+      "url": "http://localhost:8006"
+    }
+  ]
 }

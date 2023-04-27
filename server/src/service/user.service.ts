@@ -17,3 +17,12 @@ export async function getAllUsers(): Promise<IUser[]> {
   const users = await UserSchema.find();
   return users;
 }
+
+export async function UpdateUser(id: string, user: any) {
+  try {
+    const newUser = await UserSchema.findByIdAndUpdate(id, user, { new: true });
+    return newUser;
+  } catch (err) {
+    throw new BadRequestError("User not found");
+  }
+}
