@@ -1,4 +1,20 @@
-import { Badge, Box, Button, Chip, Container, Divider, Grid, IconButton, Link, Paper, Rating, Stack, TextField, Typography } from "@mui/material";
+import {
+  Badge,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  Link,
+  Paper,
+  Rating,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import Navbar from "../../../components/common/navbar/navbar";
 import Footer from "../../../components/common/footer/Footer";
@@ -13,6 +29,8 @@ import CustomSnackBar from "../../../components/common/snackbar/Snackbar";
 import { Editor } from "@tinymce/tinymce-react";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import { addReview, fetchAllProductReviews } from "../../../api/reviewApi";
+import { useAppSelector } from "../../../redux/redux-hooks";
 
 const images = [
   {
@@ -87,10 +105,23 @@ export default function ProductView() {
     },
   });
 
-  const { isLoading: isReviewLooding } = useMutation({});
-  const { data: seller } = useQuery({
-    queryKey: ["product-seller", parms.id],
-    queryFn: () => fetchProduct(parms.id ?? ""),
+  const { data: reviews, isLoading: isReview } = useQuery({
+    queryKey: ["one-product-reviews", parms.id],
+    queryFn: () => fetchAllProductReviews(parms?.id!),
+  });
+
+  const { mutate, isLoading: isReviewLooding } = useMutation({
+    mutationFn: addReview,
+    onSuccess: (data: any) => {
+      setNotify({
+        isOpen: true,
+        message: data.message,
+        type: "success",
+        title: "Success",
+      });
+      setRating(0);
+      editorRef.current.setContent("");
+    },
     onError: (error: any) => {
       setNotify({
         isOpen: true,
@@ -100,6 +131,18 @@ export default function ProductView() {
       });
     },
   });
+  // const { data: seller } = useQuery({
+  //   queryKey: ["product-seller", parms.id],
+  //   queryFn: () => fetchProduct(parms.id ?? ""),
+  //   onError: (error: any) => {
+  //     setNotify({
+  //       isOpen: true,
+  //       message: error.message,
+  //       type: "error",
+  //       title: "Error",
+  //     });
+  //   },
+  // });
   console.log(data);
   if (isLoading) {
     return <CustomCirculerProgress />;
@@ -146,7 +189,33 @@ export default function ProductView() {
     setRating(value);
   };
 
-  const handleReviewSubmit = () => {};
+  const handleReviewSubmit = () => {
+    console.log(richText, rating, parms.id);
+    if (rating === 0) {
+      setNotify({
+        isOpen: true,
+        message: "Please select rating",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    if (richText.length < 1) {
+      setNotify({
+        isOpen: true,
+        message: "You need to enter comment",
+        type: "error",
+        title: "Error",
+      });
+      return;
+    }
+    mutate({
+      comment: richText,
+      rating: rating,
+      product: parms.id,
+    });
+  };
+  console.log("reviews", reviews);
   return (
     <>
       <Navbar />
@@ -280,8 +349,8 @@ export default function ProductView() {
                 }}
               />
               <Box mt={2} display="flex" justifyContent="end">
-                <Button variant="contained" color="primary" onClick={() => {}}>
-                  Submit Your Review
+                <Button variant="contained" color="primary" onClick={handleReviewSubmit}>
+                  {isReviewLooding ? <CircularProgress /> : "Submit Your Review"}
                 </Button>
               </Box>
             </Stack>

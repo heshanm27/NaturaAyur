@@ -1,12 +1,12 @@
 import express from "express";
-import { getAllUsertList, getOneUser, updateUserProfile } from "../controller/user.controller";
-import { addReviewForSeller, getReviewById, updateReview } from "../service/review.service";
-import { getReviewForProduct, getReviewsForSeller } from "../controller/review.controller";
+
+import { addReview, getReviewById, getReviewForProduct, getReviewsForSeller, updateReview } from "../controller/review.controller";
 
 const Router = express.Router();
 //default routes
-Router.route("/produts").get(getReviewForProduct).post(addReviewForSeller);
-Router.route("/seller").get(getReviewsForSeller).post(addReviewForSeller);
+Router.route("/").post(addReview);
+Router.route("/products/:id").get(getReviewForProduct);
+Router.route("/seller/:id").get(getReviewsForSeller);
 //paramterized routes
 Router.route("/:id").get(getReviewById).patch(updateReview).delete();
 

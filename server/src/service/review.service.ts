@@ -1,5 +1,5 @@
 import Reviews, { IReview } from "../models/review.model";
-
+import ProductSchema, { IProduct } from "../models/product.model";
 interface IFilters {
   sortBy?: any;
   order?: any;
@@ -9,32 +9,26 @@ interface IFilters {
   sellerId?: string;
 }
 
-export async function addReviewForProduct(input: Omit<IReview, "_id" | "isEdited">) {
+export async function addReview(input: Omit<IReview, "_id" | "isEdited">) {
   try {
-    const review = await Reviews.create({
-      user: input.user,
-      product: input.product,
-      rating: input.rating,
-      comment: input.comment,
-    });
+    console.log(input);
 
-    return {
-      message: "Review Added Successfully",
-      review,
-    };
-  } catch (e: any) {
-    throw new Error(e.message);
-  }
-}
+    const produt: any = await ProductSchema.findById(input.product);
 
-export async function addReviewForSeller(input: Omit<IReview, "_id" | "isEdited" | "product">) {
-  try {
+    if (!produt) throw new Error("Product not found");
+
     const review = await Reviews.create({
       user: input.user,
       seller: input.seller,
       rating: input.rating,
       comment: input.comment,
+      product: input.product,
     });
+
+    produt.reviews.push(review._id);
+    produt.numReviews = produt?.reviews.length;
+
+    await produt.save();
 
     return {
       message: "Review Added Successfully",
@@ -45,7 +39,10 @@ export async function addReviewForSeller(input: Omit<IReview, "_id" | "isEdited"
   }
 }
 
-export async function findAllReviewsForProduct({ sortBy = "rating", order = "-1", limit = "2", page = "1", productId }: IFilters): Promise<{
+export async function findAllReviewsForProduct(
+  id: string,
+  { sortBy = "rating", order = "-1", limit = "2", page = "1", productId }: IFilters
+): Promise<{
   reviews: any;
   total: number;
   maximumReviewRate: number;
@@ -54,7 +51,7 @@ export async function findAllReviewsForProduct({ sortBy = "rating", order = "-1"
 }> {
   //find all reviews
   const reviews = await Reviews.find({
-    product: productId,
+    product: id,
   })
     .sort({
       [sortBy]: order,
@@ -95,10 +92,14 @@ export async function findAllReviewsForProduct({ sortBy = "rating", order = "-1"
       },
     },
   ]).exec();
-  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0].avgRating };
+  console.log(avgRating);
+  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0]?.avgRating };
 }
 
-export async function findAllReviewsForSeller({ sortBy = "rating", order = "-1", limit = "2", page = "1", sellerId }: IFilters): Promise<{
+export async function findAllReviewsForSeller(
+  id: string,
+  { sortBy = "rating", order = "-1", limit = "2", page = "1", sellerId }: IFilters
+): Promise<{
   reviews: any;
   total: number;
   maximumReviewRate: number;
@@ -107,7 +108,7 @@ export async function findAllReviewsForSeller({ sortBy = "rating", order = "-1",
 }> {
   //find all reviews
   const reviews = await Reviews.find({
-    seller: sellerId,
+    seller: id,
   })
     .sort({
       [sortBy]: order,

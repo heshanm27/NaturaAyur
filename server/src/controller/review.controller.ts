@@ -1,27 +1,35 @@
 import { Request, Response } from "express";
 import * as ReviewServices from "../service/review.service";
 
-export const addReviewForProduct = async (req: Request, res: Response) => {
-  const review = await ReviewServices.addReviewForProduct(req.body);
-  return review;
-};
-
-export const addReviewForSeller = async (req: Request, res: Response) => {
-  const review = await ReviewServices.addReviewForSeller(req.body);
-  return review;
+export const addReview = async (req: Request, res: Response) => {
+  const user: any = req.user;
+  const { comment, product, rating, seller } = req.body;
+  console.log(comment, product, rating, user?._id!);
+  const review = {
+    comment,
+    product,
+    rating,
+    seller,
+    user: user?._id!,
+  };
+  const addreview = await ReviewServices.addReview(review);
+  res.status(200).json({
+    message: "Review added successfully",
+    addreview,
+  });
 };
 
 export const getReviewForProduct = async (req: Request, res: Response) => {
   let { sortBy, order, limit, page } = req.query;
-
-  const review = await ReviewServices.findAllReviewsForProduct({ sortBy, order, limit, page });
+  let id = req.params.id;
+  const review = await ReviewServices.findAllReviewsForProduct(id, { sortBy, order, limit, page });
   return review;
 };
 
 export const getReviewsForSeller = async (req: Request, res: Response) => {
   let { sortBy, order, limit, page } = req.query;
-
-  const review = await ReviewServices.findAllReviewsForSeller({ sortBy, order, limit, page });
+  let id = req.params.id;
+  const review = await ReviewServices.findAllReviewsForSeller(id, { sortBy, order, limit, page });
   return review;
 };
 
