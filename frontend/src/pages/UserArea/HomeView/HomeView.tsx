@@ -45,12 +45,7 @@ export default function HomeView() {
     {
       button: "Buy Now",
       title: "Vilwadi Leham",
-<<<<<<< HEAD
-      description:
-        "Ayurveda understand the cycle of nature, it provides what you need and makes the rhythm of life enjoyable in this dynamic circumstances.",
-=======
       description: "Ayurveda understand the cycle of nature, it provides what you need and makes the rhythm of life enjoyable in this dynamic circumstances.",
->>>>>>> 71ff68256c62e0768b50dccee50cc8732f99d89f
       image: "https://www.ayurkart.com/cdn/shop/products/Vilwadi-Leham_600x.jpg?v=1563436722",
     },
   ];
