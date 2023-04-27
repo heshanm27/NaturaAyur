@@ -25,20 +25,14 @@ export default function HomeView() {
     {
       button: "Buy Now",
       title: "Kunkumadi Tailam",
-      title: "Kunkumadi Tailam",
       description:
-        "Discoloration of face, pimples, wrinkles, premature greying of hair. For external application as well as nasyam. Gives colour and complexion for the skin.",
-      image: "https://www.ayurkart.com/cdn/shop/products/Kumkumadi-tailam-kottakkal1_5e97adb7-7ff0-417b-8b1e-c059c19fb7d4_1200x1200.jpg?v=1599410994",
         "Discoloration of face, pimples, wrinkles, premature greying of hair. For external application as well as nasyam. Gives colour and complexion for the skin.",
       image: "https://www.ayurkart.com/cdn/shop/products/Kumkumadi-tailam-kottakkal1_5e97adb7-7ff0-417b-8b1e-c059c19fb7d4_1200x1200.jpg?v=1599410994",
     },
     {
       button: "Buy Now",
       title: "Brahmi Caps",
-      title: "Brahmi Caps",
       description:
-        "Brahmi Caps (Bacopa monnieri) - very well known ayurvedic medicine for memory power, used as a memory booster, and other brain-related disorders",
-      image: "https://www.ayurkart.com/cdn/shop/products/Brahmi-Caps_1200x1200.jpg?v=1563436516",
         "Brahmi Caps (Bacopa monnieri) - very well known ayurvedic medicine for memory power, used as a memory booster, and other brain-related disorders",
       image: "https://www.ayurkart.com/cdn/shop/products/Brahmi-Caps_1200x1200.jpg?v=1563436516",
     },
