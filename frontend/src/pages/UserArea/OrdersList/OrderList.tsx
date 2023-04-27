@@ -4,14 +4,14 @@ import SummaryCard from "../../../components/card/summarycard/summarycard";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "@tanstack/react-query";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchAllLiveOrders } from "../../../api/orderApi";
+import { fetchAllLiveOrders, fetchUserOrder } from "../../../api/orderApi";
 import DetailsCard from "../../../components/card/DetailsCard/DetailsCard";
 import { faEnvelope, faClipboardCheck, faBoxesStacked } from "@fortawesome/free-solid-svg-icons";
 import { Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 export default function OrderList() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: fetchAllLiveOrders });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: fetchUserOrder });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [docId, setDocId] = useState("");
   const open = Boolean(anchorEl);
@@ -22,7 +22,7 @@ export default function OrderList() {
   };
   const handleClose = () => {
     setAnchorEl(null);
-    navigate(`/orders/view/${docId}`);
+    navigate(`/user/orders/view/${docId}`);
   };
 
   const columns = useMemo<MRT_ColumnDef[]>(
@@ -40,6 +40,8 @@ export default function OrderList() {
       {
         accessorKey: "createdAt", //normal accessorKey
         header: "Date",
+        enableGlobalFilter: false,
+        sortDescFirst: true,
         Cell: ({ renderedCellValue, row }: any) => {
           return new Date(row.original.createdAt).toLocaleDateString();
         },
@@ -118,7 +120,7 @@ export default function OrderList() {
           {DetailsCardList.map((item, index) => {
             return (
               <Grid item xs={4} lg={3}>
-                <DetailsCard Icon={item.Icon} value={item.value} title={item.title} color={item.color} animate={item.animate} iconColor={item.iconColor} />
+                {/* <DetailsCard Icon={item.Icon} value={item.value} title={item.title} color={item.color} animate={item.animate} iconColor={item.iconColor} /> */}
               </Grid>
             );
           })}
