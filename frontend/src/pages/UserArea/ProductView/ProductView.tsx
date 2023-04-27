@@ -30,7 +30,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { addReview, fetchAllProductReviews } from "../../../api/reviewApi";
-import { useAppSelector } from "../../../redux/redux-hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/redux-hooks";
+import { addToCart } from "../../../redux/cartslice";
 
 const images = [
   {
@@ -81,6 +82,7 @@ function convertImageGalleryArray(items: string[]): IImageGallery[] {
 
 export default function ProductView() {
   const parms = useParams();
+  const dispatch = useAppDispatch();
   const [quantity, setQuantity] = useState<number>(1);
   const editorRef = useRef<any>(null);
   const [richText, setRichText] = useState<string>("");
@@ -204,6 +206,15 @@ export default function ProductView() {
       product: parms.id,
     });
   };
+  const handleCart = () => {
+    const productID = data?.product._id;
+    const productName = data?.product.name;
+    const productPrice = data?.product.price;
+    const productImg = data?.product.images[0];
+    const productStock = data?.product.stock;
+
+    dispatch(addToCart({ productID, productName, productPrice, productImg, productStock }));
+  };
   console.log("reviews", reviews);
   return (
     <>
@@ -271,7 +282,7 @@ export default function ProductView() {
                     }}
                   />
                 </Stack>
-                <Button variant="contained" color="primary" sx={{ mb: 1, width: "50%" }}>
+                <Button variant="contained" color="primary" sx={{ mb: 1, width: "50%" }} onClick={handleCart}>
                   Add to Cart
                 </Button>
               </Stack>
