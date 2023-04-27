@@ -41,32 +41,35 @@ export async function addReview(input: Omit<IReview, "_id" | "isEdited">) {
 
 export async function findAllReviewsForProduct(
   id: string,
-  { sortBy = "rating", order = "-1", limit = "2", page = "1", productId }: IFilters
+  { sortBy = "createdAt", order = "-1", limit = "2", page = "1", productId }: IFilters
 ): Promise<{
   reviews: any;
   total: number;
   maximumReviewRate: number;
   minimumReviewsRate: number;
   avgRating: number;
+  rateData: any;
 }> {
   //find all reviews
   const reviews = await Reviews.find({
     product: id,
   })
+    .populate("user", { firstName: 1, lastName: 1 })
     .sort({
       [sortBy]: order,
     })
-    .limit(limit)
-    .skip(limit * (page - 1));
+    .limit(10);
 
   //find count for matching reviews
-  const totalDocCount = await Reviews.countDocuments()
+  const totalDocCount = await Reviews.countDocuments({
+    product: id,
+  })
     .sort({
       [sortBy]: order,
     })
     .count();
 
-  const total = Math.ceil(totalDocCount / limit);
+  const total = totalDocCount;
   const maxReview = await Reviews.findOne()
     .sort({ rating: -1 }) // Sort by "rating" field in descending order to get maximum value
     .select("rating") // Select only the "rating" field
@@ -92,8 +95,36 @@ export async function findAllReviewsForProduct(
       },
     },
   ]).exec();
+  const rateData = await Reviews.aggregate([
+    {
+      $match: {
+        productId: productId,
+      },
+    },
+    {
+      $group: {
+        _id: "$rating",
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        rating: "$_id",
+        count: 1,
+
+        _id: 0,
+      },
+    },
+    {
+      $sort: {
+        rating: 1,
+      },
+    },
+  ]).exec();
+
+  console.log(rateData);
   console.log(avgRating);
-  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0]?.avgRating };
+  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0]?.avgRating, rateData };
 }
 
 export async function findAllReviewsForSeller(
@@ -105,6 +136,7 @@ export async function findAllReviewsForSeller(
   maximumReviewRate: number;
   minimumReviewsRate: number;
   avgRating: number;
+  rateData: any;
 }> {
   //find all reviews
   const reviews = await Reviews.find({
@@ -149,7 +181,28 @@ export async function findAllReviewsForSeller(
       },
     },
   ]).exec();
-  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0].avgRating };
+
+  const rateData = Reviews.aggregate([
+    {
+      $group: {
+        _id: "$rating",
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        rating: "$_id",
+        count: 1,
+        _id: 0,
+      },
+    },
+    {
+      $sort: {
+        rating: 1,
+      },
+    },
+  ]);
+  return { reviews, total, maximumReviewRate, minimumReviewsRate, avgRating: avgRating[0].avgRating, rateData };
 }
 
 export async function getReviewById(id: string) {

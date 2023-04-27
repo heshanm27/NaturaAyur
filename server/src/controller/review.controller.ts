@@ -23,22 +23,35 @@ export const getReviewForProduct = async (req: Request, res: Response) => {
   let { sortBy, order, limit, page } = req.query;
   let id = req.params.id;
   const review = await ReviewServices.findAllReviewsForProduct(id, { sortBy, order, limit, page });
-  return review;
+
+  res.status(200).json({
+    message: "Review fetched successfully",
+    review,
+  });
 };
 
 export const getReviewsForSeller = async (req: Request, res: Response) => {
   let { sortBy, order, limit, page } = req.query;
   let id = req.params.id;
   const review = await ReviewServices.findAllReviewsForSeller(id, { sortBy, order, limit, page });
-  return review;
+  res.status(200).json({
+    message: "Review fetched successfully",
+    review,
+  });
 };
 
 export const getReviewById = async (req: Request, res: Response) => {
   const review = await ReviewServices.getReviewById(req.params.id);
-  return review;
+  res.status(200).json({
+    message: "Review fetched successfully",
+    review,
+  });
 };
 
 export const updateReview = async (req: Request, res: Response) => {
   const review = await ReviewServices.updateReview(req.params.id, req.body);
-  return review;
+  res.status(200).json({
+    message: "Review fetched updated successfully",
+    review,
+  });
 };

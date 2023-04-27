@@ -47,23 +47,23 @@ const images = [
   },
 ];
 // Example data set
-const reviewData = {
-  title: "Great product",
-  ratings: [
-    { rating: 1, votes: 0 },
-    { rating: 2, votes: 0 },
-    { rating: 3, votes: 0 },
-    { rating: 4, votes: 3 },
-    { rating: 5, votes: 5 },
-  ],
-  reviews: [
-    { name: "John", rating: 5, review: "I absolutely love this product! It exceeded my expectations." },
-    { name: "Sarah", rating: 4, review: "Great product! It works well and is easy to" },
-    { name: "Michael", rating: 3, review: "It's an okay product. It gets the job done, but could be improved." },
-    { name: "Emily", rating: 4.5, review: "I'm very happy with this product. It's reliable and efficient." },
-    // Add more reviews here...
-  ],
-};
+// const reviewData = {
+//   title: "Great product",
+//   ratings: [
+//     { rating: 1, votes: 0 },
+//     { rating: 2, votes: 0 },
+//     { rating: 3, votes: 0 },
+//     { rating: 4, votes: 3 },
+//     { rating: 5, votes: 5 },
+//   ],
+//   reviews: [
+//     { name: "John", rating: 5, review: "I absolutely love this product! It exceeded my expectations." },
+//     { name: "Sarah", rating: 4, review: "Great product! It works well and is easy to" },
+//     { name: "Michael", rating: 3, review: "It's an okay product. It gets the job done, but could be improved." },
+//     { name: "Emily", rating: 4.5, review: "I'm very happy with this product. It's reliable and efficient." },
+//     // Add more reviews here...
+//   ],
+// };
 interface IImageGallery {
   original: string;
   thumbnail: string;
@@ -131,18 +131,7 @@ export default function ProductView() {
       });
     },
   });
-  // const { data: seller } = useQuery({
-  //   queryKey: ["product-seller", parms.id],
-  //   queryFn: () => fetchProduct(parms.id ?? ""),
-  //   onError: (error: any) => {
-  //     setNotify({
-  //       isOpen: true,
-  //       message: error.message,
-  //       type: "error",
-  //       title: "Error",
-  //     });
-  //   },
-  // });
+
   console.log(data);
   if (isLoading) {
     return <CustomCirculerProgress />;
@@ -357,7 +346,7 @@ export default function ProductView() {
           </Paper>
         </Box>
 
-        <ProductReview title={reviewData.title} ratings={reviewData.ratings} reviews={reviewData.reviews} />
+        <ProductReview ratings={reviews?.review?.rateData} reviews={reviews?.review?.reviews} avgRating={reviews?.review?.avgRating} />
       </Container>
       <CustomSnackBar notify={notify} setNotify={setNotify} />
       <Footer />
@@ -371,24 +360,24 @@ interface ReviewItem {
 }
 
 interface ProductReviewProps {
-  title: string;
-  ratings: { rating: number; votes: number }[];
-  reviews: ReviewItem[];
+  ratings: { rating: number; count: number }[];
+  reviews: any;
+  avgRating?: number;
 }
 
-const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }) => {
+const ProductReview: React.FC<ProductReviewProps> = ({ ratings, reviews, avgRating }) => {
+  console.log("ggg", ratings, reviews);
   // Group reviews by rating in the same range (1-5)
-  const reviewsByRating: { [key: number]: ReviewItem[] } = {};
-  reviews.forEach((review) => {
-    const rating = Math.floor(review.rating);
-    if (!reviewsByRating[rating]) {
-      reviewsByRating[rating] = [];
-    }
-    reviewsByRating[rating].push(review);
-  });
+  // const reviewsByRating: { [key: number]: ReviewItem[] } = {};
+  // reviews.forEach((review:any) => {
+  //   const rating = Math.floor(review.rating);
+  //   if (!reviewsByRating[rating]) {
+  //     reviewsByRating[rating] = [];
+  //   }
+  //   reviewsByRating[rating].push(review);
+  // });
 
   // Display up to 10 reviews
-  const displayedReviews = reviews.slice(0, 10);
 
   return (
     <Grid container spacing={2}>
@@ -396,18 +385,18 @@ const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }
         <Paper sx={{ p: 2 }} variant="outlined">
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Stack direction={"row"} spacing={2}>
-              <Typography variant="h3">{4.8}</Typography>
+              <Typography variant="h3">{avgRating?.toFixed(1)}</Typography>
               <Stack>
-                <Rating name="avg-rating" precision={0.5} value={4.8} readOnly sx={{ my: 1 }} />
+                <Rating name="avg-rating" precision={0.5} value={avgRating} readOnly sx={{ my: 1 }} />
                 <Typography variant="body1">Based on {reviews.length} reviews</Typography>
               </Stack>
             </Stack>
             <Box sx={{ mt: 1 }}>
-              {ratings.map(({ rating, votes }, index) => (
+              {ratings.map(({ rating, count }, index) => (
                 <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
                   <Rating value={rating} max={5} precision={0.5} readOnly />
                   <Typography variant="body1" sx={{ ml: 1 }}>
-                    ({votes} {votes === 1 ? "vote" : "votes"})
+                    ({count} {count === 1 ? "vote" : "votes"})
                   </Typography>
                 </Box>
               ))}
@@ -416,13 +405,14 @@ const ProductReview: React.FC<ProductReviewProps> = ({ title, ratings, reviews }
         </Paper>
       </Grid>
       <Grid item xs={12} md={9}>
-        <Box sx={{ overflow: "auto" }}>
-          {displayedReviews.map(({ name, review, rating }, index) => (
+        <Box sx={{ overflow: "auto", height: 400 }}>
+          {reviews.map((val: any, index: number) => (
             <Paper sx={{ p: 2, borderRadius: "10px", mt: index > 0 ? 2 : 0, mb: 2 }} variant="outlined">
               <Box key={index}>
-                <Typography variant="subtitle1">{name}</Typography>
-                <Rating value={rating} max={5} precision={0.5} readOnly />
-                <Typography variant="body1">{review}</Typography>
+                <Typography variant="subtitle1">{val.user.firstName + val.user.lastName}</Typography>
+                <Rating value={val?.rating} max={5} precision={0.5} readOnly />
+                <div dangerouslySetInnerHTML={{ __html: val.comment }}></div>
+                {/* <Typography variant="body1">{val.comment}</Typography> */}
               </Box>
             </Paper>
           ))}
