@@ -17,7 +17,7 @@
       "url": "http://localhost:8005"
     },
     {
-      "name": "category",
+      "name": "review",
       "url": "http://localhost:8006"
     }
   ]
