@@ -7,7 +7,7 @@ import routes from "./routes/";
 import connect from "./util/db-connect.config";
 import cors from "cors";
 import "./util/passport-config.util";
-
+import * as Scheduler from "./scheduler/order-scheduler";
 const app: Express = express();
 
 //cors oprions
@@ -23,6 +23,8 @@ app.use(cors(corsOptions));
 
 const server = app.listen(process.env.PORT, () => {
   logger.info(`Server is running on port ${process.env.PORT}🚀`);
+  
+  Scheduler.dailySchedule.start();
   connect();
   routes(app);
 });

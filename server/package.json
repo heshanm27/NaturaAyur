@@ -4,9 +4,9 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build",
+    "build": "npx tsc",
     "clean": "tsc --build --clean",
-    "prestart": "tsc --build --clean",
+    "prestart": "tsc --build --clean && npm run build",
     "start": "node dist/app.js",
     "dev": "npm-run-all --parallel watch:*",
     "watch:tsc": "npx tsc --watch",

@@ -45,7 +45,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: authservice #taken from depoyment file
+    app: heshanmadhuranga/naturaayur-gateway #taken from depoyment file
   ports:
     - protocol: TCP
       port: 8001
