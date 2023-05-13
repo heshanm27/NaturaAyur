@@ -3,7 +3,7 @@ import { BadRequestError } from "../errors";
 import Order, { IOrder } from "../models/order.model";
 import { sendEmail } from "../util/send-mail";
 import { generateOrderEmailBody } from "../util/mail-html-body-gen";
-
+import ProductSchema from "../models/product.model";
 interface IOrderPay {
   shippingAddress: {
     address: string;

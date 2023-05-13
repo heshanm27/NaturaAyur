@@ -30,6 +30,15 @@ export const fetchAllLiveOrders = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const fetchUserOrder = async () => {
+  try {
+    const response = await apiClient.get("/order/user");
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
 export const fetchAllOrderHistory = async () => {
   try {
     const response = await apiClient.get("/order/history");

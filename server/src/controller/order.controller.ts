@@ -139,6 +139,18 @@ export const getLiveOrder = async (req: Request, res: Response) => {
   }
 };
 
+export const getOneUserOrderHistory = async (req: Request, res: Response) => {
+  try {
+    console.log("user order history");
+    const user: any = req.user;
+    const orders = await OrderService.findOrderByUserId(user._id);
+    console.log(orders);
+    res.status(200).json(orders);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
+  }
+};
+
 export const patchOrderStatus = async (req: Request, res: Response) => {
   try {
     console.log(req.body);

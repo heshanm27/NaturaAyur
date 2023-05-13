@@ -68,13 +68,13 @@ export const SELLER_ROUTES: LinkRoute[] = [
 export const USER_ROUTES: LinkRoute[] = [
   {
     path: "/user/orders",
-    name: "Products",
+    name: "Orders",
     icon: createElement(AllInboxOutlinedIcon),
     activeIcon: createElement(AllInboxIcon),
   },
   {
     path: "/user/profile",
-    name: "Products",
+    name: "Profile",
     icon: createElement(AllInboxOutlinedIcon),
     activeIcon: createElement(AllInboxIcon),
   },

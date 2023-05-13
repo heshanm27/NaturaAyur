@@ -11,5 +11,4 @@ Router.route("/verify/:token").get(verifyEmail);
 Router.route("/refresh").get(issueNewAccessToken);
 Router.route("/forgotPassword").post(forgotPassword);
 Router.route("/resetPassword/:token").get(userResetPassword);
-Router.route("/test").get((req, res) => res.send("Auth Route"));
 export default Router;

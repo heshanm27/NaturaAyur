@@ -134,7 +134,7 @@ export async function findRecentOrders() {
 
 export async function findOrderById(input: any) {
   try {
-    const order = await Order.findById(input).populate("user").populate("orderItems.product").exec();
+    const order = await Order.findById(input).populate("user").populate("orderItems.product").sort("-createdAt").exec();
     if (!order) throw new BadRequestError("Order Not Found");
 
     return order;
@@ -157,11 +157,14 @@ export async function findAllOrders(input: any) {
   }
 }
 
-export async function findOrderByUserId(input: any) {
+export async function findOrderByUserId(input: string) {
   try {
     const orders = await Order.find({
-      user: input.userId,
-    });
+      user: input,
+    })
+      .populate("user")
+      .populate("orderItems.product")
+      .exec();
     return {
       message: "Order List Fetched Successfully",
       orders,

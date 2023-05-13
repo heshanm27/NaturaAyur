@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as ReviewServices from "../service/review.service";
 
 export const addReview = async (req: Request, res: Response) => {
-  const user: any = req.user;
+  const user: any = req?.user;
   const { comment, product, rating, seller } = req.body;
   console.log(comment, product, rating, user?._id!);
   const review = {

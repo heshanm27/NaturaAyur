@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import UserSchema, { IUser, ROLES } from "../models/user.model";
+import UserSchema, { IUser, ROLES } from "../model/user.model";
 import { BadRequestError, UnAuthorized } from "../errors";
 
 export function validateUserRoleAndToken(requiredRole: ROLES[]) {
